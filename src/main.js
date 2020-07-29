@@ -1,12 +1,24 @@
 "use strict";
-const TASK_COUNT = 3;
+const CARD_COUNT = 3;
+
+const createTripSwitchCaptionTemplate = () => {
+  return (
+    `<h2 class="visually-hidden">Switch trip view</h2>`
+  );
+};
 
 const createSiteMenuTemplate = () => {
   return (
     `<nav class="trip-controls__trip-tabs  trip-tabs">
     <a class="trip-tabs__btn  trip-tabs__btn--active" href="#">Table</a>
     <a class="trip-tabs__btn" href="#">Stats</a>
-  </nav>`
+    </nav>`
+  );
+};
+
+const creatTripFilterCaptionTemplate = () => {
+  return (
+    `<h2 class="visually-hidden">Filter events</h2>`
   );
 };
 
@@ -29,7 +41,7 @@ const createFilterTemplate = () => {
     </div>
 
     <button class="visually-hidden" type="submit">Accept filter</button>
-  </form>`
+    </form>`
   );
 };
 
@@ -46,6 +58,26 @@ const createRouteTemplate = () => {
         Total: &euro;&nbsp;<span class="trip-info__cost-value">1230</span>
       </p>
     </section>`
+  );
+};
+
+const createTripEventBtnTemplate = () => {
+  return (
+    `<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow" type="button">New event</button>`
+  );
+};
+
+/* eslint-disable */
+const createTripEventsMsgTemplate = () => {
+  return (
+    `<p class="trip-events__msg">Click New Event to create your first point</p>`
+  );
+};
+
+/* eslint-disable */
+const createTripEventsMsgLoadingTemplate = () => {
+  return (
+    `<p class="trip-events__msg">Loading...</p>`
   );
 };
 
@@ -84,27 +116,32 @@ const createSortTemplate = () => {
   );
 };
 
-const createTripDateTemplate = () => {
+const createTripDaysTemplate = () => {
   return (
     `<ul class="trip-days">
      </ul>`
   );
 };
 
-const createDayItemTemplate = () => {
+const createTripDayTemplate = () => {
   return (
     `<li class="trip-days__item  day">
       <div class="day__info">
         <span class="day__counter">1</span>
         <time class="day__date" datetime="2019-03-18">MAR 18</time>
       </div>
-      <ul class="trip-events__list">
-      </ul>
     </li>`
   );
 };
 
-const createEventItemTemplate = () => {
+const createTripEventsTemplate = () => {
+  return (
+    `<ul class="trip-events__list">
+    </ul>`
+  );
+};
+
+const createTripEventTemplate = () => {
   return (
     `<li class="trip-events__item">
       <div class="event">
@@ -136,6 +173,27 @@ const createEventItemTemplate = () => {
         </button>
       </div>
     </li>`
+  );
+};
+
+/* eslint-disable */
+const createStatisticsTemplate = () => {
+  return (
+    `<section class="statistics">
+      <h2 class="visually-hidden">Trip statistics</h2>
+
+      <div class="statistics__item statistics__item--money">
+        <canvas class="statistics__chart  statistics__chart--money" width="900"></canvas>
+      </div>
+
+      <div class="statistics__item statistics__item--transport">
+        <canvas class="statistics__chart  statistics__chart--transport" width="900"></canvas>
+      </div>
+
+      <div class="statistics__item statistics__item--time-spend">
+        <canvas class="statistics__chart  statistics__chart--time" width="900"></canvas>
+      </div>
+    </section>`
   );
 };
 
@@ -300,26 +358,27 @@ const render = (container, template, place) => {
 };
 
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
-const menuCaption = tripControls.querySelectorAll(`h2`)[0];
-const filterHeader = tripControls.querySelectorAll(`h2`)[1];
-
-render(menuCaption, createSiteMenuTemplate(), `afterend`);
-render(filterHeader, createFilterTemplate(), `afterend`);
+render(tripControls, createTripSwitchCaptionTemplate(), `beforeend`);
+render(tripControls, createSiteMenuTemplate(), `beforeend`);
+render(tripControls, creatTripFilterCaptionTemplate(), `beforeend`);
+render(tripControls, createFilterTemplate(), `beforeend`);
 
 const tripMain = document.querySelector(`.trip-main`);
 render(tripMain, createRouteTemplate(), `afterbegin`);
+render(tripMain, createTripEventBtnTemplate(), `beforeend`);
 
 const tripEvents = document.querySelector(`.trip-events`);
 render(tripEvents, createSortTemplate(), `beforeend`);
 render(tripEvents, createEventEditTemplate(), `beforeend`);
-render(tripEvents, createTripDateTemplate(), `beforeend`);
+render(tripEvents, createTripDaysTemplate(), `beforeend`);
 
-const daysListElement = tripEvents.querySelector(`.trip-days`);
-render(daysListElement, createDayItemTemplate(), `beforeend`);
+const daysList = tripEvents.querySelector(`.trip-days`);
+render(daysList, createTripDayTemplate(), `beforeend`);
 
-const eventsList = daysListElement.querySelector(`.trip-events__list`);
-for (let i = 0; i < TASK_COUNT; i++) {
-  render(eventsList, createEventItemTemplate(), `beforeend`);
+const daysItem = daysList.querySelector(`.trip-days__item`);
+render(daysItem, createTripEventsTemplate(), `beforeend`);
+const eventsList = daysItem.querySelector(`.trip-events__list`);
+
+for (let i = 0; i < CARD_COUNT; i++) {
+  render(eventsList, createTripEventTemplate(), `beforeend`);
 }
-
-
