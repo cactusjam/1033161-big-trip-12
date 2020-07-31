@@ -1,9 +1,17 @@
 "use strict";
 const CARD_COUNT = 3;
 
-const createTripSwitchCaptionTemplate = () => {
+const createHiddenCaptionTemplate = (captionKind) => {
+  let captionText = ``;
+
+  if (captionKind === `switch`) {
+    captionText = `Switch trip view`;
+  } else if (captionKind === `filter`) {
+    captionText = `Filter events`;
+  }
+
   return (
-    `<h2 class="visually-hidden">Switch trip view</h2>`
+    `<h2 class="visually-hidden">${captionText}</h2>`
   );
 };
 
@@ -13,12 +21,6 @@ const createSiteMenuTemplate = () => {
     <a class="trip-tabs__btn  trip-tabs__btn--active" href="#">Table</a>
     <a class="trip-tabs__btn" href="#">Stats</a>
     </nav>`
-  );
-};
-
-const creatTripFilterCaptionTemplate = () => {
-  return (
-    `<h2 class="visually-hidden">Filter events</h2>`
   );
 };
 
@@ -68,16 +70,17 @@ const createTripEventBtnTemplate = () => {
 };
 
 /* eslint-disable */
-const createTripEventsMsgTemplate = () => {
-  return (
-    `<p class="trip-events__msg">Click New Event to create your first point</p>`
-  );
-};
+const createTripEventsMessageTemplate = (eventKind) => {
+  let paragraphText = '';
 
-/* eslint-disable */
-const createTripEventsMsgLoadingTemplate = () => {
+  if (eventKind === 'loading') {
+    paragraphText = 'Loading...';
+  } else if (eventKind === 'ready') {
+    paragraphText = 'Click New Event to create your first point';
+  }
+
   return (
-    `<p class="trip-events__msg">Loading...</p>`
+    `<p class="trip-events__msg">${paragraphText}</p>`
   );
 };
 
@@ -358,9 +361,9 @@ const render = (container, template, place) => {
 };
 
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
-render(tripControls, createTripSwitchCaptionTemplate(), `beforeend`);
+render(tripControls, createHiddenCaptionTemplate(`switch`), `beforeend`);
 render(tripControls, createSiteMenuTemplate(), `beforeend`);
-render(tripControls, creatTripFilterCaptionTemplate(), `beforeend`);
+render(tripControls, createHiddenCaptionTemplate(`filter`), `beforeend`);
 render(tripControls, createFilterTemplate(), `beforeend`);
 
 const tripMain = document.querySelector(`.trip-main`);
