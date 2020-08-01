@@ -1,11 +1,4 @@
-export const createTripDaysTemplate = () => {
-  return (
-    `<ul class="trip-days">
-     </ul>`
-  );
-};
-
-export const createTripDayTemplate = () => {
+const createTripDayTemplate = () => {
   return (
     `<li class="trip-days__item  day">
       <div class="day__info">
@@ -15,3 +8,5 @@ export const createTripDayTemplate = () => {
     </li>`
   );
 };
+
+export {createTripDayTemplate};

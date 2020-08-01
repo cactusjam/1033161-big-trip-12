@@ -1,41 +1,51 @@
-import {createHiddenCaptionTemplate} from "./view/utils.js";
-
-import {createSiteMenuTemplate} from "./view/menu.js";
+import {createTripControlsTemplate} from "./view/controls.js";
 
 import {createFilterTemplate} from "./view/filter.js";
 
-import {createRouteTemplate} from "./view/trip-info.js";
+import {createTripInfoTemplate} from "./view/info.js";
 
-import {createTripEventBtnTemplate} from "./view/event-edit.js";
+import {createTripEventBtnTemplate} from "./view/event-btn.js";
 
 import {createSortTemplate} from "./view/sort.js";
 
-import {createTripDaysTemplate} from "./view/day.js";
+import {createTripDaysTemplate} from "./view/days.js";
 
-import {createTripDayTemplate} from "./view/day.js";
+import {createTripDayTemplate} from "./view/days-item.js";
 
-import {createTripEventsTemplate} from "./view/event.js";
+import {createTripEventsTemplate} from "./view/events.js";
 
-import {createTripEventTemplate} from "./view/event.js";
+import {createTripEventTemplate} from "./view/event-item.js";
 
 import {createEventEditTemplate} from "./view/event-edit.js";
 
-import {render} from "./view/utils.js";
+import {renderBlock} from "./view/hidden-caption.js";
+
+import {render} from "./utils/dom.js";
 
 const CARD_COUNT = 3;
 
+/* eslint-disable */
+const EventMessage = {
+  NO_EVENTS: `Click New Event to create your first point`,
+  LOADING: `Loading...`,
+};
+
+const Title = {
+  SWITCH: `Switch trip view`,
+  FILTER: `Filter events`,
+  TRIP_EVENTS: `Trip events`
+};
+
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
-render(tripControls, createHiddenCaptionTemplate(`switch`), `beforeend`);
-render(tripControls, createSiteMenuTemplate(), `beforeend`);
-render(tripControls, createHiddenCaptionTemplate(`filter`), `beforeend`);
-render(tripControls, createFilterTemplate(), `beforeend`);
+renderBlock(tripControls, Title.SWITCH, createTripControlsTemplate);
+renderBlock(tripControls, Title.FILTER, createFilterTemplate);
 
 const tripMain = document.querySelector(`.trip-main`);
-render(tripMain, createRouteTemplate(), `afterbegin`);
+render(tripMain, createTripInfoTemplate(), `afterbegin`);
 render(tripMain, createTripEventBtnTemplate(), `beforeend`);
 
 const tripEvents = document.querySelector(`.trip-events`);
-render(tripEvents, createSortTemplate(), `beforeend`);
+renderBlock(tripEvents, Title.TRIP_EVENTS, createSortTemplate);
 render(tripEvents, createEventEditTemplate(), `beforeend`);
 render(tripEvents, createTripDaysTemplate(), `beforeend`);
 

@@ -1,11 +1,4 @@
-export const createTripEventsTemplate = () => {
-  return (
-    `<ul class="trip-events__list">
-    </ul>`
-  );
-};
-
-export const createTripEventTemplate = () => {
+const createTripEventTemplate = () => {
   return (
     `<li class="trip-events__item">
       <div class="event">
@@ -40,16 +33,4 @@ export const createTripEventTemplate = () => {
   );
 };
 
-export const createTripEventsMessageTemplate = (eventKind) => {
-  let paragraphText = ``;
-
-  if (eventKind === `loading`) {
-    paragraphText = `Loading...`;
-  } else if (eventKind === `ready`) {
-    paragraphText = `Click New Event to create your first point`;
-  }
-
-  return (
-    `<p class="trip-events__msg">${paragraphText}</p>`
-  );
-};
+export {createTripEventTemplate};

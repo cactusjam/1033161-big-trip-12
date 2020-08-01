@@ -1,4 +1,4 @@
-export const createStatisticsTemplate = () => {
+const createStatisticsTemplate = () => {
   return (
     `<section class="statistics">
       <h2 class="visually-hidden">Trip statistics</h2>
@@ -17,3 +17,5 @@ export const createStatisticsTemplate = () => {
     </section>`
   );
 };
+
+export {createStatisticsTemplate};
