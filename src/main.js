@@ -1,51 +1,46 @@
-import {createTripControlsTemplate} from "./view/controls.js";
+import {createTripControlsTemplate} from "./view/trip-controls.js";
 
 import {createFilterTemplate} from "./view/filter.js";
 
-import {createTripInfoTemplate} from "./view/info.js";
+import {createTripInfoTemplate} from "./view/trip-info.js";
 
-import {createTripEventBtnTemplate} from "./view/event-btn.js";
+import {createTripEventButtonTemplate} from "./view/trip-event-button.js";
 
 import {createSortTemplate} from "./view/sort.js";
 
-import {createTripDaysTemplate} from "./view/days.js";
+import {createTripDaysTemplate} from "./view/trip-days.js";
 
-import {createTripDayTemplate} from "./view/days-item.js";
+import {createTripDayTemplate} from "./view/trip-day.js";
 
-import {createTripEventsTemplate} from "./view/events.js";
+import {createTripEventsTemplate} from "./view/trip-events.js";
 
-import {createTripEventTemplate} from "./view/event-item.js";
+import {createTripEventTemplate} from "./view/trip-event.js";
 
 import {createEventEditTemplate} from "./view/event-edit.js";
 
-import {renderBlock} from "./view/hidden-caption.js";
+import {createHiddenCaptionTemplate} from "./view/hidden-caption.js";
 
 import {render} from "./utils/dom.js";
 
+import {BlockTitle} from "./view/general-constants.js";
+
 const CARD_COUNT = 3;
 
-/* eslint-disable */
-const EventMessage = {
-  NO_EVENTS: `Click New Event to create your first point`,
-  LOADING: `Loading...`,
-};
-
-const Title = {
-  SWITCH: `Switch trip view`,
-  FILTER: `Filter events`,
-  TRIP_EVENTS: `Trip events`
+const renderBlock = (container, title, generateTemplate) => {
+  render(container, createHiddenCaptionTemplate(title), `beforeend`);
+  render(container, generateTemplate(), `beforeend`);
 };
 
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
-renderBlock(tripControls, Title.SWITCH, createTripControlsTemplate);
-renderBlock(tripControls, Title.FILTER, createFilterTemplate);
+renderBlock(tripControls, BlockTitle.SWITCH, createTripControlsTemplate);
+renderBlock(tripControls, BlockTitle.FILTER, createFilterTemplate);
 
 const tripMain = document.querySelector(`.trip-main`);
 render(tripMain, createTripInfoTemplate(), `afterbegin`);
-render(tripMain, createTripEventBtnTemplate(), `beforeend`);
+render(tripMain, createTripEventButtonTemplate(), `beforeend`);
 
 const tripEvents = document.querySelector(`.trip-events`);
-renderBlock(tripEvents, Title.TRIP_EVENTS, createSortTemplate);
+renderBlock(tripEvents, BlockTitle.TRIP_EVENTS, createSortTemplate);
 render(tripEvents, createEventEditTemplate(), `beforeend`);
 render(tripEvents, createTripDaysTemplate(), `beforeend`);
 
