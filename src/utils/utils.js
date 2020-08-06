@@ -14,7 +14,7 @@ const dateFormat = (date) => {
 };
 
 const timeFormat = (date) => {
-  return date.toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit', hour12: false});
+  return date.toLocaleTimeString(`en-GB`, {hour: `2-digit`, minute: `2-digit`, hour12: false});
 };
 
 const dayFormat = (date) => {

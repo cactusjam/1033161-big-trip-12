@@ -1,3 +1,5 @@
+import {dates} from "../mock/const.js";
+
 const services = [
   {
     type: `luggage`,
@@ -90,27 +92,34 @@ const getRandomArray = (array) => {
   return (newArray);
 };
 
-const getRandomDate = () => {
-  const currentDate = new Date();
-  currentDate.setDate(currentDate.getDate() + 1);
-  return new Date(currentDate);
-};
+// const getRandomDate = () => {
+//   const currentDate = new Date();
+//   currentDate.setDate(currentDate.getDate() + 1);
+//   return new Date(currentDate);
+// };
 
-const generateCard = () => {
+const generateCard = (dateIndex) => {
   return {
     type: getRandomTypes(),
     city: getRandomCities(),
     photos: `http://picsum.photos/248/152?r=${Math.random()}`,
     description: getRandomDescription(),
     services: getRandomArray(services),
-    start: getRandomDate(),
-    end: getRandomDate(),
+    startDate: dates[dateIndex].startDate,
+    endDate: dates[dateIndex].endDate,
     price: getRandomInteger(5, 1000)
   };
 };
 
-const generateCards = (count) => {
-  return new Array(count).fill().map(generateCard);
+const generateCards = (count, dateIndex) => {
+  let cards = [];
+
+  for (let i = 0; i < count; i++) {
+    cards.push(generateCard(dateIndex));
+  }
+
+  return cards;
+  // return new Array(count).fill().map(generateCard(dateIndex));
 };
 
 export {generateCards};

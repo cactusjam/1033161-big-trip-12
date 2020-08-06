@@ -1,5 +1,4 @@
 import {createItems, dateFormat, timeFormat} from "../utils/utils.js";
-import {endDate, startDate} from "../mock/const.js";
 
 const getEventOffer = (offer) => {
   return (
@@ -11,7 +10,7 @@ const getEventOffer = (offer) => {
   );
 };
 
-const formatDiff = () => {
+const formatDiff = (startDate, endDate) => {
   const durationMiliseconds = endDate - startDate;
   const days = Math.floor(durationMiliseconds / 1000 / 60 / 60 / 24);
   const hours = Math.floor(durationMiliseconds / 1000 / 60 / 60);
@@ -32,7 +31,7 @@ const formatDiff = () => {
 };
 
 const createTripEventTemplate = (points) => {
-  const {type, city, services, price} = points;
+  const {type, city, services, price, startDate, endDate} = points;
   return (
     `<li class="trip-events__item">
       <div class="event">

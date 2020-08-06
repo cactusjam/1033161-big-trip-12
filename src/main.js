@@ -12,11 +12,9 @@ import {createHiddenCaptionTemplate} from "./view/hidden-caption.js";
 import {render} from "./utils/dom.js";
 import {BlockTitle} from "./view/general-constants.js";
 import {generateCards} from "./mock/card.js";
+import {dates} from "./mock/const.js";
 
-const CARD_COUNT = 20;
-const DATE_COUNT = 3;
-
-const cards = generateCards(CARD_COUNT);
+const CARD_COUNT = 5;
 
 const renderBlock = (container, title, generateTemplate) => {
   render(container, createHiddenCaptionTemplate(title), `beforeend`);
@@ -38,14 +36,21 @@ render(tripEvents, createTripDaysTemplate(), `beforeend`);
 
 const daysList = tripEvents.querySelector(`.trip-days`);
 
-for (let i = 1; i <= DATE_COUNT; i++) {
+// for (let i = 0; i <= dates; i++) {
+//   render(daysList, createTripDayTemplate(i), `beforeend`);
+// }
+
+for (let i = 0; i < dates.length; i++) {
   render(daysList, createTripDayTemplate(i), `beforeend`);
+  const daysItem = daysList.querySelector(`.js-days__item${i}`);
+  render(daysItem, createTripEventsTemplate(i), `beforeend`);
+
+  const eventsList = daysItem.querySelector(`.js-events__list${i}`);
+  const cards = generateCards(CARD_COUNT, i);
+
+  console.log(cards);
+
+  cards.forEach((card) => {
+    render(eventsList, createTripEventTemplate(card), `beforeend`);
+  });
 }
-
-const daysItem = daysList.querySelector(`.trip-days__item`);
-render(daysItem, createTripEventsTemplate(), `beforeend`);
-const eventsList = daysItem.querySelector(`.trip-events__list`);
-
-cards.forEach((card) => {
-  render(eventsList, createTripEventTemplate(card), `beforeend`);
-});
