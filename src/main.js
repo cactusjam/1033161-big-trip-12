@@ -31,14 +31,13 @@ render(tripMain, createTripEventButtonTemplate(), `beforeend`);
 
 const tripEvents = document.querySelector(`.trip-events`);
 renderBlock(tripEvents, BlockTitle.TRIP_EVENTS, createSortTemplate);
-render(tripEvents, createEventEditTemplate(), `beforeend`);
-render(tripEvents, createTripDaysTemplate(), `beforeend`);
 
+render(tripEvents, createTripDaysTemplate(), `beforeend`);
 const daysList = tripEvents.querySelector(`.trip-days`);
 
-// for (let i = 0; i <= dates; i++) {
-//   render(daysList, createTripDayTemplate(i), `beforeend`);
-// }
+const mockedCards = new Array(dates.length).fill().map((elem, index) => {
+  return generateCards(CARD_COUNT, index);
+});
 
 for (let i = 0; i < dates.length; i++) {
   render(daysList, createTripDayTemplate(i), `beforeend`);
@@ -46,11 +45,24 @@ for (let i = 0; i < dates.length; i++) {
   render(daysItem, createTripEventsTemplate(i), `beforeend`);
 
   const eventsList = daysItem.querySelector(`.js-events__list${i}`);
-  const cards = generateCards(CARD_COUNT, i);
-
-  console.log(cards);
+  // const cards = generateCards(CARD_COUNT, i);
+  const cards = mockedCards[i];
 
   cards.forEach((card) => {
     render(eventsList, createTripEventTemplate(card), `beforeend`);
+    // render(eventsList, createEventEditTemplate(card), `beforeend`);
   });
+
+  const rollupButton = document.querySelectorAll(`.event__rollup-btn`);
+
+  rollupButton.forEach(function (item) {
+    item.addEventListener(`click`, function (rollupEvent) {
+      console.log('rollupEvent', rollupEvent);
+      console.log('rollupEvent.target', rollupEvent.target);
+      console.log('rollupEvent.parentElement', rollupEvent.parentElement);
+
+      render(eventsList, createEventEditTemplate(rollupEvent), `beforeend`);
+    });
+  });
+
 }

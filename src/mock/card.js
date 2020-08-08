@@ -23,23 +23,66 @@ const services = [
   }
 ];
 
-const getRandomTypes = () => {
-  const Types = [
-    `Bus`,
-    `Taxi`,
-    `Train`,
-    `Ship`,
-    `Transport`,
-    `Drive`,
-    `Flight`,
-    `Check`,
-    `Sightseeing`,
-    `Restaurant`
-  ];
-  const randomIndex = getRandomInteger(0, Types.length - 1);
+const types = [
+  {
+    name: `Taxi`,
+    actionName: `Taxi to`,
+    icon: `taxi`
+  },
+  {
+    name: `Bus`,
+    actionName: `Bus to`,
+    icon: `bus`
+  },
+  {
+    name: `Train`,
+    actionName: `Train to`,
+    icon: `train`
+  },
+  {
+    name: `Ship`,
+    actionName: `Ship to`,
+    icon: `ship`
+  },
+  {
+    name: `Transport`,
+    actionName: `Transport to`,
+    icon: `transport`
+  },
+  {
+    name: `Drive`,
+    actionName: `Drive to`,
+    icon: `drive`
+  },
+  {
+    name: `Flight`,
+    actionName: `Flight to`,
+    icon: `flight`
+  },
+  {
+    name: `Check-in`,
+    actionName: `Check into`,
+    icon: `check`
+  },
+  {
+    name: `Sightseeng`,
+    actionName: `Sightseeng at`,
+    icon: `sightseeing`
+  },
+  {
+    name: `Restaurant`,
+    actionName: `Eat at`,
+    icon: `restaurant`
+  }
+];
 
-  return Types[randomIndex];
-};
+const photos = [
+  `img/photos/1.jpg`,
+  `img/photos/2.jpg`,
+  `img/photos/3.jpg`,
+  `img/photos/4.jpg`,
+  `img/photos/5.jpg`,
+];
 
 const getRandomCities = () => {
   const Cities = [
@@ -60,7 +103,7 @@ const getRandomCities = () => {
 };
 
 const getRandomDescription = () => {
-  const descriptions = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`
+  const descriptions = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
 
   const splittedText = descriptions.split(`.`);
   const randomIndex = getRandomInteger(0, splittedText.length - 1);
@@ -92,22 +135,17 @@ const getRandomArray = (array) => {
   return (newArray);
 };
 
-// const getRandomDate = () => {
-//   const currentDate = new Date();
-//   currentDate.setDate(currentDate.getDate() + 1);
-//   return new Date(currentDate);
-// };
-
 const generateCard = (dateIndex) => {
   return {
-    type: getRandomTypes(),
+    type: getRandomElement(types),
     city: getRandomCities(),
-    photos: `http://picsum.photos/248/152?r=${Math.random()}`,
+    photos: getRandomArray(photos),
     description: getRandomDescription(),
     services: getRandomArray(services),
     startDate: dates[dateIndex].startDate,
     endDate: dates[dateIndex].endDate,
-    price: getRandomInteger(5, 1000)
+    price: getRandomInteger(5, 1000),
+    favorite: Boolean(Math.round(Math.random()) * 0.5)
   };
 };
 
