@@ -9,7 +9,7 @@ import {createTripEventsTemplate} from "./view/trip-events.js";
 import {createTripEventTemplate} from "./view/trip-event.js";
 import {createEventEditTemplate} from "./view/event-edit.js";
 import {createHiddenCaptionTemplate} from "./view/hidden-caption.js";
-import {render} from "./utils/dom.js";
+import {render, renderNodeElement, createNodeElement} from "./utils/dom.js";
 import {BlockTitle} from "./view/general-constants.js";
 import {generateCards} from "./mock/card.js";
 import {dates} from "./mock/const.js";
@@ -35,7 +35,7 @@ renderBlock(tripEvents, BlockTitle.TRIP_EVENTS, createSortTemplate);
 render(tripEvents, createTripDaysTemplate(), `beforeend`);
 const daysList = tripEvents.querySelector(`.trip-days`);
 
-const mockedCards = new Array(dates.length).fill().map((elem, index) => {
+const mockedCards = new Array(dates.length).fill().map((_element, index) => {
   return generateCards(CARD_COUNT, index);
 });
 
@@ -45,24 +45,44 @@ for (let i = 0; i < dates.length; i++) {
   render(daysItem, createTripEventsTemplate(i), `beforeend`);
 
   const eventsList = daysItem.querySelector(`.js-events__list${i}`);
-  // const cards = generateCards(CARD_COUNT, i);
+  const eventList = document.querySelector(`.trip-events__list`);
   const cards = mockedCards[i];
 
   cards.forEach((card) => {
-    render(eventsList, createTripEventTemplate(card), `beforeend`);
-    // render(eventsList, createEventEditTemplate(card), `beforeend`);
-  });
+    const eventItemElement = createNodeElement(createTripEventTemplate(card));
+    const eventEditElement = createNodeElement(createEventEditTemplate(card));
 
-  const rollupButton = document.querySelectorAll(`.event__rollup-btn`);
+    renderNodeElement(eventsList, eventItemElement, `beforeend`);
 
-  rollupButton.forEach(function (item) {
-    item.addEventListener(`click`, function (rollupEvent) {
-      console.log('rollupEvent', rollupEvent);
-      console.log('rollupEvent.target', rollupEvent.target);
-      console.log('rollupEvent.parentElement', rollupEvent.parentElement);
+    // const onEscKeyDown = (evt) => {
+    //   if (evt.key === `Escape` || evt.key === `Esc`) {
+    //     eventList.replaceChild(eventItem, eventItem);
+    //     document.removeEventListener(`keydown`, onEscKeyDown);
+    //   }
+    // };
 
-      render(eventsList, createEventEditTemplate(rollupEvent), `beforeend`);
+    const itemRollupBtn = eventItemElement.querySelector(`.event__rollup-btn`);
+
+    itemRollupBtn.addEventListener(`click`, () => {
+      eventList.replaceChild(eventEditElement, eventItemElement);
+
+      // document.addEventListener(`keydown`, onEscKeyDown);
     });
-  });
 
+    const editRollupBtn = eventEditElement.querySelector(`.event__rollup-btn`);
+
+    editRollupBtn.addEventListener(`click`, () => {
+      eventList.replaceChild(eventItemElement, eventEditElement);
+
+      // document.addEventListener(`keydown`, onEscKeyDown);
+    });
+
+    // eventItem.addEventListener(`submit`, () => {
+    //   eventList.replaceChild(eventItem, eventEditBlock);
+    // });
+
+  //   rollupBtn.addEventListener(`click`, () => {
+  //     eventList.replaceChild(createEventEditTemplate, createTripEventTemplate);
+  //   });
+  });
 }
