@@ -10,7 +10,7 @@ import {createTripEventTemplate} from "./view/trip-event.js";
 import {createEventEditTemplate} from "./view/event-edit.js";
 import {createHiddenCaptionTemplate} from "./view/hidden-caption.js";
 import {render, renderNodeElement, createNodeElement} from "./utils/dom.js";
-import {BlockTitle} from "./view/general-constants.js";
+import {BlockTitle} from "./constants.js";
 import {generateCards} from "./mock/card.js";
 import {dates} from "./mock/const.js";
 
@@ -18,19 +18,19 @@ const CARD_COUNT = 5;
 
 const renderBlock = (container, title, generateTemplate) => {
   render(container, createHiddenCaptionTemplate(title), `beforeend`);
-  render(container, generateTemplate(), `beforeend`);
+  render(container, generateTemplate, `beforeend`);
 };
 
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
-renderBlock(tripControls, BlockTitle.SWITCH, createTripControlsTemplate);
-renderBlock(tripControls, BlockTitle.FILTER, createFilterTemplate);
+renderBlock(tripControls, BlockTitle.SWITCH, createTripControlsTemplate());
+renderBlock(tripControls, BlockTitle.FILTER, createFilterTemplate());
 
 const tripMain = document.querySelector(`.trip-main`);
 render(tripMain, createTripInfoTemplate(), `afterbegin`);
 render(tripMain, createTripEventButtonTemplate(), `beforeend`);
 
 const tripEvents = document.querySelector(`.trip-events`);
-renderBlock(tripEvents, BlockTitle.TRIP_EVENTS, createSortTemplate);
+renderBlock(tripEvents, BlockTitle.TRIP_EVENTS, createSortTemplate());
 
 render(tripEvents, createTripDaysTemplate(), `beforeend`);
 const daysList = tripEvents.querySelector(`.trip-days`);
@@ -45,7 +45,7 @@ for (let i = 0; i < dates.length; i++) {
   render(daysItem, createTripEventsTemplate(i), `beforeend`);
 
   const eventsList = daysItem.querySelector(`.js-events__list${i}`);
-  const eventList = document.querySelector(`.trip-events__list`);
+  const eventList = daysItem.querySelector(`.trip-events__list`);
   const cards = mockedCards[i];
 
   cards.forEach((card) => {
@@ -54,19 +54,19 @@ for (let i = 0; i < dates.length; i++) {
 
     renderNodeElement(eventsList, eventItemElement, `beforeend`);
 
-    // const onEscKeyDown = (evt) => {
-    //   if (evt.key === `Escape` || evt.key === `Esc`) {
-    //     eventList.replaceChild(eventItem, eventItem);
-    //     document.removeEventListener(`keydown`, onEscKeyDown);
-    //   }
-    // };
+    const onEscKeyDown = (evt) => {
+      if (evt.key === `Escape` || evt.key === `Esc`) {
+        eventList.replaceChild(eventItemElement, eventEditElement);
+        document.removeEventListener(`keydown`, onEscKeyDown);
+      }
+    };
 
     const itemRollupBtn = eventItemElement.querySelector(`.event__rollup-btn`);
 
     itemRollupBtn.addEventListener(`click`, () => {
       eventList.replaceChild(eventEditElement, eventItemElement);
 
-      // document.addEventListener(`keydown`, onEscKeyDown);
+      document.addEventListener(`keydown`, onEscKeyDown);
     });
 
     const editRollupBtn = eventEditElement.querySelector(`.event__rollup-btn`);
@@ -74,15 +74,7 @@ for (let i = 0; i < dates.length; i++) {
     editRollupBtn.addEventListener(`click`, () => {
       eventList.replaceChild(eventItemElement, eventEditElement);
 
-      // document.addEventListener(`keydown`, onEscKeyDown);
+      document.addEventListener(`keydown`, onEscKeyDown);
     });
-
-    // eventItem.addEventListener(`submit`, () => {
-    //   eventList.replaceChild(eventItem, eventEditBlock);
-    // });
-
-  //   rollupBtn.addEventListener(`click`, () => {
-  //     eventList.replaceChild(createEventEditTemplate, createTripEventTemplate);
-  //   });
   });
 }

@@ -1,4 +1,4 @@
-import {createItems, dateFormat, timeFormat} from "../utils/utils.js";
+import {createItems, dateFormat, timeFormat, formatDiff} from "../utils/utils.js";
 
 const getEventOffer = (offer) => {
   return (
@@ -8,26 +8,6 @@ const getEventOffer = (offer) => {
     &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
     </li>`
   );
-};
-
-const formatDiff = (startDate, endDate) => {
-  const durationMiliseconds = endDate - startDate;
-  const days = Math.floor(durationMiliseconds / 1000 / 60 / 60 / 24);
-  const hours = Math.floor(durationMiliseconds / 1000 / 60 / 60);
-  const minutes = durationMiliseconds / 1000 / 60 % 60;
-
-  let result = ``;
-  if (days > 0) {
-    result += `${days}D `;
-  }
-  if (hours > 0) {
-    result += `${hours}H `;
-  }
-  if (minutes > 0) {
-    result += `${minutes}M`;
-  }
-
-  return result.trim();
 };
 
 const createTripEventTemplate = (points) => {

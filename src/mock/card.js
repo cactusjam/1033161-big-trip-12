@@ -1,4 +1,5 @@
 import {dates} from "../mock/const.js";
+import {getRandomArray, getRandomInteger, getRandomElement} from "../utils/utils.js";
 
 const services = [
   {
@@ -111,30 +112,6 @@ const getRandomDescription = () => {
   return splittedText.slice(0, randomIndex);
 };
 
-const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
-
-const getRandomElement = (array) => {
-  const randomIndex = Math.floor(Math.random() * array.length);
-  return array[randomIndex];
-};
-
-const getRandomArray = (array) => {
-  let newArrayLength = getRandomInteger(0, array.length);
-  const newArray = [];
-  while (newArrayLength > newArray.length) {
-    const randomElement = getRandomElement(array);
-    if (newArray.includes(randomElement) === false) {
-      newArray.push(randomElement);
-    }
-  }
-  return (newArray);
-};
-
 const generateCard = (dateIndex) => {
   return {
     type: getRandomElement(types),
@@ -157,7 +134,6 @@ const generateCards = (count, dateIndex) => {
   }
 
   return cards;
-  // return new Array(count).fill().map(generateCard(dateIndex));
 };
 
 export {generateCards};
