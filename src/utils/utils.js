@@ -66,4 +66,6 @@ const formatDiff = (startDate, endDate) => {
   return result.trim();
 };
 
-export {createItems, timeFormat, dayFormat, getRandomArray, getRandomInteger, formatDiff, convertDate};
+const getFirstUpperCase = (element) => element[0].toUpperCase() + element.slice(1);
+
+export {createItems, timeFormat, dayFormat, getRandomArray, getRandomInteger, formatDiff, convertDate, getFirstUpperCase};

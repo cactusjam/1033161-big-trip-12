@@ -1,4 +1,4 @@
-import {createItems, convertDate} from "../utils/utils.js";
+import {createItems, convertDate, getFirstUpperCase} from "../utils/utils.js";
 
 const getEventOffer = (offer, favorite) => {
   return (
@@ -16,7 +16,7 @@ const getEventOffer = (offer, favorite) => {
 };
 const createEventEditTemplate = (points) => {
   const {type, startDate, endDate, price, services, destination, isFavorite} = points;
-  const eventTitle = type[0].toUpperCase() + type.slice(1);
+  const eventTitle = getFirstUpperCase(type);
   return (
     `<li class="trip-events__item">
       <form class="event  event--edit" action="#" method="post">

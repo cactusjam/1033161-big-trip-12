@@ -1,4 +1,3 @@
-// import {dates} from "./dates.js";
 import {getRandomArray, getRandomInteger} from "../utils/utils.js";
 
 const services = [
