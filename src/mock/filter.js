@@ -1,7 +1,7 @@
-const filtersName = [
+const filterNames = [
   `Everything`,
   `Future`,
   `Past`
 ];
 
-export {filtersName};
+export {filterNames};

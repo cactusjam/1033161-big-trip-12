@@ -1,3 +1,7 @@
+import {generateCards} from "../mock/card.js";
+
+const CARD_COUNT = 5;
+
 const dates = [
   {
     startDate: new Date(`2019-03-18T10:30`),
@@ -12,5 +16,10 @@ const dates = [
     endDate: new Date(`2019-03-21T13:48`),
   }
 ];
+
+dates.forEach((date, index) => {
+  date.cards = generateCards(CARD_COUNT, date);
+  date.counter = index + 1;
+});
 
 export {dates};

@@ -1,13 +1,12 @@
-import {dateFormat, dayFormat} from "../utils/utils.js";
-import {dates} from "../mock/const.js";
+import {dayFormat} from "../utils/utils.js";
 
-const createTripDayTemplate = (dayIndex) => {
-  const startDate = dates[dayIndex].startDate;
+const createTripDayTemplate = (date) => {
+  const {startDate, counter} = date;
   return (
-    `<li class="trip-days__item js-days__item${dayIndex} day">
+    `<li class="trip-days__item day">
       <div class="day__info">
-        <span class="day__counter">${dayIndex + 1}</span>
-        <time class="day__date" datetime="${dateFormat(startDate)}">${dayFormat(startDate)}</time>
+        <span class="day__counter">${counter}</span>
+        <time class="day__date" datetime="${startDate.toISOString()}">${dayFormat(startDate)}</time>
       </div>
     </li>`
   );

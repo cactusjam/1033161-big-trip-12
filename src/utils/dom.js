@@ -1,8 +1,4 @@
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
-
-const renderNodeElement = (container, element, position) => {
+const render = (container, element, position) => {
   switch (position) {
     case `beforebegin`:
       container.before(element);
@@ -19,10 +15,10 @@ const renderNodeElement = (container, element, position) => {
   }
 };
 
-const createNodeElement = (template) => {
+const createNode = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;
   return newElement.firstChild;
 };
 
-export {render, renderNodeElement, createNodeElement};
+export {render, createNode};

@@ -1,6 +1,6 @@
-const createTripEventsTemplate = (index) => {
+const createTripEventsTemplate = () => {
   return (
-    `<ul class="trip-events__list js-events__list${index}">
+    `<ul class="trip-events__list">
     </ul>`
   );
 };

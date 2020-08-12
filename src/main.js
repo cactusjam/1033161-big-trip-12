@@ -9,72 +9,70 @@ import {createTripEventsTemplate} from "./view/trip-events.js";
 import {createTripEventTemplate} from "./view/trip-event.js";
 import {createEventEditTemplate} from "./view/event-edit.js";
 import {createHiddenCaptionTemplate} from "./view/hidden-caption.js";
-import {render, renderNodeElement, createNodeElement} from "./utils/dom.js";
+import {render, createNode} from "./utils/dom.js";
 import {BlockTitle} from "./constants.js";
-import {generateCards} from "./mock/card.js";
-import {dates} from "./mock/const.js";
+import {dates} from "./mock/dates.js";
+import {filterNames} from "./mock/filter.js";
 
-const CARD_COUNT = 5;
+const KEYCODE_ESC = 27;
 
 const renderBlock = (container, title, generateTemplate) => {
-  render(container, createHiddenCaptionTemplate(title), `beforeend`);
-  render(container, generateTemplate, `beforeend`);
+  const hiddenCaptionNode = createNode(createHiddenCaptionTemplate(title));
+  render(container, hiddenCaptionNode, `beforeend`);
+  render(container, createNode(generateTemplate), `beforeend`);
 };
 
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
 renderBlock(tripControls, BlockTitle.SWITCH, createTripControlsTemplate());
-renderBlock(tripControls, BlockTitle.FILTER, createFilterTemplate());
+renderBlock(tripControls, BlockTitle.FILTER, createFilterTemplate(filterNames));
 
 const tripMain = document.querySelector(`.trip-main`);
-render(tripMain, createTripInfoTemplate(), `afterbegin`);
-render(tripMain, createTripEventButtonTemplate(), `beforeend`);
+const tripInfo = createNode(createTripInfoTemplate());
+render(tripMain, tripInfo, `afterbegin`);
+const tripEventButton = createNode(createTripEventButtonTemplate());
+render(tripMain, tripEventButton, `beforeend`);
 
 const tripEvents = document.querySelector(`.trip-events`);
 renderBlock(tripEvents, BlockTitle.TRIP_EVENTS, createSortTemplate());
 
-render(tripEvents, createTripDaysTemplate(), `beforeend`);
+const tripDays = createNode(createTripDaysTemplate());
+render(tripEvents, tripDays, `beforeend`);
 const daysList = tripEvents.querySelector(`.trip-days`);
 
-const mockedCards = new Array(dates.length).fill().map((_element, index) => {
-  return generateCards(CARD_COUNT, index);
-});
+dates.forEach((date) => {
+  const daysItem = createNode(createTripDayTemplate(date));
+  render(daysList, daysItem, `beforeend`);
 
-for (let i = 0; i < dates.length; i++) {
-  render(daysList, createTripDayTemplate(i), `beforeend`);
-  const daysItem = daysList.querySelector(`.js-days__item${i}`);
-  render(daysItem, createTripEventsTemplate(i), `beforeend`);
+  const eventsList = createNode(createTripEventsTemplate());
+  render(daysItem, eventsList, `beforeend`);
 
-  const eventsList = daysItem.querySelector(`.js-events__list${i}`);
-  const eventList = daysItem.querySelector(`.trip-events__list`);
-  const cards = mockedCards[i];
+  date.cards.forEach((card) => {
+    const eventItem = createNode(createTripEventTemplate(card));
+    const eventEdit = createNode(createEventEditTemplate(card));
 
-  cards.forEach((card) => {
-    const eventItemElement = createNodeElement(createTripEventTemplate(card));
-    const eventEditElement = createNodeElement(createEventEditTemplate(card));
-
-    renderNodeElement(eventsList, eventItemElement, `beforeend`);
+    render(eventsList, eventItem, `beforeend`);
 
     const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        eventList.replaceChild(eventItemElement, eventEditElement);
+      if (evt.keyCode === KEYCODE_ESC) {
+        eventsList.replaceChild(eventItem, eventEdit);
         document.removeEventListener(`keydown`, onEscKeyDown);
       }
     };
 
-    const itemRollupBtn = eventItemElement.querySelector(`.event__rollup-btn`);
+    const itemRollupButton = eventItem.querySelector(`.event__rollup-btn`);
 
-    itemRollupBtn.addEventListener(`click`, () => {
-      eventList.replaceChild(eventEditElement, eventItemElement);
+    itemRollupButton.addEventListener(`click`, () => {
+      eventsList.replaceChild(eventEdit, eventItem);
 
       document.addEventListener(`keydown`, onEscKeyDown);
     });
 
-    const editRollupBtn = eventEditElement.querySelector(`.event__rollup-btn`);
+    const editRollupBtn = eventEdit.querySelector(`.event__rollup-btn`);
 
     editRollupBtn.addEventListener(`click`, () => {
-      eventList.replaceChild(eventItemElement, eventEditElement);
+      eventsList.replaceChild(eventItem, eventEdit);
 
       document.addEventListener(`keydown`, onEscKeyDown);
     });
   });
-}
+});

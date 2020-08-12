@@ -1,5 +1,5 @@
-import {dates} from "../mock/const.js";
-import {getRandomArray, getRandomInteger, getRandomElement} from "../utils/utils.js";
+// import {dates} from "./dates.js";
+import {getRandomArray, getRandomInteger} from "../utils/utils.js";
 
 const services = [
   {
@@ -24,58 +24,14 @@ const services = [
   }
 ];
 
-const types = [
-  {
-    name: `Taxi`,
-    actionName: `Taxi to`,
-    icon: `taxi`
-  },
-  {
-    name: `Bus`,
-    actionName: `Bus to`,
-    icon: `bus`
-  },
-  {
-    name: `Train`,
-    actionName: `Train to`,
-    icon: `train`
-  },
-  {
-    name: `Ship`,
-    actionName: `Ship to`,
-    icon: `ship`
-  },
-  {
-    name: `Transport`,
-    actionName: `Transport to`,
-    icon: `transport`
-  },
-  {
-    name: `Drive`,
-    actionName: `Drive to`,
-    icon: `drive`
-  },
-  {
-    name: `Flight`,
-    actionName: `Flight to`,
-    icon: `flight`
-  },
-  {
-    name: `Check-in`,
-    actionName: `Check into`,
-    icon: `check`
-  },
-  {
-    name: `Sightseeng`,
-    actionName: `Sightseeng at`,
-    icon: `sightseeing`
-  },
-  {
-    name: `Restaurant`,
-    actionName: `Eat at`,
-    icon: `restaurant`
-  }
-];
+const getRandomTypes = () => {
+  const Types = [
+    `taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`, `check-in`, `sightseeing`, `restaurant`
+  ];
+  const randomIndex = getRandomInteger(0, Types.length - 1);
+
+  return Types[randomIndex];
+};
 
 const photos = [
   `img/photos/1.jpg`,
@@ -112,25 +68,27 @@ const getRandomDescription = () => {
   return splittedText.slice(0, randomIndex);
 };
 
-const generateCard = (dateIndex) => {
+const generateCard = (date) => {
   return {
-    type: getRandomElement(types),
-    city: getRandomCities(),
-    photos: getRandomArray(photos),
-    description: getRandomDescription(),
+    type: getRandomTypes(),
+    destination: {
+      name: getRandomCities(),
+      photos: getRandomArray(photos),
+      description: getRandomDescription(),
+    },
     services: getRandomArray(services),
-    startDate: dates[dateIndex].startDate,
-    endDate: dates[dateIndex].endDate,
+    startDate: date.startDate,
+    endDate: date.endDate,
     price: getRandomInteger(5, 1000),
-    favorite: Boolean(Math.round(Math.random()) * 0.5)
+    isFavorite: Boolean(Math.round(Math.random()) * 0.5)
   };
 };
 
-const generateCards = (count, dateIndex) => {
+const generateCards = (count, date) => {
   let cards = [];
 
   for (let i = 0; i < count; i++) {
-    cards.push(generateCard(dateIndex));
+    cards.push(generateCard(date));
   }
 
   return cards;
