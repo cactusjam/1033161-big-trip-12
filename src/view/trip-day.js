@@ -1,4 +1,4 @@
-import {dayFormat} from "../utils/utils.js";
+import {getDayFormat} from "../utils/utils.js";
 
 const createTripDayTemplate = (date) => {
   const {startDate, counter} = date;
@@ -6,7 +6,7 @@ const createTripDayTemplate = (date) => {
     `<li class="trip-days__item day">
       <div class="day__info">
         <span class="day__counter">${counter}</span>
-        <time class="day__date" datetime="${startDate.toISOString()}">${dayFormat(startDate)}</time>
+        <time class="day__date" datetime="${startDate.toISOString()}">${getDayFormat(startDate)}</time>
       </div>
     </li>`
   );

@@ -1,21 +1,10 @@
-import {createItems, convertDate, getFirstUpperCase} from "../utils/utils.js";
+import {
+  convertDate,
+  getFirstUpperCase
+} from "../utils/utils.js";
 
-const getEventOffer = (offer, favorite) => {
-  return (
-    `<div class="event__available-offers">
-      <div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${favorite ? `checked` : ``}>
-        <label class="event__offer-label" for="event-offer-${offer.type}-1">
-          <span class="event__offer-title">${offer.title}</span>
-          +
-          €&nbsp;<span class="event__offer-price">${offer.price}</span>
-        </label>
-      </div>
-    </div>`
-  );
-};
 const createEventEditTemplate = (points) => {
-  const {type, startDate, endDate, price, services, destination, isFavorite} = points;
+  const {type, startDate, endDate, price, destination, isFavorite, services} = points;
   const eventTitle = getFirstUpperCase(type);
   return (
     `<li class="trip-events__item">
@@ -80,7 +69,18 @@ const createEventEditTemplate = (points) => {
           <section class="event__details">
             <section class="event__section  event__section--offers">
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-              ${services.length > 0 ? createItems(services, getEventOffer) : ``}
+              <div class="event__available-offers">
+              ${services.map((offer) =>`
+              <div class="event__offer-selector">
+                <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${isFavorite ? `checked` : ``}>
+                <label class="event__offer-label" for="event-offer-${offer.type}-1">
+                  <span class="event__offer-title">${offer.title}</span>
+                  +
+                  €&nbsp;<span class="event__offer-price">${offer.price}</span>
+                </label>
+              </div>
+            `).join(``)}
+            </div>
             </section>
             <section class="event__section  event__section--destination">
               <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -103,4 +103,6 @@ const createEventEditTemplate = (points) => {
   );
 };
 
-export {createEventEditTemplate};
+export {
+  createEventEditTemplate
+};

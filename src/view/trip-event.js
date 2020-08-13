@@ -1,14 +1,4 @@
-import {createItems, timeFormat, formatDiff} from "../utils/utils.js";
-
-const getEventOffer = (offer) => {
-  return (
-    `<li class="event__offer">
-    <span class="event__offer-title">${offer.title}</span>
-    &plus;
-    &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
-    </li>`
-  );
-};
+import {getTimeFormat, formatDiff} from "../utils/utils.js";
 
 const createTripEventTemplate = (points) => {
   const {type, destination, services, price, startDate, endDate} = points;
@@ -22,9 +12,9 @@ const createTripEventTemplate = (points) => {
         <h3 class="event__title">${eventTitle} to ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${startDate.toISOString()}">${timeFormat(startDate)}</time>
+            <time class="event__start-time" datetime="${startDate.toISOString()}">${getTimeFormat(startDate)}</time>
             &mdash;
-            <time class="event__end-time" datetime=""$${endDate.toISOString()}">${timeFormat(endDate)}</time>
+            <time class="event__end-time" datetime=""$${endDate.toISOString()}">${getTimeFormat(endDate)}</time>
           </p>
           <p class="event__duration">${formatDiff(startDate, endDate)}</p>
         </div>
@@ -33,7 +23,13 @@ const createTripEventTemplate = (points) => {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-        ${services.length > 0 ? createItems(services, getEventOffer) : ``}
+          ${services.map((offer) =>`
+          <li class="event__offer">
+          <span class="event__offer-title">${offer.title}</span>
+          &plus;
+          &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+          </li>
+          `).join(``)}
         </ul>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>

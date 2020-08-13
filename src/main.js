@@ -9,7 +9,7 @@ import {createTripEventsTemplate} from "./view/trip-events.js";
 import {createTripEventTemplate} from "./view/trip-event.js";
 import {createEventEditTemplate} from "./view/event-edit.js";
 import {createHiddenCaptionTemplate} from "./view/hidden-caption.js";
-import {render, createNode} from "./utils/dom.js";
+import {render, createElement} from "./utils/dom.js";
 import {BlockTitle} from "./constants.js";
 import {dates} from "./mock/dates.js";
 import {filterNames} from "./mock/filter.js";
@@ -17,9 +17,9 @@ import {filterNames} from "./mock/filter.js";
 const KEYCODE_ESC = 27;
 
 const renderBlock = (container, title, generateTemplate) => {
-  const hiddenCaptionNode = createNode(createHiddenCaptionTemplate(title));
+  const hiddenCaptionNode = createElement(createHiddenCaptionTemplate(title));
   render(container, hiddenCaptionNode, `beforeend`);
-  render(container, createNode(generateTemplate), `beforeend`);
+  render(container, createElement(generateTemplate), `beforeend`);
 };
 
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
@@ -27,28 +27,28 @@ renderBlock(tripControls, BlockTitle.SWITCH, createTripControlsTemplate());
 renderBlock(tripControls, BlockTitle.FILTER, createFilterTemplate(filterNames));
 
 const tripMain = document.querySelector(`.trip-main`);
-const tripInfo = createNode(createTripInfoTemplate());
+const tripInfo = createElement(createTripInfoTemplate());
 render(tripMain, tripInfo, `afterbegin`);
-const tripEventButton = createNode(createTripEventButtonTemplate());
+const tripEventButton = createElement(createTripEventButtonTemplate());
 render(tripMain, tripEventButton, `beforeend`);
 
 const tripEvents = document.querySelector(`.trip-events`);
 renderBlock(tripEvents, BlockTitle.TRIP_EVENTS, createSortTemplate());
 
-const tripDays = createNode(createTripDaysTemplate());
+const tripDays = createElement(createTripDaysTemplate());
 render(tripEvents, tripDays, `beforeend`);
 const daysList = tripEvents.querySelector(`.trip-days`);
 
 dates.forEach((date) => {
-  const daysItem = createNode(createTripDayTemplate(date));
+  const daysItem = createElement(createTripDayTemplate(date));
   render(daysList, daysItem, `beforeend`);
 
-  const eventsList = createNode(createTripEventsTemplate());
+  const eventsList = createElement(createTripEventsTemplate());
   render(daysItem, eventsList, `beforeend`);
 
   date.cards.forEach((card) => {
-    const eventItem = createNode(createTripEventTemplate(card));
-    const eventEdit = createNode(createEventEditTemplate(card));
+    const eventItem = createElement(createTripEventTemplate(card));
+    const eventEdit = createElement(createEventEditTemplate(card));
 
     render(eventsList, eventItem, `beforeend`);
 

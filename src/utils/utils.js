@@ -1,24 +1,14 @@
-const createItems = (elementsData, getHtml) => {
-  const container = document.createDocumentFragment();
-  container.innerHTML = ``;
-
-  for (const elementData of elementsData) {
-    container.innerHTML += getHtml(elementData);
-  }
-
-  return container.innerHTML;
-};
-
-const timeFormat = (date) => {
+import {MINUTE, HOUR, DAY} from "../constants.js";
+const getTimeFormat = (date) => {
   return date.toLocaleTimeString(`en-GB`, {hour: `2-digit`, minute: `2-digit`, hour12: false});
 };
 
-const dayFormat = (date) => {
+const getDayFormat = (date) => {
   return date.toLocaleDateString(`en`, {month: `short`, day: `2-digit`});
 };
 
 const convertDate = () => {
-  let date = new Date();
+  const date = new Date();
   return (new Intl.DateTimeFormat(`en-US`, {year: `2-digit`, month: `2-digit`, day: `2-digit`, hour: `2-digit`, minute: `2-digit`, hour12: false}).format(date).replace(`,`, ``));
 };
 
@@ -46,26 +36,28 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
+const convertDateNumbers = (value) => String(value).padStart(2, `0`);
+
 const formatDiff = (startDate, endDate) => {
   const durationMiliseconds = endDate - startDate;
-  const days = Math.floor(durationMiliseconds / 1000 / 60 / 60 / 24);
-  const hours = Math.floor(durationMiliseconds / 1000 / 60 / 60);
-  const minutes = durationMiliseconds / 1000 / 60 % 60;
+  const days = Math.floor(durationMiliseconds / DAY);
+  const hours = Math.floor((durationMiliseconds - days * DAY) / HOUR);
+  const minutes = Math.floor(durationMiliseconds - days * DAY - hours * HOUR) / MINUTE;
 
   let result = ``;
   if (days > 0) {
-    result += `${days}D `;
+    result += `${convertDateNumbers(days)}D `;
   }
-  if (hours > 0) {
-    result += `${hours}H `;
+  if (hours >= 0) {
+    result += `${convertDateNumbers(hours)}H `;
   }
-  if (minutes > 0) {
-    result += `${minutes}M`;
+  if (minutes >= 0) {
+    result += `${convertDateNumbers(minutes)}M`;
   }
 
-  return result.trim();
+  return result;
 };
 
 const getFirstUpperCase = (element) => element[0].toUpperCase() + element.slice(1);
 
-export {createItems, timeFormat, dayFormat, getRandomArray, getRandomInteger, formatDiff, convertDate, getFirstUpperCase};
+export {getTimeFormat, getDayFormat, getRandomArray, getRandomInteger, formatDiff, convertDate, getFirstUpperCase};

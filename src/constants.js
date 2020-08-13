@@ -9,4 +9,8 @@ const BlockTitle = {
   TRIP_EVENTS: `Trip events`
 };
 
-export {EventMessage, BlockTitle};
+const MINUTE = 60 * 1000;
+const HOUR = 60 * MINUTE;
+const DAY = 24 * HOUR;
+
+export {EventMessage, BlockTitle, MINUTE, HOUR, DAY};
