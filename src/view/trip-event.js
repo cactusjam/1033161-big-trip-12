@@ -1,7 +1,7 @@
 import {getTimeFormat, formatDuration} from "../utils/date.js";
 
-const createTripEventTemplate = (points) => {
-  const {type, destination, services, price, startDate, endDate, duration} = points;
+const createTripEventTemplate = (point) => {
+  const {type, destination, services, price, startDate, endDate, duration} = point;
   const eventTitle = type[0].toUpperCase() + type.slice(1);
   const formattedDuration = formatDuration(duration);
   return (
@@ -15,7 +15,7 @@ const createTripEventTemplate = (points) => {
           <p class="event__time">
             <time class="event__start-time" datetime="${startDate.toISOString()}">${getTimeFormat(startDate)}</time>
             &mdash;
-            <time class="event__end-time" datetime=""$${endDate.toISOString()}">${getTimeFormat(endDate)}</time>
+            <time class="event__end-time" datetime=""${endDate.toISOString()}">${getTimeFormat(endDate)}</time>
           </p>
           <p class="event__duration">${formattedDuration}</p>
         </div>

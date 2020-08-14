@@ -19,8 +19,8 @@ const KEYCODE_ESC = `Escape`;
 
 const renderBlock = (container, title, generateTemplate) => {
   const hiddenCaptionNode = createElement(createHiddenCaptionTemplate(title));
-  render(container, hiddenCaptionNode, RenderPosition.BEFORE_END);
-  render(container, createElement(generateTemplate), RenderPosition.BEFORE_END);
+  render(container, hiddenCaptionNode);
+  render(container, createElement(generateTemplate));
 };
 
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
@@ -31,23 +31,23 @@ const tripMain = document.querySelector(`.trip-main`);
 const tripInfo = createElement(createTripInfoTemplate());
 render(tripMain, tripInfo, RenderPosition.AFTER_BEGIN);
 const tripEventButton = createElement(createTripEventButtonTemplate());
-render(tripMain, tripEventButton, RenderPosition.BEFORE_END);
+render(tripMain, tripEventButton);
 
 const tripEvents = document.querySelector(`.trip-events`);
 renderBlock(tripEvents, BlockTitle.TRIP_EVENTS, createSortTemplate());
 
 const tripDays = createElement(createTripDaysTemplate());
-render(tripEvents, tripDays, RenderPosition.BEFORE_END);
+render(tripEvents, tripDays);
 const daysList = tripEvents.querySelector(`.trip-days`);
 
 const days = groupCardsByDay(cards);
 
 Object.entries(days).forEach(([_dayKey, dayCards], dayIndex) => {
   const daysItem = createElement(createTripDayTemplate(dayIndex + 1, dayCards[0].startDate));
-  render(daysList, daysItem, RenderPosition.BEFORE_END);
+  render(daysList, daysItem);
 
   const eventsList = createElement(createTripEventsTemplate());
-  render(daysItem, eventsList, RenderPosition.BEFORE_END);
+  render(daysItem, eventsList);
 
   dayCards.forEach((card) => {
     const eventItem = createElement(createTripEventTemplate(card));

@@ -5,7 +5,7 @@ const RenderPosition = {
   AFTER_END: `afterend`
 };
 
-const render = (container, element, position) => {
+const render = (container, element, position = RenderPosition.BEFORE_END) => {
   switch (position) {
     case RenderPosition.BEFORE_BEGIN:
       container.before(element);
@@ -19,6 +19,8 @@ const render = (container, element, position) => {
     case RenderPosition.AFTER_END:
       container.after(element);
       break;
+    default:
+      throw new Error(`Unknown render position: ${position}`);
   }
 };
 

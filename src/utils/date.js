@@ -47,7 +47,7 @@ const getStartDate = () => {
 const getEndDate = (date) => {
   const startDate = new Date(date);
   const min = new Date(startDate).getTime();
-  const max = new Date(startDate.setHours(36, 59, 59, 999)).getTime();
+  const max = new Date(startDate.setHours(24, 59, 59, 999)).getTime();
   const endDate = new Date(getRandomInteger(min, max));
   return new Date(endDate);
 };
