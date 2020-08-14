@@ -1,10 +1,10 @@
 import {
   convertDate,
   getFirstUpperCase
-} from "../utils/utils.js";
+} from "../utils/date.js";
 
-const createEventEditTemplate = (points) => {
-  const {type, startDate, endDate, price, destination, isFavorite, services} = points;
+const createEventEditTemplate = (point) => {
+  const {type, startDate, endDate, price, destination, isFavorite, services} = point;
   const eventTitle = getFirstUpperCase(type);
   return (
     `<li class="trip-events__item">

@@ -1,39 +1,20 @@
-import {MINUTE, HOUR, DAY} from "../constants.js";
-const getTimeFormat = (date) => {
-  return date.toLocaleTimeString(`en-GB`, {hour: `2-digit`, minute: `2-digit`, hour12: false});
-};
+import {getRandomInteger} from "../mock/utils.js";
 
-const getDayFormat = (date) => {
-  return date.toLocaleDateString(`en`, {month: `short`, day: `2-digit`});
-};
+const MINUTE = 60 * 1000;
+const HOUR = 60 * MINUTE;
+const DAY = 24 * HOUR;
 
 const convertDate = () => {
   const date = new Date();
   return (new Intl.DateTimeFormat(`en-US`, {year: `2-digit`, month: `2-digit`, day: `2-digit`, hour: `2-digit`, minute: `2-digit`, hour12: false}).format(date).replace(`,`, ``));
 };
 
-const getRandomElement = (array) => {
-  const randomIndex = Math.floor(Math.random() * array.length);
-  return array[randomIndex];
+const getTimeFormat = (date) => {
+  return date.toLocaleTimeString(`en-GB`, {hour: `2-digit`, minute: `2-digit`, hour12: false});
 };
 
-const getRandomArray = (array) => {
-  let newArrayLength = getRandomInteger(0, array.length);
-  const newArray = [];
-  while (newArrayLength > newArray.length) {
-    const randomElement = getRandomElement(array);
-    if (newArray.includes(randomElement) === false) {
-      newArray.push(randomElement);
-    }
-  }
-  return (newArray);
-};
-
-const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
+const getDayFormat = (date) => {
+  return date.toLocaleDateString(`en`, {month: `short`, day: `2-digit`});
 };
 
 const convertDateNumbers = (value) => String(value).padStart(2, `0`);
@@ -89,4 +70,4 @@ const groupCardsByDay = (sortedCards) => {
   return sortedCards.reduce(reduceCardByDay, {});
 };
 
-export {getTimeFormat, getDayFormat, getRandomArray, getRandomInteger, formatDuration, convertDate, getFirstUpperCase, getStartDate, getEndDate, groupCardsByDay};
+export {MINUTE, HOUR, DAY, getTimeFormat, getDayFormat, convertDate, formatDuration, getFirstUpperCase, getStartDate, getEndDate, groupCardsByDay};

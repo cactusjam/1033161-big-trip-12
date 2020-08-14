@@ -9,18 +9,18 @@ import {createTripEventsTemplate} from "./view/trip-events.js";
 import {createTripEventTemplate} from "./view/trip-event.js";
 import {createEventEditTemplate} from "./view/event-edit.js";
 import {createHiddenCaptionTemplate} from "./view/hidden-caption.js";
-import {render, createElement} from "./utils/dom.js";
+import {render, createElement, RenderPosition} from "./utils/dom.js";
 import {BlockTitle} from "./constants.js";
 import {cards} from "./mock/card.js";
 import {filterNames} from "./mock/filter.js";
-import {groupCardsByDay} from "./utils/utils.js";
+import {groupCardsByDay} from "./utils/date.js";
 
-const KEYCODE_ESC = 27;
+const KEYCODE_ESC = `Escape`;
 
 const renderBlock = (container, title, generateTemplate) => {
   const hiddenCaptionNode = createElement(createHiddenCaptionTemplate(title));
-  render(container, hiddenCaptionNode, `beforeend`);
-  render(container, createElement(generateTemplate), `beforeend`);
+  render(container, hiddenCaptionNode, RenderPosition.BEFORE_END);
+  render(container, createElement(generateTemplate), RenderPosition.BEFORE_END);
 };
 
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
@@ -29,31 +29,31 @@ renderBlock(tripControls, BlockTitle.FILTER, createFilterTemplate(filterNames));
 
 const tripMain = document.querySelector(`.trip-main`);
 const tripInfo = createElement(createTripInfoTemplate());
-render(tripMain, tripInfo, `afterbegin`);
+render(tripMain, tripInfo, RenderPosition.AFTER_BEGIN);
 const tripEventButton = createElement(createTripEventButtonTemplate());
-render(tripMain, tripEventButton, `beforeend`);
+render(tripMain, tripEventButton, RenderPosition.BEFORE_END);
 
 const tripEvents = document.querySelector(`.trip-events`);
 renderBlock(tripEvents, BlockTitle.TRIP_EVENTS, createSortTemplate());
 
 const tripDays = createElement(createTripDaysTemplate());
-render(tripEvents, tripDays, `beforeend`);
+render(tripEvents, tripDays, RenderPosition.BEFORE_END);
 const daysList = tripEvents.querySelector(`.trip-days`);
 
 const days = groupCardsByDay(cards);
 
 Object.entries(days).forEach(([_dayKey, dayCards], dayIndex) => {
   const daysItem = createElement(createTripDayTemplate(dayIndex + 1, dayCards[0].startDate));
-  render(daysList, daysItem, `beforeend`);
+  render(daysList, daysItem, RenderPosition.BEFORE_END);
 
   const eventsList = createElement(createTripEventsTemplate());
-  render(daysItem, eventsList, `beforeend`);
+  render(daysItem, eventsList, RenderPosition.BEFORE_END);
 
   dayCards.forEach((card) => {
     const eventItem = createElement(createTripEventTemplate(card));
     const eventEdit = createElement(createEventEditTemplate(card));
 
-    render(eventsList, eventItem, `beforeend`);
+    render(eventsList, eventItem, RenderPosition.BEFORE_END);
     const onEscKeyDown = (evt) => {
       if (evt.key === KEYCODE_ESC) {
         eventsList.replaceChild(eventItem, eventEdit);

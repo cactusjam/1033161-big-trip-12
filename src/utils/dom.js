@@ -1,22 +1,22 @@
-export const RenderPosition = {
-  AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`,
-  BEFOREBEGIN: `beforebegin`,
-  AFTEREND: `afterend`
+const RenderPosition = {
+  AFTER_BEGIN: `afterbegin`,
+  BEFORE_END: `beforeend`,
+  BEFORE_BEGIN: `beforebegin`,
+  AFTER_END: `afterend`
 };
 
 const render = (container, element, position) => {
   switch (position) {
-    case RenderPosition.BEFOREBEGIN:
+    case RenderPosition.BEFORE_BEGIN:
       container.before(element);
       break;
-    case RenderPosition.AFTERBEGIN:
+    case RenderPosition.AFTER_BEGIN:
       container.prepend(element);
       break;
-    case RenderPosition.BEFOREEND:
+    case RenderPosition.BEFORE_END:
       container.append(element);
       break;
-    case RenderPosition.AFTEREND:
+    case RenderPosition.AFTER_END:
       container.after(element);
       break;
   }
@@ -28,4 +28,4 @@ const createElement = (template) => {
   return newElement.firstChild;
 };
 
-export {render, createElement};
+export {render, createElement, RenderPosition};

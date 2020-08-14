@@ -1,4 +1,4 @@
-import {getTimeFormat, formatDuration} from "../utils/utils.js";
+import {getTimeFormat, formatDuration} from "../utils/date.js";
 
 const createTripEventTemplate = (points) => {
   const {type, destination, services, price, startDate, endDate, duration} = points;

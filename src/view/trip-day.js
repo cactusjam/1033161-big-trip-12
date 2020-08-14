@@ -1,4 +1,4 @@
-import {getDayFormat} from "../utils/utils.js";
+import {getDayFormat} from "../utils/date.js";
 
 const createTripDayTemplate = (counter, startDate) => {
   return (
