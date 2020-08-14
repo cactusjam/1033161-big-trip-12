@@ -11,8 +11,9 @@ import {createEventEditTemplate} from "./view/event-edit.js";
 import {createHiddenCaptionTemplate} from "./view/hidden-caption.js";
 import {render, createElement} from "./utils/dom.js";
 import {BlockTitle} from "./constants.js";
-import {dates} from "./mock/dates.js";
+import {cards} from "./mock/card.js";
 import {filterNames} from "./mock/filter.js";
+import {groupCardsByDay} from "./utils/utils.js";
 
 const KEYCODE_ESC = 27;
 
@@ -39,21 +40,22 @@ const tripDays = createElement(createTripDaysTemplate());
 render(tripEvents, tripDays, `beforeend`);
 const daysList = tripEvents.querySelector(`.trip-days`);
 
-dates.forEach((date) => {
-  const daysItem = createElement(createTripDayTemplate(date));
+const days = groupCardsByDay(cards);
+
+Object.entries(days).forEach(([_dayKey, dayCards], dayIndex) => {
+  const daysItem = createElement(createTripDayTemplate(dayIndex + 1, dayCards[0].startDate));
   render(daysList, daysItem, `beforeend`);
 
   const eventsList = createElement(createTripEventsTemplate());
   render(daysItem, eventsList, `beforeend`);
 
-  date.cards.forEach((card) => {
+  dayCards.forEach((card) => {
     const eventItem = createElement(createTripEventTemplate(card));
     const eventEdit = createElement(createEventEditTemplate(card));
 
     render(eventsList, eventItem, `beforeend`);
-
     const onEscKeyDown = (evt) => {
-      if (evt.keyCode === KEYCODE_ESC) {
+      if (evt.key === KEYCODE_ESC) {
         eventsList.replaceChild(eventItem, eventEdit);
         document.removeEventListener(`keydown`, onEscKeyDown);
       }

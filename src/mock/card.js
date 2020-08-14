@@ -1,4 +1,6 @@
-import {getRandomArray, getRandomInteger} from "../utils/utils.js";
+import {getRandomArray, getRandomInteger, getStartDate, getEndDate} from "../utils/utils.js";
+
+const CARD_COUNT = 20;
 
 const services = [
   {
@@ -67,7 +69,10 @@ const getRandomDescription = () => {
   return splittedText.slice(0, randomIndex);
 };
 
-const generateCard = (date) => {
+const generateCard = () => {
+  const startDate = getStartDate();
+  const endDate = getEndDate(startDate);
+  const duration = endDate - startDate;
   return {
     type: getRandomTypes(),
     destination: {
@@ -76,21 +81,17 @@ const generateCard = (date) => {
       description: getRandomDescription(),
     },
     services: getRandomArray(services),
-    startDate: date.startDate,
-    endDate: date.endDate,
+    startDate,
+    endDate,
+    duration,
     price: getRandomInteger(5, 1000),
     isFavorite: Boolean(Math.round(Math.random()) * 0.5)
   };
 };
 
-const generateCards = (count, date) => {
-  let cards = [];
+const cards = new Array(CARD_COUNT)
+  .fill()
+  .map(generateCard)
+  .sort((a, b) => a.startDate - b.startDate);
 
-  for (let i = 0; i < count; i++) {
-    cards.push(generateCard(date));
-  }
-
-  return cards;
-};
-
-export {generateCards};
+export {cards};

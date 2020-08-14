@@ -1,7 +1,6 @@
 import {getDayFormat} from "../utils/utils.js";
 
-const createTripDayTemplate = (date) => {
-  const {startDate, counter} = date;
+const createTripDayTemplate = (counter, startDate) => {
   return (
     `<li class="trip-days__item day">
       <div class="day__info">

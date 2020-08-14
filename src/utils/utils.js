@@ -38,26 +38,55 @@ const getRandomInteger = (a = 0, b = 1) => {
 
 const convertDateNumbers = (value) => String(value).padStart(2, `0`);
 
-const formatDiff = (startDate, endDate) => {
-  const durationMiliseconds = endDate - startDate;
-  const days = Math.floor(durationMiliseconds / DAY);
-  const hours = Math.floor((durationMiliseconds - days * DAY) / HOUR);
-  const minutes = Math.floor(durationMiliseconds - days * DAY - hours * HOUR) / MINUTE;
+const formatDuration = (duration) => {
 
-  let result = ``;
-  if (days > 0) {
-    result += `${convertDateNumbers(days)}D `;
-  }
-  if (hours >= 0) {
-    result += `${convertDateNumbers(hours)}H `;
-  }
-  if (minutes >= 0) {
-    result += `${convertDateNumbers(minutes)}M`;
-  }
+  const durationDays = Math.floor(duration / DAY);
+  const durationDaysString = durationDays > 0 ? `${convertDateNumbers(durationDays)}D` : ``;
 
-  return result;
+  const durationHours = Math.floor(duration / HOUR % 24);
+  const durationHoursString = durationHours > 0 ? `${convertDateNumbers(durationHours)}H` : ``;
+
+  const durationMinutes = Math.floor(duration / MINUTE % 60);
+  const durationMinutesString = durationMinutes > 0 ? `${convertDateNumbers(durationMinutes)}M` : ``;
+
+  return `${durationDaysString} ${durationHoursString} ${durationMinutesString}`;
 };
 
 const getFirstUpperCase = (element) => element[0].toUpperCase() + element.slice(1);
 
-export {getTimeFormat, getDayFormat, getRandomArray, getRandomInteger, formatDiff, convertDate, getFirstUpperCase};
+const getStartDate = () => {
+  const maxDayRange = 4;
+  const dayRange = getRandomInteger(1, maxDayRange);
+  const currentDate = new Date();
+  currentDate.setHours(getRandomInteger(0, 23), getRandomInteger(0, 59));
+  currentDate.setDate(currentDate.getDate() + dayRange);
+  return new Date(currentDate);
+};
+
+const getEndDate = (date) => {
+  const startDate = new Date(date);
+  const min = new Date(startDate).getTime();
+  const max = new Date(startDate.setHours(36, 59, 59, 999)).getTime();
+  const endDate = new Date(getRandomInteger(min, max));
+  return new Date(endDate);
+};
+
+const convertDateToDay = (date) => date.toISOString().slice(0, 10);
+
+const groupCardsByDay = (sortedCards) => {
+  const reduceCardByDay = (days, card) => {
+    const dayDate = convertDateToDay(card.startDate);
+
+    if (Array.isArray(days[dayDate])) {
+      days[dayDate].push(card);
+    } else {
+      days[dayDate] = [card];
+    }
+
+    return days;
+  };
+
+  return sortedCards.reduce(reduceCardByDay, {});
+};
+
+export {getTimeFormat, getDayFormat, getRandomArray, getRandomInteger, formatDuration, convertDate, getFirstUpperCase, getStartDate, getEndDate, groupCardsByDay};
