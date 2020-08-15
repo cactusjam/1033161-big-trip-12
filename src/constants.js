@@ -9,4 +9,9 @@ const BlockTitle = {
   TRIP_EVENTS: `Trip events`
 };
 
-export {EventMessage, BlockTitle};
+const KeyboardKey = {
+  ESCAPE: `Escape`,
+  IE_ESCAPE: `Esc`,
+};
+
+export {EventMessage, BlockTitle, KeyboardKey};
