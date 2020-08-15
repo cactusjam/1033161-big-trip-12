@@ -15,7 +15,7 @@ const createTripEventTemplate = (point) => {
           <p class="event__time">
             <time class="event__start-time" datetime="${startDate.toISOString()}">${getTimeFormat(startDate)}</time>
             &mdash;
-            <time class="event__end-time" datetime=""${endDate.toISOString()}">${getTimeFormat(endDate)}</time>
+            <time class="event__end-time" datetime="${endDate.toISOString()}">${getTimeFormat(endDate)}</time>
           </p>
           <p class="event__duration">${formattedDuration}</p>
         </div>

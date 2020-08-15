@@ -1,5 +1,5 @@
 import {getRandomArray, getRandomInteger} from "../mock/utils.js";
-import {getStartDate, getEndDate} from "../utils/date.js";
+import {getStartDate, getEndDate} from "../mock/utils.js";
 
 const CARD_COUNT = 20;
 

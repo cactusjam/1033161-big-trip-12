@@ -22,4 +22,21 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-export {getRandomArray, getRandomInteger};
+const getStartDate = () => {
+  const maxDayRange = 4;
+  const dayRange = getRandomInteger(1, maxDayRange);
+  const currentDate = new Date();
+  currentDate.setHours(getRandomInteger(0, 23), getRandomInteger(0, 59));
+  currentDate.setDate(currentDate.getDate() + dayRange);
+  return new Date(currentDate);
+};
+
+const getEndDate = (date) => {
+  const startDate = new Date(date);
+  const min = new Date(startDate).getTime();
+  const max = new Date(startDate.setHours(24, 59, 59, 999)).getTime();
+  const endDate = new Date(getRandomInteger(min, max));
+  return new Date(endDate);
+};
+
+export {getRandomArray, getRandomInteger, getStartDate, getEndDate};

@@ -10,12 +10,10 @@ import {createTripEventTemplate} from "./view/trip-event.js";
 import {createEventEditTemplate} from "./view/event-edit.js";
 import {createHiddenCaptionTemplate} from "./view/hidden-caption.js";
 import {render, createElement, RenderPosition} from "./utils/dom.js";
-import {BlockTitle} from "./constants.js";
+import {BlockTitle, KeyboardKey} from "./constants.js";
 import {cards} from "./mock/card.js";
 import {filterNames} from "./mock/filter.js";
 import {groupCardsByDay} from "./utils/date.js";
-
-const KEYCODE_ESC = `Escape`;
 
 const renderBlock = (container, title, generateTemplate) => {
   const hiddenCaptionNode = createElement(createHiddenCaptionTemplate(title));
@@ -55,7 +53,7 @@ Object.entries(days).forEach(([_dayKey, dayCards], dayIndex) => {
 
     render(eventsList, eventItem, RenderPosition.BEFORE_END);
     const onEscKeyDown = (evt) => {
-      if (evt.key === KEYCODE_ESC) {
+      if (evt.key === KeyboardKey.ESCAPE || evt.key === KeyboardKey.IE_ESCAPE) {
         eventsList.replaceChild(eventItem, eventEdit);
         document.removeEventListener(`keydown`, onEscKeyDown);
       }
@@ -69,9 +67,9 @@ Object.entries(days).forEach(([_dayKey, dayCards], dayIndex) => {
       document.addEventListener(`keydown`, onEscKeyDown);
     });
 
-    const editRollupBtn = eventEdit.querySelector(`.event__rollup-btn`);
+    const editRollupButton = eventEdit.querySelector(`.event__rollup-btn`);
 
-    editRollupBtn.addEventListener(`click`, () => {
+    editRollupButton.addEventListener(`click`, () => {
       eventsList.replaceChild(eventItem, eventEdit);
 
       document.addEventListener(`keydown`, onEscKeyDown);
