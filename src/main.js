@@ -7,9 +7,9 @@ import TripDaysView from "./view/trip-days.js";
 import TripDayView from "./view/trip-day.js";
 import TripEventsView from "./view/trip-events.js";
 import TripEventView from "./view/trip-event.js";
-import {createEventEditTemplate} from "./view/event-edit.js";
+import EventEditView from "./view/event-edit.js";
 import HiddenCaptionView from "./view/hidden-caption.js";
-import {render, createElement, RenderPosition} from "./utils/dom.js";
+import {render, RenderPosition} from "./utils/dom.js";
 import {BlockTitle, KeyboardKey} from "./constants.js";
 import {cards} from "./mock/card.js";
 import {filterNames} from "./mock/filter.js";
@@ -48,7 +48,7 @@ Object.entries(days).forEach(([_dayKey, dayCards], dayIndex) => {
 
   dayCards.forEach((card) => {
     const eventItem = new TripEventView(card).getElement();
-    const eventEdit = createElement(createEventEditTemplate(card));
+    const eventEdit = new EventEditView(card).getElement();
 
     render(eventsList, eventItem, RenderPosition.BEFORE_END);
     const onEscKeyDown = (evt) => {

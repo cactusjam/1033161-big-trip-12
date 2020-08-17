@@ -1,5 +1,5 @@
 import {convertDate, getFirstUpperCase} from "../utils/date.js";
-// import {createElement} from "../utils/dom.js";
+import {createElement} from "../utils/dom.js";
 
 const createEventEditTemplate = (point) => {
   const {type, startDate, endDate, price, destination, isFavorite, services} = point;
@@ -101,26 +101,26 @@ const createEventEditTemplate = (point) => {
   );
 };
 
-// export default class EventEdit {
-//   constructor() {
-//     this._element = null;
-//   }
+export default class EventEdit {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
 
-//   getTemplate() {
-//     return createEventEditTemplate();
-//   }
+  getTemplate() {
+    return createEventEditTemplate(this._point);
+  }
 
-//   getElement() {
-//     if (!this._element) {
-//       this._element = createElement(this.getTemplate());
-//     }
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
 
-//     return this._element;
-//   }
+    return this._element;
+  }
 
-//   removeElement() {
-//     this._element = null;
-//   }
-// }
+  removeElement() {
+    this._element = null;
+  }
+}
 
-export {createEventEditTemplate};
