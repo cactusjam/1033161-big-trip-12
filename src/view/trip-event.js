@@ -1,4 +1,5 @@
 import {getTimeFormat, formatDuration} from "../utils/date.js";
+import {createElement} from "../utils/dom.js";
 
 const createTripEventTemplate = (point) => {
   const {type, destination, services, price, startDate, endDate, duration} = point;
@@ -40,4 +41,25 @@ const createTripEventTemplate = (point) => {
   );
 };
 
-export {createTripEventTemplate};
+export default class TripEvent {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripEventTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
