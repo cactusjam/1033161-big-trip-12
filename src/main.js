@@ -27,8 +27,8 @@ renderBlock(tripControls, BlockTitle.FILTER, new FilterView(filterNames).getElem
 
 const tripMain = document.querySelector(`.trip-main`);
 render(tripMain, new TripInfoView().getElement(), RenderPosition.AFTER_BEGIN);
-const tripEventButton = new TripEventButtonView().getElement();
-render(tripMain, tripEventButton);
+const tripEventButtonComponent = new TripEventButtonView();
+render(tripMain, tripEventButtonComponent.getElement());
 
 const tripEvents = document.querySelector(`.trip-events`);
 renderBlock(tripEvents, BlockTitle.TRIP_EVENTS, new SortView().getElement());
@@ -47,31 +47,36 @@ Object.entries(days).forEach(([_dayKey, dayCards], dayIndex) => {
   render(daysItem, eventsList);
 
   dayCards.forEach((card) => {
-    const eventItem = new TripEventView(card).getElement();
-    const eventEdit = new EventEditView(card).getElement();
+    // const eventEdit = new EventEditView(card).getElement();
+    const eventEditComponent = new EventEditView(card);
+    const eventItemComponent = new TripEventView(card);
 
-    render(eventsList, eventItem, RenderPosition.BEFORE_END);
+    const replaceEventToForm = () => {
+      eventsList.replaceChild(eventEditComponent.getElement(), eventItemComponent.getElement());
+    };
+
+    const replaceFormToEvent = () => {
+      eventsList.replaceChild(eventItemComponent.getElement(), eventEditComponent.getElement());
+    };
+
     const onEscKeyDown = (evt) => {
       if (evt.key === KeyboardKey.ESCAPE || evt.key === KeyboardKey.IE_ESCAPE) {
-        eventsList.replaceChild(eventItem, eventEdit);
+        replaceFormToEvent();
         document.removeEventListener(`keydown`, onEscKeyDown);
       }
     };
 
-    const itemRollupButton = eventItem.querySelector(`.event__rollup-btn`);
-
-    itemRollupButton.addEventListener(`click`, () => {
-      eventsList.replaceChild(eventEdit, eventItem);
-
+    eventItemComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+      replaceEventToForm();
       document.addEventListener(`keydown`, onEscKeyDown);
     });
 
-    const editRollupButton = eventEdit.querySelector(`.event__rollup-btn`);
-
-    editRollupButton.addEventListener(`click`, () => {
-      eventsList.replaceChild(eventItem, eventEdit);
-
-      document.addEventListener(`keydown`, onEscKeyDown);
+    eventEditComponent.getElement().querySelector(`form`).addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      replaceFormToEvent();
+      document.removeEventListener(`keydown`, onEscKeyDown);
     });
+
+    render(eventsList, eventItemComponent.getElement(), RenderPosition.BEFORE_END);
   });
 });
