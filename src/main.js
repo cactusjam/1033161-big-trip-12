@@ -60,7 +60,7 @@ Object.entries(days).forEach(([_dayKey, dayCards], dayIndex) => {
     };
 
     const onEscKeyDown = (evt) => {
-      if (evt.key === KeyboardKey.ESCAPE || evt.key === KeyboardKey.IE_ESCAPE) {
+      if (evt.key === KeyboardKey.ESCAPE || evt.key === KeyboardKey.ESCAPE_IE) {
         replaceFormToEvent();
         document.removeEventListener(`keydown`, onEscKeyDown);
       }
