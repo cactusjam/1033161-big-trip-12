@@ -1,9 +1,8 @@
-import {convertDate, getFirstUpperCase} from "../utils/date.js";
+import {convertDate} from "../utils/date.js";
 import {createElement} from "../utils/dom.js";
 
 const createEventEditTemplate = (point) => {
   const {type, startDate, endDate, price, destination, isFavorite, services} = point;
-  const eventTitle = getFirstUpperCase(type);
   return (
     `<li class="trip-events__item">
       <form class="event  event--edit" action="#" method="post">
@@ -11,7 +10,7 @@ const createEventEditTemplate = (point) => {
             <div class="event__type-wrapper">
               <label class="event__type  event__type-btn" for="event-type-toggle-1">
                 <span class="visually-hidden">Choose event type</span>
-                <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+                <img class="event__type-icon" width="17" height="17" src="img/icons/${type.name}.png" alt="Event type icon">
               </label>
               <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
               <div class="event__type-list">
@@ -26,7 +25,7 @@ const createEventEditTemplate = (point) => {
             </div>
             <div class="event__field-group  event__field-group--destination">
               <label class="event__label  event__type-output" for="event-destination-1">
-              ${eventTitle} to
+              ${type.name} ${type.particle}
               </label>
               <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
               <datalist id="destination-list-1">
@@ -70,7 +69,7 @@ const createEventEditTemplate = (point) => {
               <div class="event__available-offers">
               ${services.map((offer) =>`
               <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${isFavorite ? `checked` : ``}>
+                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" name="event-offer-${offer.type}" ${isFavorite ? `checked` : ``}>
                 <label class="event__offer-label" for="event-offer-${offer.type}-1">
                   <span class="event__offer-title">${offer.title}</span>
                   +

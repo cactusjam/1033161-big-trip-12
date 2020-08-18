@@ -1,4 +1,3 @@
-
 const MINUTE = 60 * 1000;
 const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
@@ -33,9 +32,7 @@ const formatDuration = (duration) => {
   return `${durationDaysResult} ${durationHoursResult} ${durationMinutesResult}`;
 };
 
-const getFirstUpperCase = (element) => element[0].toUpperCase() + element.slice(1);
-
-const convertDateToDay = (date) => date.toISOString().slice(0, 10);
+const convertDateToDay = (date) => date.getFullYear() + `-` + date.getMonth() + `-` + date.getDate();
 
 const groupCardsByDay = (sortedCards) => {
   const reduceCardByDay = (days, card) => {
@@ -53,4 +50,4 @@ const groupCardsByDay = (sortedCards) => {
   return sortedCards.reduce(reduceCardByDay, {});
 };
 
-export {getTimeFormat, getDayFormat, convertDate, formatDuration, getFirstUpperCase, groupCardsByDay};
+export {getTimeFormat, getDayFormat, convertDate, formatDuration, groupCardsByDay};

@@ -20,7 +20,7 @@ const createStatisticsTemplate = () => {
   );
 };
 
-export default class Sort {
+export default class Statistics {
   constructor() {
     this._element = null;
   }

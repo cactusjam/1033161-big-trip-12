@@ -6,7 +6,7 @@ const createEventMessageTemplate = (message) => {
   );
 };
 
-export default class Sort {
+export default class EventMessage {
   constructor(message) {
     this._message = message;
     this._element = null;

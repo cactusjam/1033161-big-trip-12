@@ -10,7 +10,8 @@ import TripEventView from "./view/trip-event.js";
 import EventEditView from "./view/event-edit.js";
 import HiddenCaptionView from "./view/hidden-caption.js";
 import {render, RenderPosition} from "./utils/dom.js";
-import {BlockTitle, KeyboardKey} from "./constants.js";
+import {BlockTitle} from "./constants.js";
+import {isEscapeEvent} from "./utils/dom-event.js";
 import {cards} from "./mock/card.js";
 import {filterNames} from "./mock/filter.js";
 import {groupCardsByDay} from "./utils/date.js";
@@ -33,21 +34,18 @@ render(tripMain, tripEventButtonComponent.getElement());
 const tripEvents = document.querySelector(`.trip-events`);
 renderBlock(tripEvents, BlockTitle.TRIP_EVENTS, new SortView().getElement());
 
-const tripDays = new TripDaysView().getElement();
-render(tripEvents, tripDays);
-const daysList = tripEvents.querySelector(`.trip-days`);
+const tripDays = new TripDaysView();
 
 const days = groupCardsByDay(cards);
 
 Object.entries(days).forEach(([_dayKey, dayCards], dayIndex) => {
-  const daysItem = new TripDayView(dayIndex + 1, dayCards[0].startDate).getElement();
-  render(daysList, daysItem);
+  const daysItem = new TripDayView(dayIndex, dayCards[0].startDate);
+  render(tripDays.getElement(), daysItem.getElement());
 
   const eventsList = new TripEventsView().getElement();
-  render(daysItem, eventsList);
+  render(daysItem.getElement(), eventsList);
 
   dayCards.forEach((card) => {
-    // const eventEdit = new EventEditView(card).getElement();
     const eventEditComponent = new EventEditView(card);
     const eventItemComponent = new TripEventView(card);
 
@@ -60,7 +58,7 @@ Object.entries(days).forEach(([_dayKey, dayCards], dayIndex) => {
     };
 
     const onEscKeyDown = (evt) => {
-      if (evt.key === KeyboardKey.ESCAPE || evt.key === KeyboardKey.ESCAPE_IE) {
+      if (isEscapeEvent(evt)) {
         replaceFormToEvent();
         document.removeEventListener(`keydown`, onEscKeyDown);
       }
@@ -71,7 +69,7 @@ Object.entries(days).forEach(([_dayKey, dayCards], dayIndex) => {
       document.addEventListener(`keydown`, onEscKeyDown);
     });
 
-    eventEditComponent.getElement().querySelector(`form`).addEventListener(`click`, (evt) => {
+    eventEditComponent.getElement().querySelector(`form`).addEventListener(`submit`, (evt) => {
       evt.preventDefault();
       replaceFormToEvent();
       document.removeEventListener(`keydown`, onEscKeyDown);
@@ -80,3 +78,5 @@ Object.entries(days).forEach(([_dayKey, dayCards], dayIndex) => {
     render(eventsList, eventItemComponent.getElement(), RenderPosition.BEFORE_END);
   });
 });
+
+render(tripEvents, tripDays.getElement());
