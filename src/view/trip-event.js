@@ -1,16 +1,17 @@
 import {getTimeFormat, formatDuration} from "../utils/date.js";
+import {createElement} from "../utils/dom.js";
 
 const createTripEventTemplate = (point) => {
   const {type, destination, services, price, startDate, endDate, duration} = point;
-  const eventTitle = type[0].toUpperCase() + type.slice(1);
   const formattedDuration = formatDuration(duration);
+  const id = type.name.toLowerCase();
   return (
     `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${id}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${eventTitle} to ${destination.name}</h3>
+        <h3 class="event__title"> ${type.name} ${type.particle} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${startDate.toISOString()}">${getTimeFormat(startDate)}</time>
@@ -40,4 +41,25 @@ const createTripEventTemplate = (point) => {
   );
 };
 
-export {createTripEventTemplate};
+export default class TripEvent {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripEventTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

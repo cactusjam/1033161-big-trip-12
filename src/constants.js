@@ -11,7 +11,7 @@ const BlockTitle = {
 
 const KeyboardKey = {
   ESCAPE: `Escape`,
-  IE_ESCAPE: `Esc`,
+  ESCAPE_IE: `Esc`,
 };
 
 export {EventMessage, BlockTitle, KeyboardKey};
