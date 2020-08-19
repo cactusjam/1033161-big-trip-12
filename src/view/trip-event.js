@@ -1,6 +1,6 @@
 import {getTimeFormat, formatDuration, getFirstUpperCase} from "../utils/date.js";
 import {createElement} from "../utils/dom.js";
-import {getPreposition} from "../mock/data.js";
+import {getParticle} from "../mock/data.js";
 
 const createTripEventTemplate = (point) => {
   const {type, destination, services, price, startDate, endDate, duration} = point;
@@ -13,7 +13,7 @@ const createTripEventTemplate = (point) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${id}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${typeName} ${getPreposition(type)} ${destination.name}</h3>
+        <h3 class="event__title">${typeName} ${getParticle(type)} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${startDate.toISOString()}">${getTimeFormat(startDate)}</time>

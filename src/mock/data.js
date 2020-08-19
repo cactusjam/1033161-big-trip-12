@@ -1,11 +1,11 @@
-const Preposition = {
+const Activities = {
   CHECK_IN: `check-in`,
   SIGHTSEEING: `sightseeing`,
   RESTAURANT: `restaurant`
 };
 
-const getPreposition = (type) => {
-  return (type === Preposition.CHECK_IN || type === Preposition.SIGHTSEEING || type === Preposition.RESTAURANT) ? ` in ` : ` to `;
+const getParticle = (type) => {
+  return (type === Activities.CHECK_IN || type === Activities.SIGHTSEEING || type === Activities.RESTAURANT) ? ` in ` : ` to `;
 };
 
-export {getPreposition};
+export {getParticle};

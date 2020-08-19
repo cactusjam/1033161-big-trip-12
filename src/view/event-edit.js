@@ -1,6 +1,6 @@
 import {convertDate, getFirstUpperCase} from "../utils/date.js";
 import {createElement} from "../utils/dom.js";
-import {getPreposition} from "../mock/data.js";
+import {getParticle} from "../mock/data.js";
 
 const createEventEditTemplate = (point) => {
   const {type, startDate, endDate, price, destination, isFavorite, services} = point;
@@ -27,7 +27,7 @@ const createEventEditTemplate = (point) => {
             </div>
             <div class="event__field-group  event__field-group--destination">
               <label class="event__label  event__type-output" for="event-destination-1">
-              ${typeName}${getPreposition(type)}
+              ${typeName}${getParticle(type)}
               </label>
               <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
               <datalist id="destination-list-1">
