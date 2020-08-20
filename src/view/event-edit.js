@@ -1,9 +1,22 @@
 import {convertDate} from "../utils/date.js";
 import {createElement} from "../utils/dom.js";
+import {getParticle, getFirstUpperCase} from "../utils/utils.js";
+import {TRIP_TYPES, ACTIV_TYPES} from "../mock/data.js";
 
-const createEventEditTemplate = (point) => {
-  const {type, startDate, endDate, price, destination, isFavorite, services} = point;
-  const id = type.name.toLowerCase();
+const createRadioTemplate = (cardType, legendTypes) => {
+  return (
+    legendTypes.map((legendType, i) => {
+      return (`<div class="event__type-item">
+        <input id="event-type-${legendType}-${i}" class="event__type-input visually-hidden" type="radio" name="event-type" value="${legendType}" ${cardType === legendType ? `checked` : ``}>
+        <label class="event__type-label  event__type-label--${legendType}" for="event-type-${legendType}-${i}">${getFirstUpperCase(legendType)}</label>
+      </div>`);
+    }).join(``)
+  );
+};
+
+const createEventEditTemplate = (point, destinations) => {
+  const {type, startDate, endDate, price, isFavorite, destination, services} = point;
+  const typeName = getFirstUpperCase(type);
   return (
     `<li class="trip-events__item">
       <form class="event  event--edit" action="#" method="post">
@@ -11,26 +24,31 @@ const createEventEditTemplate = (point) => {
             <div class="event__type-wrapper">
               <label class="event__type  event__type-btn" for="event-type-toggle-1">
                 <span class="visually-hidden">Choose event type</span>
-                <img class="event__type-icon" width="17" height="17" src="img/icons/${id}.png" alt="Event type icon">
+                <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
               </label>
               <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
               <div class="event__type-list">
                 <fieldset class="event__type-group">
                   <legend class="visually-hidden">Transfer</legend>
-                  <div class="event__type-item">
-                    <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
-                    <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type}</label>
-                  </div>
+                  ${createRadioTemplate(type, TRIP_TYPES)}
+                </fieldset>
+                <fieldset class="event__type-group">
+                  <legend class="visually-hidden">Activity</legend>
+                  ${createRadioTemplate(type, ACTIV_TYPES)}
                 </fieldset>
               </div>
             </div>
             <div class="event__field-group  event__field-group--destination">
               <label class="event__label  event__type-output" for="event-destination-1">
-              ${type.name} ${type.particle}
+              ${typeName} ${getParticle(type).trim()}
               </label>
               <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
               <datalist id="destination-list-1">
-                <option value="${destination.name}">${destination.name}</option>
+              <option value="${destinations[0].name}">${destinations[0].name}</option>
+              <option value="${destinations[1].name}">${destinations[1].name}</option>
+              <option value="${destinations[2].name}">${destinations[2].name}</option>
+              <option value="${destinations[3].name}">${destinations[3].name}</option>
+              <option value="${destinations[4].name}">${destinations[4].name}</option>
               </datalist>
             </div>
             <div class="event__field-group  event__field-group--time">
@@ -102,13 +120,14 @@ const createEventEditTemplate = (point) => {
 };
 
 export default class EventEdit {
-  constructor(point) {
+  constructor(point, destinations) {
     this._point = point;
+    this._destinations = destinations;
     this._element = null;
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._point);
+    return createEventEditTemplate(this._point, this._destinations);
   }
 
   getElement() {

@@ -8,12 +8,14 @@ import TripDayView from "./view/trip-day.js";
 import TripEventsView from "./view/trip-events.js";
 import TripEventView from "./view/trip-event.js";
 import EventEditView from "./view/event-edit.js";
+import EventMessageView from "./view/event-message.js";
 import HiddenCaptionView from "./view/hidden-caption.js";
 import {render, RenderPosition} from "./utils/dom.js";
-import {BlockTitle} from "./constants.js";
+import {BlockTitle, EventMessage} from "./constants.js";
 import {isEscapeEvent} from "./utils/dom-event.js";
 import {cards} from "./mock/card.js";
 import {filterNames} from "./mock/filter.js";
+import {destinations} from "./mock/destinations.js";
 import {groupCardsByDay} from "./utils/date.js";
 
 const renderBlock = (container, title, generateTemplate) => {
@@ -32,51 +34,59 @@ const tripEventButtonComponent = new TripEventButtonView();
 render(tripMain, tripEventButtonComponent.getElement());
 
 const tripEvents = document.querySelector(`.trip-events`);
-renderBlock(tripEvents, BlockTitle.TRIP_EVENTS, new SortView().getElement());
 
-const tripDays = new TripDaysView();
+if (cards.length > 0) {
+  renderBlock(tripEvents, BlockTitle.TRIP_EVENTS, new SortView().getElement());
 
-const days = groupCardsByDay(cards);
+  const tripDaysComponent = new TripDaysView();
+  const days = groupCardsByDay(cards);
 
-Object.entries(days).forEach(([_dayKey, dayCards], dayIndex) => {
-  const daysItem = new TripDayView(dayIndex, dayCards[0].startDate);
-  render(tripDays.getElement(), daysItem.getElement());
+  Object.values(days).forEach((dayCards, counter) => {
+    const daysItem = new TripDayView(counter + 1, dayCards[0].startDate);
+    render(tripDaysComponent.getElement(), daysItem.getElement());
 
-  const eventsList = new TripEventsView().getElement();
-  render(daysItem.getElement(), eventsList);
+    const eventsList = new TripEventsView().getElement();
+    render(daysItem.getElement(), eventsList);
 
-  dayCards.forEach((card) => {
-    const eventEditComponent = new EventEditView(card);
-    const eventItemComponent = new TripEventView(card);
+    const renderCardEvent = (card, eventList) => {
+      const eventEditComponent = new EventEditView(card, destinations);
+      const eventItemComponent = new TripEventView(card);
 
-    const replaceEventToForm = () => {
-      eventsList.replaceChild(eventEditComponent.getElement(), eventItemComponent.getElement());
-    };
+      const replaceEventToForm = () => {
+        eventsList.replaceChild(eventEditComponent.getElement(), eventItemComponent.getElement());
+      };
 
-    const replaceFormToEvent = () => {
-      eventsList.replaceChild(eventItemComponent.getElement(), eventEditComponent.getElement());
-    };
+      const replaceFormToEvent = () => {
+        eventsList.replaceChild(eventItemComponent.getElement(), eventEditComponent.getElement());
+      };
 
-    const onEscKeyDown = (evt) => {
-      if (isEscapeEvent(evt)) {
+      const onEscKeyDown = (evt) => {
+        if (isEscapeEvent(evt)) {
+          replaceFormToEvent();
+          document.removeEventListener(`keydown`, onEscKeyDown);
+        }
+      };
+
+      eventItemComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+        replaceEventToForm();
+        document.addEventListener(`keydown`, onEscKeyDown);
+      });
+
+      eventEditComponent.getElement().querySelector(`form`).addEventListener(`submit`, (evt) => {
+        evt.preventDefault();
         replaceFormToEvent();
         document.removeEventListener(`keydown`, onEscKeyDown);
-      }
+      });
+
+      render(eventList, eventItemComponent.getElement(), RenderPosition.BEFORE_END);
     };
 
-    eventItemComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
-      replaceEventToForm();
-      document.addEventListener(`keydown`, onEscKeyDown);
+    dayCards.forEach((card) => {
+      renderCardEvent(card, eventsList);
     });
-
-    eventEditComponent.getElement().querySelector(`form`).addEventListener(`submit`, (evt) => {
-      evt.preventDefault();
-      replaceFormToEvent();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-
-    render(eventsList, eventItemComponent.getElement(), RenderPosition.BEFORE_END);
   });
-});
 
-render(tripEvents, tripDays.getElement());
+  render(tripEvents, tripDaysComponent.getElement());
+} else {
+  render(tripEvents, new EventMessageView(EventMessage.NO_EVENTS).getElement());
+}

@@ -32,7 +32,9 @@ const formatDuration = (duration) => {
   return `${durationDaysResult} ${durationHoursResult} ${durationMinutesResult}`;
 };
 
-const convertDateToDay = (date) => date.getFullYear() + `-` + date.getMonth() + `-` + date.getDate();
+const convertDateToDay = (date) => {
+  return `${date.getFullYear()}/-${date.getMonth()}/-${date.getDate()}`;
+};
 
 const groupCardsByDay = (sortedCards) => {
   const reduceCardByDay = (days, card) => {

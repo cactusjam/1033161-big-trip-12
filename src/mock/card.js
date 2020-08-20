@@ -28,15 +28,7 @@ const services = [
 
 const getRandomTypes = () => {
   const Types = [
-    {name: `Taxi`, particle: `to`},
-    {name: `Bus`, particle: `to`},
-    {name: `Ship`, particle: `to`},
-    {name: `Transport`, particle: `to`},
-    {name: `Drive`, particle: `to`},
-    {name: `Flight`, particle: `to`},
-    {name: `Check-in`, particle: `in`},
-    {name: `Sightseeing`, particle: `in`},
-    {name: `Restaurant`, particle: `in`}
+    `taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`, `check-in`, `sightseeing`, `restaurant`
   ];
   const randomIndex = getRandomInteger(0, Types.length - 1);
 

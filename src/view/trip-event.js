@@ -1,17 +1,18 @@
 import {getTimeFormat, formatDuration} from "../utils/date.js";
 import {createElement} from "../utils/dom.js";
+import {getParticle, getFirstUpperCase} from "../utils/utils.js";
 
 const createTripEventTemplate = (point) => {
   const {type, destination, services, price, startDate, endDate, duration} = point;
   const formattedDuration = formatDuration(duration);
-  const id = type.name.toLowerCase();
+  const typeName = getFirstUpperCase(type);
   return (
     `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${id}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title"> ${type.name} ${type.particle} ${destination.name}</h3>
+        <h3 class="event__title">${typeName} ${getParticle(type).trim()} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${startDate.toISOString()}">${getTimeFormat(startDate)}</time>
