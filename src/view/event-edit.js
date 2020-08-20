@@ -1,6 +1,18 @@
 import {convertDate} from "../utils/date.js";
 import {createElement} from "../utils/dom.js";
 import {getParticle, getFirstUpperCase} from "../utils/utils.js";
+import {TRIP_TYPES, ACTIV_TYPES} from "../mock/data.js";
+
+const createRadioTemplate = (cardType, legendTypes) => {
+  return (
+    legendTypes.map((legendType, i) => {
+      return (`<div class="event__type-item">
+        <input id="event-type-${legendType}-${i}" class="event__type-input visually-hidden" type="radio" name="event-type" value="${legendType}" ${cardType === legendType ? `checked` : ``}>
+        <label class="event__type-label  event__type-label--${legendType}" for="event-type-${legendType}-${i}">${getFirstUpperCase(legendType)}</label>
+      </div>`);
+    }).join(``)
+  );
+};
 
 const createEventEditTemplate = (point, destinations) => {
   const {type, startDate, endDate, price, isFavorite, destination, services} = point;
@@ -18,10 +30,11 @@ const createEventEditTemplate = (point, destinations) => {
               <div class="event__type-list">
                 <fieldset class="event__type-group">
                   <legend class="visually-hidden">Transfer</legend>
-                  <div class="event__type-item">
-                    <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
-                    <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type}</label>
-                  </div>
+                  ${createRadioTemplate(type, TRIP_TYPES)}
+                </fieldset>
+                <fieldset class="event__type-group">
+                  <legend class="visually-hidden">Activity</legend>
+                  ${createRadioTemplate(type, ACTIV_TYPES)}
                 </fieldset>
               </div>
             </div>

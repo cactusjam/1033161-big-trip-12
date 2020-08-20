@@ -41,14 +41,14 @@ if (cards.length > 0) {
   const tripDaysComponent = new TripDaysView();
   const days = groupCardsByDay(cards);
 
-  Object.entries(days).forEach(([_dayKey, dayCards], dayIndex) => {
-    const daysItem = new TripDayView(dayIndex + 1, dayCards[0].startDate);
+  Object.values(days).forEach((dayCards, counter) => {
+    const daysItem = new TripDayView(counter + 1, dayCards[0].startDate);
     render(tripDaysComponent.getElement(), daysItem.getElement());
 
     const eventsList = new TripEventsView().getElement();
     render(daysItem.getElement(), eventsList);
 
-    dayCards.forEach((card) => {
+    const renderCardEvent = (card, eventList) => {
       const eventEditComponent = new EventEditView(card, destinations);
       const eventItemComponent = new TripEventView(card);
 
@@ -78,9 +78,14 @@ if (cards.length > 0) {
         document.removeEventListener(`keydown`, onEscKeyDown);
       });
 
-      render(eventsList, eventItemComponent.getElement(), RenderPosition.BEFORE_END);
+      render(eventList, eventItemComponent.getElement(), RenderPosition.BEFORE_END);
+    };
+
+    dayCards.forEach((card) => {
+      renderCardEvent(card, eventsList);
     });
   });
+
   render(tripEvents, tripDaysComponent.getElement());
 } else {
   render(tripEvents, new EventMessageView(EventMessage.NO_EVENTS).getElement());
