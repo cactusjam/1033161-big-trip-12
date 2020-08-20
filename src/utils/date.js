@@ -52,6 +52,4 @@ const groupCardsByDay = (sortedCards) => {
   return sortedCards.reduce(reduceCardByDay, {});
 };
 
-const getFirstUpperCase = (element) => element[0].toUpperCase() + element.slice(1);
-
-export {getTimeFormat, getDayFormat, convertDate, formatDuration, groupCardsByDay, getFirstUpperCase};
+export {getTimeFormat, getDayFormat, convertDate, formatDuration, groupCardsByDay};

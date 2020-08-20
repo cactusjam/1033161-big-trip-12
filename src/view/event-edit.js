@@ -1,9 +1,9 @@
-import {convertDate, getFirstUpperCase} from "../utils/date.js";
+import {convertDate} from "../utils/date.js";
 import {createElement} from "../utils/dom.js";
-import {getParticle} from "../mock/data.js";
+import {getParticle, getFirstUpperCase} from "../utils/utils.js";
 
-const createEventEditTemplate = (point) => {
-  const {type, startDate, endDate, price, destination, isFavorite, services} = point;
+const createEventEditTemplate = (point, destinations) => {
+  const {type, startDate, endDate, price, isFavorite, destination, services} = point;
   const typeName = getFirstUpperCase(type);
   return (
     `<li class="trip-events__item">
@@ -27,11 +27,15 @@ const createEventEditTemplate = (point) => {
             </div>
             <div class="event__field-group  event__field-group--destination">
               <label class="event__label  event__type-output" for="event-destination-1">
-              ${typeName}${getParticle(type)}
+              ${typeName} ${getParticle(type).trim()}
               </label>
               <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
               <datalist id="destination-list-1">
-                <option value="${destination.name}">${destination.name}</option>
+              <option value="${destinations[0].name}">${destinations[0].name}</option>
+              <option value="${destinations[1].name}">${destinations[1].name}</option>
+              <option value="${destinations[2].name}">${destinations[2].name}</option>
+              <option value="${destinations[3].name}">${destinations[3].name}</option>
+              <option value="${destinations[4].name}">${destinations[4].name}</option>
               </datalist>
             </div>
             <div class="event__field-group  event__field-group--time">
@@ -103,13 +107,14 @@ const createEventEditTemplate = (point) => {
 };
 
 export default class EventEdit {
-  constructor(point) {
+  constructor(point, destinations) {
     this._point = point;
+    this._destinations = destinations;
     this._element = null;
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._point);
+    return createEventEditTemplate(this._point, this._destinations);
   }
 
   getElement() {
