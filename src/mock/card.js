@@ -75,6 +75,7 @@ const generateCard = () => {
   const endDate = getEndDate(startDate);
   const duration = endDate - startDate;
   return {
+    id: getRandomInteger(1, 4000),
     type: getRandomTypes(),
     destination: {
       name: getRandomCities(),

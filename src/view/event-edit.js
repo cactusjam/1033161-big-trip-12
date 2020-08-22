@@ -1,56 +1,61 @@
 import {convertDate} from "../utils/date.js";
 import {createElement} from "../utils/dom.js";
-import {getParticle, getFirstUpperCase} from "../utils/utils.js";
-import {TRIP_TYPES, ACTIV_TYPES} from "../mock/data.js";
+import {getTypeParticle, getFirstUpperCase} from "../utils/utils.js";
+import {TRANSFER_TYPES, ACTIVITY_TYPES} from "../constants.js";
 
-const createRadioTemplate = (cardType, legendTypes) => {
+const createRadioTemplate = (cardType, legendTypes, pointId) => {
   return (
-    legendTypes.map((legendType, i) => {
+    legendTypes.map((legendType, legendIndex) => {
       return (`<div class="event__type-item">
-        <input id="event-type-${legendType}-${i}" class="event__type-input visually-hidden" type="radio" name="event-type" value="${legendType}" ${cardType === legendType ? `checked` : ``}>
-        <label class="event__type-label  event__type-label--${legendType}" for="event-type-${legendType}-${i}">${getFirstUpperCase(legendType)}</label>
+        <input id="event-type-${legendType}-${pointId}-${legendIndex}" class="event__type-input visually-hidden" type="radio" name="event-type" value="${legendType}" ${cardType === legendType ? `checked` : ``}>
+        <label class="event__type-label  event__type-label--${legendType}" for="event-type-${legendType}-${pointId}-${legendIndex}">${getFirstUpperCase(legendType)}</label>
       </div>`);
     }).join(``)
   );
 };
 
+const createDestinationTemplate = (destinations, pointType, pointDestination, pointId) => {
+  const typeName = getFirstUpperCase(pointType);
+  return (
+    `<div class="event__field-group  event__field-group--destination">
+      <label class="event__label  event__type-output" for="event-destination-${pointId}">
+        ${typeName} ${getTypeParticle(pointType).trim()}
+      </label>
+      <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${pointDestination.name}" list="destination-list-${pointId}">
+      <datalist id="destination-list-${pointId}">
+      ${destinations.map((item) => {
+      return (
+        `<option value="${item.name}">${item.name}</option>`);
+    }).join(``)}
+      </datalist>
+    </div>`
+  );
+};
+
 const createEventEditTemplate = (point, destinations) => {
-  const {type, startDate, endDate, price, isFavorite, destination, services} = point;
-  const typeName = getFirstUpperCase(type);
+  const {id, type, startDate, endDate, price, isFavorite, destination, services} = point;
   return (
     `<li class="trip-events__item">
       <form class="event  event--edit" action="#" method="post">
           <header class="event__header">
             <div class="event__type-wrapper">
-              <label class="event__type  event__type-btn" for="event-type-toggle-1">
+              <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
                 <span class="visually-hidden">Choose event type</span>
                 <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
               </label>
-              <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+              <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
               <div class="event__type-list">
                 <fieldset class="event__type-group">
                   <legend class="visually-hidden">Transfer</legend>
-                  ${createRadioTemplate(type, TRIP_TYPES)}
+                  ${createRadioTemplate(type, TRANSFER_TYPES, id)}
                 </fieldset>
                 <fieldset class="event__type-group">
                   <legend class="visually-hidden">Activity</legend>
-                  ${createRadioTemplate(type, ACTIV_TYPES)}
+                  ${createRadioTemplate(type, ACTIVITY_TYPES)}
                 </fieldset>
               </div>
             </div>
-            <div class="event__field-group  event__field-group--destination">
-              <label class="event__label  event__type-output" for="event-destination-1">
-              ${typeName} ${getParticle(type).trim()}
-              </label>
-              <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
-              <datalist id="destination-list-1">
-              <option value="${destinations[0].name}">${destinations[0].name}</option>
-              <option value="${destinations[1].name}">${destinations[1].name}</option>
-              <option value="${destinations[2].name}">${destinations[2].name}</option>
-              <option value="${destinations[3].name}">${destinations[3].name}</option>
-              <option value="${destinations[4].name}">${destinations[4].name}</option>
-              </datalist>
-            </div>
+            ${createDestinationTemplate(destinations, type, destination, id)}
             <div class="event__field-group  event__field-group--time">
               <label class="visually-hidden" for="event-start-time-1">
                 From
