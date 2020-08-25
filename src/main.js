@@ -10,9 +10,9 @@ import TripEventView from "./view/trip-event.js";
 import EventEditView from "./view/event-edit.js";
 import EventMessageView from "./view/event-message.js";
 import HiddenCaptionView from "./view/hidden-caption.js";
-import {render, RenderPosition} from "./utils/dom.js";
+import {render, RenderPosition, replace} from "./utils/dom.js";
 import {BlockTitle, EventMessage} from "./constants.js";
-import {isEscapeEvent} from "./utils/dom-event.js";
+import {escEventHandler} from "./utils/dom-event.js";
 import {cards} from "./mock/card.js";
 import {filterNames} from "./mock/filter.js";
 import {destinations} from "./mock/destinations.js";
@@ -20,48 +20,48 @@ import {groupCardsByDay} from "./utils/date.js";
 
 const renderBlock = (container, title, generateTemplate) => {
   const hiddenCaptionComponent = new HiddenCaptionView(title);
-  render(container, hiddenCaptionComponent.getElement());
+  render(container, hiddenCaptionComponent);
   render(container, generateTemplate);
 };
 
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
-renderBlock(tripControls, BlockTitle.SWITCH, new TripControlsView().getElement());
-renderBlock(tripControls, BlockTitle.FILTER, new FilterView(filterNames).getElement());
+renderBlock(tripControls, BlockTitle.SWITCH, new TripControlsView());
+renderBlock(tripControls, BlockTitle.FILTER, new FilterView(filterNames));
 
 const tripMain = document.querySelector(`.trip-main`);
-render(tripMain, new TripInfoView().getElement(), RenderPosition.AFTER_BEGIN);
+render(tripMain, new TripInfoView(), RenderPosition.AFTER_BEGIN);
 const tripEventButtonComponent = new TripEventButtonView();
-render(tripMain, tripEventButtonComponent.getElement());
+render(tripMain, tripEventButtonComponent);
 
 const tripEvents = document.querySelector(`.trip-events`);
 
 if (cards.length > 0) {
-  renderBlock(tripEvents, BlockTitle.TRIP_EVENTS, new SortView().getElement());
+  renderBlock(tripEvents, BlockTitle.TRIP_EVENTS, new SortView());
 
   const tripDaysComponent = new TripDaysView();
   const days = groupCardsByDay(cards);
 
   Object.values(days).forEach((dayCards, counter) => {
     const daysItem = new TripDayView(counter + 1, dayCards[0].startDate);
-    render(tripDaysComponent.getElement(), daysItem.getElement());
+    render(tripDaysComponent, daysItem);
 
-    const eventsList = new TripEventsView().getElement();
-    render(daysItem.getElement(), eventsList);
+    const eventsList = new TripEventsView();
+    render(daysItem, eventsList);
 
     const renderCardEvent = (card, eventList) => {
       const eventEditComponent = new EventEditView(card, destinations);
       const eventItemComponent = new TripEventView(card);
 
       const replaceEventToForm = () => {
-        eventsList.replaceChild(eventEditComponent.getElement(), eventItemComponent.getElement());
+        replace(eventEditComponent, eventItemComponent);
       };
 
       const replaceFormToEvent = () => {
-        eventsList.replaceChild(eventItemComponent.getElement(), eventEditComponent.getElement());
+        replace(eventItemComponent, eventEditComponent);
       };
 
       const escKeyDownHandler = (evt) => {
-        if (isEscapeEvent(evt)) {
+        if (escEventHandler(evt)) {
           replaceFormToEvent();
           document.removeEventListener(`keydown`, escKeyDownHandler);
         }
@@ -85,7 +85,7 @@ if (cards.length > 0) {
         replaceFormToEvent();
       });
 
-      render(eventList, eventItemComponent.getElement(), RenderPosition.BEFORE_END);
+      render(eventList, eventItemComponent, RenderPosition.BEFORE_END);
     };
 
     dayCards.forEach((card) => {
@@ -93,7 +93,7 @@ if (cards.length > 0) {
     });
   });
 
-  render(tripEvents, tripDaysComponent.getElement());
+  render(tripEvents, tripDaysComponent);
 } else {
-  render(tripEvents, new EventMessageView(EventMessage.NO_EVENTS).getElement());
+  render(tripEvents, new EventMessageView(EventMessage.NO_EVENTS));
 }
