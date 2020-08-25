@@ -1,5 +1,5 @@
 import {getDayFormat} from "../utils/date.js";
-import {createElement} from "../utils/dom.js";
+import AbstractView from "./abstract.js";
 
 const createTripDayTemplate = (counter, startDate) => {
   return (
@@ -12,26 +12,14 @@ const createTripDayTemplate = (counter, startDate) => {
   );
 };
 
-export default class TripDay {
+export default class TripDay extends AbstractView {
   constructor(counter, startDate) {
+    super();
     this._counter = counter;
     this._startDate = startDate;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripDayTemplate(this._counter, this._startDate);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

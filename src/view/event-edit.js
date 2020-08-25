@@ -1,7 +1,7 @@
 import {convertDate} from "../utils/date.js";
-import {createElement} from "../utils/dom.js";
 import {getTypeParticle, getFirstUpperCase} from "../utils/utils.js";
 import {TRANSFER_TYPES, ACTIVITY_TYPES} from "../constants.js";
+import AbstractView from "./abstract.js";
 
 const createRadioTemplate = (cardType, legendTypes, pointId) => {
   return (
@@ -124,27 +124,15 @@ const createEventEditTemplate = (point, destinations) => {
   );
 };
 
-export default class EventEdit {
+export default class EventEdit extends AbstractView {
   constructor(point, destinations) {
+    super();
     this._point = point;
     this._destinations = destinations;
-    this._element = null;
   }
 
   getTemplate() {
     return createEventEditTemplate(this._point, this._destinations);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

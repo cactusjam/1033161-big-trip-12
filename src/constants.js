@@ -14,12 +14,6 @@ const KeyboardKey = {
   ESCAPE_IE: `Esc`,
 };
 
-// const ACTIVITY = {
-//   CHECK_IN: `check-in`,
-//   SIGHTSEEING: `sightseeing`,
-//   RESTAURANT: `restaurant`
-// };
-
 const TRANSFER_TYPES = [
   `taxi`,
   `bus`,

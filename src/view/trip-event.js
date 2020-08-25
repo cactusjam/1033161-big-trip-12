@@ -1,5 +1,5 @@
 import {getTimeFormat, formatDuration} from "../utils/date.js";
-import {createElement} from "../utils/dom.js";
+import AbstractView from "./abstract.js";
 import {getTypeParticle, getFirstUpperCase} from "../utils/utils.js";
 
 const createTripEventTemplate = (point) => {
@@ -42,25 +42,13 @@ const createTripEventTemplate = (point) => {
   );
 };
 
-export default class TripEvent {
+export default class TripEvent extends AbstractView {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripEventTemplate(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
