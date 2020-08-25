@@ -60,21 +60,29 @@ if (cards.length > 0) {
         eventsList.replaceChild(eventItemComponent.getElement(), eventEditComponent.getElement());
       };
 
-      const onEscKeyDown = (evt) => {
+      const escKeyDownHandler = (evt) => {
         if (isEscapeEvent(evt)) {
           replaceFormToEvent();
-          document.removeEventListener(`keydown`, onEscKeyDown);
+          document.removeEventListener(`keydown`, escKeyDownHandler);
         }
       };
 
       eventItemComponent.setEditClickHandler(() => {
         replaceEventToForm();
-        document.addEventListener(`keydown`, onEscKeyDown);
+        document.addEventListener(`keydown`, escKeyDownHandler);
       });
 
       eventEditComponent.setFormSubmitHandler(() => {
         replaceFormToEvent();
-        document.removeEventListener(`keydown`, onEscKeyDown);
+        document.removeEventListener(`keydown`, escKeyDownHandler);
+      });
+
+      eventEditComponent.setFormResetHandler(() => {
+        replaceFormToEvent();
+      });
+
+      eventEditComponent.setRollupButtonClickHandler(() => {
+        replaceFormToEvent();
       });
 
       render(eventList, eventItemComponent.getElement(), RenderPosition.BEFORE_END);
