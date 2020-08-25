@@ -67,13 +67,12 @@ if (cards.length > 0) {
         }
       };
 
-      eventItemComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+      eventItemComponent.setEditClickHandler(() => {
         replaceEventToForm();
         document.addEventListener(`keydown`, onEscKeyDown);
       });
 
-      eventEditComponent.getElement().querySelector(`form`).addEventListener(`submit`, (evt) => {
-        evt.preventDefault();
+      eventEditComponent.setFormSubmitHandler(() => {
         replaceFormToEvent();
         document.removeEventListener(`keydown`, onEscKeyDown);
       });
