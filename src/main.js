@@ -1,7 +1,7 @@
 import TripControlsView from "./view/trip-controls.js";
 import FilterView from "./view/filter.js";
 import TripInfoView from "./view/trip-info.js";
-import TripEventButtonView from "./view/trip-event-button.js";
+import AddEventButtonView from "./view/trip-event-button.js";
 import HiddenCaptionView from "./view/hidden-caption.js";
 import {render, RenderPosition} from "./utils/dom.js";
 import {BlockTitle} from "./constants.js";
@@ -27,7 +27,7 @@ renderBlock(tripControls, BlockTitle.FILTER, new FilterView(filterNames));
 
 const tripMain = document.querySelector(`.trip-main`);
 render(tripMain, new TripInfoView(), RenderPosition.AFTER_BEGIN);
-const tripEventButtonComponent = new TripEventButtonView();
+const tripEventButtonComponent = new AddEventButtonView();
 render(tripMain, tripEventButtonComponent);
 
 tripPresenter.init(tripCards);

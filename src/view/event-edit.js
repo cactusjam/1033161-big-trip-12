@@ -19,14 +19,11 @@ const createDestinationTemplate = (destinations, pointType, pointDestination, po
   return (
     `<div class="event__field-group  event__field-group--destination">
       <label class="event__label  event__type-output" for="event-destination-${pointId}">
-        ${typeName} ${getTypeParticle(pointType).trim()}
+        ${typeName} ${getTypeParticle(pointType)}
       </label>
       <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${pointDestination.name}" list="destination-list-${pointId}">
       <datalist id="destination-list-${pointId}">
-      ${destinations.map((item) => {
-      return (
-        `<option value="${item.name}">${item.name}</option>`);
-    }).join(``)}
+      ${destinations.map(({name}) => `<option value="${name}"></option>`).join(``)}
       </datalist>
     </div>`
   );

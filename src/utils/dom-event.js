@@ -1,7 +1,7 @@
 import {KeyboardKey} from "../constants.js";
 
-const escEventHandler = (evt) => {
+const isEscapeEvent = (evt) => {
   return (evt.key === KeyboardKey.ESCAPE || evt.key === KeyboardKey.ESCAPE_IE);
 };
 
-export {escEventHandler};
+export {isEscapeEvent};

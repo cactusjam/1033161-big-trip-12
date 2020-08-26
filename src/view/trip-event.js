@@ -12,7 +12,7 @@ const createTripEventTemplate = (point) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${typeName} ${getTypeParticle(type).trim()} ${destination.name}</h3>
+        <h3 class="event__title">${typeName} ${getTypeParticle(type)} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${startDate.toISOString()}">${getTimeFormat(startDate)}</time>
@@ -46,20 +46,20 @@ export default class TripEvent extends AbstractView {
   constructor(point) {
     super();
     this._point = point;
-    this._editClickHandler = this._editClickHandler.bind(this);
+    this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
   }
 
   getTemplate() {
     return createTripEventTemplate(this._point);
   }
 
-  _editClickHandler(evt) {
+  _rollupButtonClickHandler(evt) {
     evt.preventDefault();
-    this._callback.editClick();
+    this._callback.rollupButtonClick();
   }
 
-  setEditClickHandler(callback) {
-    this._callback.editClick = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._editClickHandler);
+  setRollupButtonClickHandler(callback) {
+    this._callback.rollupButtonClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollupButtonClickHandler);
   }
 }

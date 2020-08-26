@@ -7,12 +7,13 @@ import EventEditView from "../view/event-edit.js";
 import EventMessageView from "../view/event-message.js";
 import {render, RenderPosition, replace} from "../utils/dom.js";
 import {groupCardsByDay} from "../utils/date.js";
-import {escEventHandler} from "../utils/dom-event.js";
+import {isEscapeEvent} from "../utils/dom-event.js";
 import {destinations} from "../mock/destinations.js";
 import {BlockTitle, EventMessage} from "../constants.js";
 
 export default class Trip {
   constructor(eventsContainer, renderBlock) {
+    this._tripCards = [];
     this._eventsContainer = eventsContainer;
     this._renderBlock = renderBlock;
     this._sortComponent = new SortView();
@@ -81,13 +82,12 @@ export default class Trip {
     };
 
     const escKeyDownHandler = (evt) => {
-      if (escEventHandler(evt)) {
+      if (isEscapeEvent(evt)) {
         replaceFormToEvent();
-        document.removeEventListener(`keydown`, escKeyDownHandler);
       }
     };
 
-    tripEventComponent.setEditClickHandler(() => {
+    tripEventComponent.setRollupButtonClickHandler(() => {
       replaceEventToForm();
       document.addEventListener(`keydown`, escKeyDownHandler);
     });
