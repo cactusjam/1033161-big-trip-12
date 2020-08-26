@@ -35,21 +35,20 @@ export default class Trip {
 
   _renderTripEvents() {
     this._renderEvents();
+    this._renderSort();
     render(this._eventsContainer, this._tripDaysComponent);
   }
 
-  // _renderSort() {
-  //   render(this._eventsContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
-  // }
+  _renderSort() {
+    this._renderBlock(this._eventsContainer, BlockTitle.TRIP_EVENTS, this._sortComponent);
+    render(this._eventsContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
+  }
 
   _renderNoEvents() {
     render(this._eventsContainer, this._eventMessageComponent(EventMessage.NO_EVENTS));
   }
 
   _renderEvents() {
-    this._renderBlock(this._eventsContainer, BlockTitle.TRIP_EVENTS, this._sortComponent);
-    // render(this._eventsContainer, BlockTitle.TRIP_EVENTS, this._sortComponent());
-
     const days = groupCardsByDay(this._tripCards);
 
     Object.values(days).forEach((dayCards, counter) => {
