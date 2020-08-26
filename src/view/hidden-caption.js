@@ -1,4 +1,4 @@
-import {createElement} from "../utils/dom.js";
+import AbstractView from "./abstract.js";
 
 const createHiddenCaptionTemplate = (title) => {
   return (
@@ -6,25 +6,13 @@ const createHiddenCaptionTemplate = (title) => {
   );
 };
 
-export default class HiddenCaption {
+export default class HiddenCaption extends AbstractView {
   constructor(title) {
+    super();
     this._title = title;
-    this._element = null;
   }
 
   getTemplate() {
     return createHiddenCaptionTemplate(this._title);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

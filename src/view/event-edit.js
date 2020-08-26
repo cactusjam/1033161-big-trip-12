@@ -1,56 +1,58 @@
 import {convertDate} from "../utils/date.js";
-import {createElement} from "../utils/dom.js";
-import {getParticle, getFirstUpperCase} from "../utils/utils.js";
-import {TRIP_TYPES, ACTIV_TYPES} from "../mock/data.js";
+import {getTypeParticle, getFirstUpperCase} from "../utils/utils.js";
+import {TRANSFER_TYPES, ACTIVITY_TYPES} from "../constants.js";
+import AbstractView from "./abstract.js";
 
-const createRadioTemplate = (cardType, legendTypes) => {
+const createRadioTemplate = (cardType, legendTypes, pointId) => {
   return (
-    legendTypes.map((legendType, i) => {
+    legendTypes.map((legendType, legendIndex) => {
       return (`<div class="event__type-item">
-        <input id="event-type-${legendType}-${i}" class="event__type-input visually-hidden" type="radio" name="event-type" value="${legendType}" ${cardType === legendType ? `checked` : ``}>
-        <label class="event__type-label  event__type-label--${legendType}" for="event-type-${legendType}-${i}">${getFirstUpperCase(legendType)}</label>
+        <input id="event-type-${legendType}-${pointId}-${legendIndex}" class="event__type-input visually-hidden" type="radio" name="event-type" value="${legendType}" ${cardType === legendType ? `checked` : ``}>
+        <label class="event__type-label  event__type-label--${legendType}" for="event-type-${legendType}-${pointId}-${legendIndex}">${getFirstUpperCase(legendType)}</label>
       </div>`);
     }).join(``)
   );
 };
 
+const createDestinationTemplate = (destinations, pointType, pointDestination, pointId) => {
+  const typeName = getFirstUpperCase(pointType);
+  return (
+    `<div class="event__field-group  event__field-group--destination">
+      <label class="event__label  event__type-output" for="event-destination-${pointId}">
+        ${typeName} ${getTypeParticle(pointType)}
+      </label>
+      <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${pointDestination.name}" list="destination-list-${pointId}">
+      <datalist id="destination-list-${pointId}">
+      ${destinations.map(({name}) => `<option value="${name}"></option>`).join(``)}
+      </datalist>
+    </div>`
+  );
+};
+
 const createEventEditTemplate = (point, destinations) => {
-  const {type, startDate, endDate, price, isFavorite, destination, services} = point;
-  const typeName = getFirstUpperCase(type);
+  const {id, type, startDate, endDate, price, isFavorite, destination, services} = point;
   return (
     `<li class="trip-events__item">
       <form class="event  event--edit" action="#" method="post">
           <header class="event__header">
             <div class="event__type-wrapper">
-              <label class="event__type  event__type-btn" for="event-type-toggle-1">
+              <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
                 <span class="visually-hidden">Choose event type</span>
                 <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
               </label>
-              <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+              <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
               <div class="event__type-list">
                 <fieldset class="event__type-group">
                   <legend class="visually-hidden">Transfer</legend>
-                  ${createRadioTemplate(type, TRIP_TYPES)}
+                  ${createRadioTemplate(type, TRANSFER_TYPES, id)}
                 </fieldset>
                 <fieldset class="event__type-group">
                   <legend class="visually-hidden">Activity</legend>
-                  ${createRadioTemplate(type, ACTIV_TYPES)}
+                  ${createRadioTemplate(type, ACTIVITY_TYPES)}
                 </fieldset>
               </div>
             </div>
-            <div class="event__field-group  event__field-group--destination">
-              <label class="event__label  event__type-output" for="event-destination-1">
-              ${typeName} ${getParticle(type).trim()}
-              </label>
-              <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
-              <datalist id="destination-list-1">
-              <option value="${destinations[0].name}">${destinations[0].name}</option>
-              <option value="${destinations[1].name}">${destinations[1].name}</option>
-              <option value="${destinations[2].name}">${destinations[2].name}</option>
-              <option value="${destinations[3].name}">${destinations[3].name}</option>
-              <option value="${destinations[4].name}">${destinations[4].name}</option>
-              </datalist>
-            </div>
+            ${createDestinationTemplate(destinations, type, destination, id)}
             <div class="event__field-group  event__field-group--time">
               <label class="visually-hidden" for="event-start-time-1">
                 From
@@ -119,27 +121,48 @@ const createEventEditTemplate = (point, destinations) => {
   );
 };
 
-export default class EventEdit {
+export default class EventEdit extends AbstractView {
   constructor(point, destinations) {
+    super();
     this._point = point;
     this._destinations = destinations;
-    this._element = null;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formResetHandler = this._formResetHandler.bind(this);
+    this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
   }
 
   getTemplate() {
     return createEventEditTemplate(this._point, this._destinations);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  _formResetHandler(evt) {
+    evt.preventDefault();
+    this._callback.formReset();
+  }
+
+  _rollupButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback._rollupButtonClick();
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  setFormResetHandler(callback) {
+    this._callback.formReset = callback;
+    this.getElement().addEventListener(`reset`, this._formResetHandler);
+  }
+
+  setRollupButtonClickHandler(callback) {
+    this._callback._rollupButtonClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollupButtonClickHandler);
   }
 }
 

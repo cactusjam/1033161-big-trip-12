@@ -1,9 +1,9 @@
-import {Activity} from "../mock/data.js";
+import {TypeParticle, ACTIVITY_TYPES} from "../constants.js";
 
-const getParticle = (type) => {
-  return (type === Activity.CHECK_IN || type === Activity.SIGHTSEEING || type === Activity.RESTAURANT) ? ` in ` : ` to `;
-};
+const getTypeParticle = (type) => ACTIVITY_TYPES.includes(type)
+  ? TypeParticle.ACTIVITY
+  : TypeParticle.TRANSFER;
 
 const getFirstUpperCase = (element) => element[0].toUpperCase() + element.slice(1);
 
-export {getParticle, getFirstUpperCase};
+export {getTypeParticle, getFirstUpperCase};

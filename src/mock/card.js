@@ -1,8 +1,6 @@
 import {getRandomArray, getRandomInteger} from "../mock/utils.js";
 import {getStartDate, getEndDate} from "../mock/utils.js";
 
-const CARD_COUNT = 20;
-
 const services = [
   {
     type: `luggage`,
@@ -75,6 +73,7 @@ const generateCard = () => {
   const endDate = getEndDate(startDate);
   const duration = endDate - startDate;
   return {
+    id: getRandomInteger(1, 4000),
     type: getRandomTypes(),
     destination: {
       name: getRandomCities(),
@@ -90,9 +89,14 @@ const generateCard = () => {
   };
 };
 
-const cards = new Array(CARD_COUNT)
-  .fill()
-  .map(generateCard)
-  .sort((a, b) => a.startDate - b.startDate);
+const generateCards = (count) => new Array(count)
+.fill()
+.map(generateCard)
+.sort((a, b) => a.startDate - b.startDate);
 
-export {cards};
+// const cards = new Array(CARD_COUNT)
+//   .fill()
+//   .map(generateCard)
+//   .sort((a, b) => a.startDate - b.startDate);
+
+export {generateCards};

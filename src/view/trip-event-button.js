@@ -1,4 +1,4 @@
-import {createElement} from "../utils/dom.js";
+import AbstractView from "./abstract.js";
 
 const createTripEventButtonTemplate = () => {
   return (
@@ -6,24 +6,8 @@ const createTripEventButtonTemplate = () => {
   );
 };
 
-export default class TripEventButton {
-  constructor() {
-    this._element = null;
-  }
-
+export default class AddEventButton extends AbstractView {
   getTemplate() {
     return createTripEventButtonTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

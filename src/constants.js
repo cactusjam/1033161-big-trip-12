@@ -14,4 +14,25 @@ const KeyboardKey = {
   ESCAPE_IE: `Esc`,
 };
 
-export {EventMessage, BlockTitle, KeyboardKey};
+const TRANSFER_TYPES = [
+  `taxi`,
+  `bus`,
+  `train`,
+  `ship`,
+  `transport`,
+  `drive`,
+  `flight`
+];
+
+const ACTIVITY_TYPES = [
+  `check-in`,
+  `sightseeing`,
+  `restaurant`
+];
+
+const TypeParticle = {
+  ACTIVITY: `in`,
+  TRANSFER: `to`,
+};
+
+export {EventMessage, BlockTitle, KeyboardKey, TypeParticle, TRANSFER_TYPES, ACTIVITY_TYPES};
