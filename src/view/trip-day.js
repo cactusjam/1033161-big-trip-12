@@ -12,6 +12,15 @@ const createTripDayTemplate = (counter, startDate) => {
   );
 };
 
+const createEmptyTripDayTemplate = () => {
+  return (
+    `<li class="trip-days__item day">
+      <div class="day__info">
+      </div>
+    </li>`
+  );
+};
+
 export default class TripDay extends AbstractView {
   constructor(counter, startDate) {
     super();
@@ -20,6 +29,9 @@ export default class TripDay extends AbstractView {
   }
 
   getTemplate() {
+    if (!this._counter || !this._startDate) {
+      return createEmptyTripDayTemplate();
+    }
     return createTripDayTemplate(this._counter, this._startDate);
   }
 }
