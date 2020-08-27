@@ -35,4 +35,10 @@ const TypeParticle = {
   TRANSFER: `to`,
 };
 
-export {EventMessage, BlockTitle, KeyboardKey, TypeParticle, TRANSFER_TYPES, ACTIVITY_TYPES};
+const SortType = {
+  DEFAULT: `Event`,
+  TIME: `Time`,
+  PRICE: `Price`
+};
+
+export {EventMessage, BlockTitle, KeyboardKey, TypeParticle, TRANSFER_TYPES, ACTIVITY_TYPES, SortType};

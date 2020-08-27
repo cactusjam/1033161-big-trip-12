@@ -1,7 +1,7 @@
 import TripControlsView from "./view/trip-controls.js";
 import FilterView from "./view/filter.js";
 import TripInfoView from "./view/trip-info.js";
-import AddEventButtonView from "./view/trip-event-button.js";
+import AddEventButtonView from "./view/add-event-button.js";
 import HiddenCaptionView from "./view/hidden-caption.js";
 import {render, RenderPosition} from "./utils/dom.js";
 import {BlockTitle} from "./constants.js";
