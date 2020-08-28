@@ -11,10 +11,9 @@ export const sortEventsByPrice = (priceA, priceB) => {
 };
 
 export const sortEventsByTime = (eventA, eventB) => {
-  const durationA = new Date(eventA.endDate) - new Date(eventA.startDate);
-  const durationB = new Date(eventB.endDate) - new Date(eventB.startDate);
+  const duration = (eventB.endDate - eventB.startDate) - (eventA.endDate - eventA.startDate);
 
-  return durationB - durationA;
+  return duration;
 };
 
 export {getTypeParticle, getFirstUpperCase};

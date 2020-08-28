@@ -52,11 +52,6 @@ export default class Trip {
 
     this._sortEvents(sortType);
     this._clearEvents();
-    if (this._currentSortType === `event`) {
-      this._sortComponent.getElement().querySelector(`.trip-sort__item--day`).innerHTML = `Day`;
-    } else {
-      this._sortComponent.getElement().querySelector(`.trip-sort__item--day`).innerHTML = ``;
-    }
     this._renderTripEvents();
   }
 
@@ -85,12 +80,12 @@ export default class Trip {
   }
 
   _clearEvents() {
-    this._tripDaysComponent._element.innerHTML = ``;
+    this._tripDaysComponent.getElement().innerHTML = ``;
   }
 
   _renderEvents() {
     if (this._currentSortType !== SortType.DEFAULT) {
-      const tripDayComponent = new TripDayView();
+      const tripDayComponent = new TripDayView(0, new Date());
       render(this._tripDaysComponent, tripDayComponent);
 
       const tripEventsComponent = new TripEventsView();
