@@ -8,9 +8,10 @@ const getTimeFormat = (date) => {
   return date.toLocaleTimeString(`en-GB`, {hour: `2-digit`, minute: `2-digit`, hour12: false});
 };
 
-const getDayFormat = (date) => {
-  return date.toLocaleDateString(`en`, {month: `short`, day: `2-digit`});
-};
+const getDayFormat = new Intl.DateTimeFormat(`en-GB`, {
+  month: `short`,
+  day: `numeric`,
+}).format;
 
 const convertDateNumbers = (value) => String(value).padStart(2, `0`);
 
@@ -52,4 +53,11 @@ const groupCardsByDay = (sortedCards) => {
   return sortedCards.reduce(reduceCardByDay, {});
 };
 
-export {getTimeFormat, getDayFormat, convertDate, formatDuration, groupCardsByDay};
+const convertDateToISOString = (date) => {
+  const convertedDate = new Date(date);
+  convertedDate.setHours(convertedDate.getHours() - convertedDate.getTimezoneOffset() / MINUTES_PER_HOUR);
+
+  return convertedDate.toISOString();
+};
+
+export {getTimeFormat, getDayFormat, convertDate, formatDuration, groupCardsByDay, convertDateToISOString};
