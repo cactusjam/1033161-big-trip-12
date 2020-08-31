@@ -150,6 +150,12 @@ export default class EventEdit extends AbstractView {
     this._callback._rollupButtonClick();
   }
 
+  restoreHandlers() {
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormResetHandler(this._callback.formReset);
+    this.setRollupButtonClickHandler(this._callback._rollupButtonClick);
+  }
+
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);

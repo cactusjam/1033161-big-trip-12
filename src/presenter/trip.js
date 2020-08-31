@@ -11,10 +11,12 @@ import {sortEventsByTime, sortEventsByPrice} from "../utils/utils.js";
 import {isEscapeEvent} from "../utils/dom-event.js";
 import {destinations} from "../mock/destinations.js";
 import {BlockTitle, EventMessage, SortType} from "../constants.js";
+import PointPresenter from "./point.js";
 
 export default class Trip {
   constructor(eventsContainer, renderBlock) {
     this._tripCards = [];
+    this._pointPresenter = {};
     this._eventsContainer = eventsContainer;
     this._renderBlock = renderBlock;
     this._currentSortType = SortType.DEFAULT;
@@ -114,41 +116,48 @@ export default class Trip {
   }
 
   _renderCard(card, eventList) {
-    const tripEventComponent = new TripEventView(card);
-    const eventEditComponent = new EventEditView(card, destinations);
-
-    const replaceEventToForm = () => {
-      replace(eventEditComponent, tripEventComponent);
-    };
-
-    const replaceFormToEvent = () => {
-      replace(tripEventComponent, eventEditComponent);
-    };
-
-    const escKeyDownHandler = (evt) => {
-      if (isEscapeEvent(evt)) {
-        replaceFormToEvent();
-      }
-    };
-
-    tripEventComponent.setRollupButtonClickHandler(() => {
-      replaceEventToForm();
-      document.addEventListener(`keydown`, escKeyDownHandler);
-    });
-
-    eventEditComponent.setFormSubmitHandler(() => {
-      replaceFormToEvent();
-      document.removeEventListener(`keydown`, escKeyDownHandler);
-    });
-
-    eventEditComponent.setFormResetHandler(() => {
-      replaceFormToEvent();
-    });
-
-    eventEditComponent.setRollupButtonClickHandler(() => {
-      replaceFormToEvent();
-    });
-
-    render(eventList, tripEventComponent, RenderPosition.BEFORE_END);
+    const pointPresenter = new PointPresenter(eventList);
+    pointPresenter.init(card, destinations);
   }
+
+
+
+  // _renderCard(card, eventList) {
+  //   const tripEventComponent = new TripEventView(card);
+  //   const eventEditComponent = new EventEditView(card, destinations);
+
+  //   const replaceEventToForm = () => {
+  //     replace(eventEditComponent, tripEventComponent);
+  //   };
+
+  //   const replaceFormToEvent = () => {
+  //     replace(tripEventComponent, eventEditComponent);
+  //   };
+
+  //   const escKeyDownHandler = (evt) => {
+  //     if (isEscapeEvent(evt)) {
+  //       replaceFormToEvent();
+  //     }
+  //   };
+
+  //   tripEventComponent.setRollupButtonClickHandler(() => {
+  //     replaceEventToForm();
+  //     document.addEventListener(`keydown`, escKeyDownHandler);
+  //   });
+
+  //   eventEditComponent.setFormSubmitHandler(() => {
+  //     replaceFormToEvent();
+  //     document.removeEventListener(`keydown`, escKeyDownHandler);
+  //   });
+
+  //   eventEditComponent.setFormResetHandler(() => {
+  //     replaceFormToEvent();
+  //   });
+
+  //   eventEditComponent.setRollupButtonClickHandler(() => {
+  //     replaceFormToEvent();
+  //   });
+
+  //   render(eventList, tripEventComponent, RenderPosition.BEFORE_END);
+  // }
 }
