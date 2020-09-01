@@ -129,6 +129,8 @@ export default class EventEdit extends AbstractView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._setInnerHandlers();
   }
 
   getTemplate() {
@@ -150,10 +152,22 @@ export default class EventEdit extends AbstractView {
     this._callback._rollupButtonClick();
   }
 
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      isFavorite: !this._point.isFavorite,
+    });
+  }
+
   restoreHandlers() {
+    this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormResetHandler(this._callback.formReset);
     this.setRollupButtonClickHandler(this._callback._rollupButtonClick);
+  }
+
+  _setInnerHandlers() {
+    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`click`, this._favoriteClickHandler);
   }
 
   setFormSubmitHandler(callback) {
