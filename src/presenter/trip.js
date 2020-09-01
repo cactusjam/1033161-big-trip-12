@@ -3,7 +3,7 @@ import TripDaysView from "../view/trip-days.js";
 import TripDayView from "../view/trip-day.js";
 import TripEventsView from "../view/trip-events.js";
 import EventMessageView from "../view/event-message.js";
-import {render, RenderPosition} from "../utils/dom.js";
+import {render, RenderPosition, remove} from "../utils/dom.js";
 import {groupCardsByDay} from "../utils/date.js";
 import {sortEventsByTime, sortEventsByPrice} from "../utils/utils.js";
 import {destinations} from "../mock/destinations.js";
@@ -13,7 +13,9 @@ import PointPresenter from "./point.js";
 export default class Trip {
   constructor(eventsContainer, renderBlock) {
     this._tripCards = [];
+    this._destinations = [];
     this._pointPresenter = {};
+    this._existTripDays = [];
     this._eventsContainer = eventsContainer;
     this._renderBlock = renderBlock;
     this._currentSortType = SortType.DEFAULT;
@@ -26,6 +28,8 @@ export default class Trip {
   init(tripCards) {
     this._tripCards = tripCards.slice();
     this._sourceTripCards = tripCards.slice();
+    this._destinations = destinations;
+
     this._renderTrip();
   }
 
@@ -79,7 +83,14 @@ export default class Trip {
   }
 
   _clearEvents() {
-    this._tripDaysComponent.getElement().innerHTML = ``;
+    Object
+    .values(this._pointPresenter)
+    .forEach((presenter) => presenter.destroy());
+    this._pointPresenter = {};
+    this._existTripDays.forEach(remove);
+    this._existTripDays = [];
+    remove(this._tripDaysComponent);
+    // this._tripDaysComponent.getElement().innerHTML = ``;
   }
 
   _renderEvents() {
@@ -114,6 +125,7 @@ export default class Trip {
 
   _renderCard(card, eventList) {
     const pointPresenter = new PointPresenter(eventList);
-    pointPresenter.init(card, destinations);
+    pointPresenter.init(card, this._destinations);
+    this._pointPresenter[card.id] = pointPresenter;
   }
 }
