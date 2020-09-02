@@ -5,7 +5,7 @@ import TripEventsView from "../view/trip-events.js";
 import EventMessageView from "../view/event-message.js";
 import {render, RenderPosition, remove} from "../utils/dom.js";
 import {groupCardsByDay} from "../utils/date.js";
-import {sortEventsByTime, sortEventsByPrice} from "../utils/utils.js";
+import {sortEventsByTime, sortEventsByPrice, updateItem} from "../utils/utils.js";
 import {destinations} from "../mock/destinations.js";
 import {BlockTitle, EventMessage, SortType} from "../constants.js";
 import PointPresenter from "./point.js";
@@ -23,6 +23,7 @@ export default class Trip {
     this._tripDaysComponent = new TripDaysView();
     this._eventMessageComponent = new EventMessageView();
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._cardChangeHandler = this._cardChangeHandler.bind(this);
   }
 
   init(tripCards) {
@@ -82,6 +83,12 @@ export default class Trip {
     render(this._eventsContainer, this._eventMessageComponent(EventMessage.NO_EVENTS));
   }
 
+  _cardChangeHandler(updatedCard) {
+    this._tripCards = updateItem(this._tripCards, updatedCard);
+    this._sourceTripCards = updateItem(this._sourceTripCards, updatedCard);
+    this._pointPresenter[updatedCard.id].init(updatedCard, this._destinations);
+  }
+
   _clearEvents() {
     Object
     .values(this._pointPresenter)
@@ -90,7 +97,6 @@ export default class Trip {
     this._existTripDays.forEach(remove);
     this._existTripDays = [];
     remove(this._tripDaysComponent);
-    // this._tripDaysComponent.getElement().innerHTML = ``;
   }
 
   _renderEvents() {
