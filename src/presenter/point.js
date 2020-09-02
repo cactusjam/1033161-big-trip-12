@@ -1,24 +1,26 @@
 import EventEditView from "../view/event-edit.js";
 import TripEventView from "../view/trip-event.js";
 import {render, RenderPosition, replace, remove} from "../utils/dom.js";
+import {isEscapeEvent} from "../utils/dom-event.js";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
   EDITING: `EDITING`
 };
 export default class Point {
-  constructor(pointListContainer, eventList) {
-    this._eventList = eventList;
+  constructor(pointListContainer, changeData) {
     this._pointListContainer = pointListContainer;
+    this._changeData = changeData;
+    this._destinations = null;
     this._point = null;
     this._pointComponent = null;
     this._pointEditComponent = null;
-    this._rollupPointHandler = this._rollupPointHandler.bind(this);
-    this._rollupPointEditHandler = this._rollupPointEditHandler.bind(this);
-    this._submitPointEditHandler = this._submitPointEditHandler.bind(this);
-    this._resetPointEditHandler = this._resetPointEditHandler.bind(this);
-    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
-    this._renderEvents = this._renderEvents.bind(this);
+    this._handleRollupPoint = this._handleRollupPoint.bind(this);
+    this._handleRollupPointEdit = this._handleRollupPointEdit.bind(this);
+    this._handleSubmitPointEdit = this._handleSubmitPointEdit.bind(this);
+    this._handleResetPointEdit = this._handleResetPointEdit.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleEscKeyDown = this._handleEscKeyDown.bind(this);
   }
 
   init(point, destinations) {
@@ -28,10 +30,11 @@ export default class Point {
     const prevPointEditComponent = this._pointEditComponent;
     this._pointComponent = new TripEventView(point);
     this._pointEditComponent = new EventEditView(point, this._destinations);
-    this._pointComponent.setRollupButtonClickHandler(this._rollupPointHandler);
-    this._pointEditComponent.setFormSubmitHandler(this._submitPointEditHandler);
-    this._pointEditComponent.setFormResetHandler(this._resetPointEditHandler);
-    this._pointEditComponent.setRollupButtonClickHandler(this._resetPointEditHandler);
+    this._pointComponent.setRollupButtonClickHandler(this._handleRollupPoint);
+    this._pointEditComponent.setFormSubmitHandler(this._handleSubmitPointEdit);
+    this._pointEditComponent.setFormResetHandler(this._handleResetPointEdit);
+    this._pointEditComponent.setRollupButtonClickHandler(this._handleResetPointEdit);
+    this._pointEditComponent.setFavoriteClickHandler(this._handleFavoriteClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this._pointListContainer, this._pointComponent);
@@ -47,7 +50,6 @@ export default class Point {
     }
     remove(prevPointComponent);
     remove(prevPointEditComponent);
-    this._renderEvents();
   }
 
   destroy() {
@@ -71,31 +73,40 @@ export default class Point {
     this._mode = Mode.DEFAULT;
   }
 
-  _escKeyDownHandler(evt) {
-    if (this._isEscapeEvent(evt)) {
+  _handleEscKeyDown(evt) {
+    if (isEscapeEvent(evt)) {
       this._replaceFormToEvent();
     }
   }
 
-  _rollupPointHandler() {
+  _handleRollupPoint() {
     this._replaceEventToForm();
-    document.addEventListener(`keydown`, this._escKeyDownHandler);
+    document.addEventListener(`keydown`, this._handleEscKeyDown);
   }
 
-  _rollupPointEditHandler() {
+  _handleRollupPointEdit() {
     this._replaceFormToEvent();
-    document.removeEventListener(`keydown`, this._escKeyDownHandler);
+    document.removeEventListener(`keydown`, this._handleEscKeyDown);
   }
 
-  _submitPointEditHandler() {
-    this._rollupPointEditHandler();
-  }
-
-  _resetPointEditHandler() {
+  _handleSubmitPointEdit(editedPoint) {
+    this._changeData(editedPoint);
     this._replaceFormToEvent();
   }
 
-  _renderEvents() {
-    render(this._eventList, this._pointComponent, RenderPosition.BEFORE_END);
+  _handleResetPointEdit() {
+    this._replaceFormToEvent();
+  }
+
+  _handleFavoriteClick() {
+    this._changeData(
+        Object.assign(
+            {},
+            this._point,
+            {
+              isFavorite: !this._point.isFavorite
+            }
+        )
+    );
   }
 }
