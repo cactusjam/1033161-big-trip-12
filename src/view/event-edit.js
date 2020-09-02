@@ -29,8 +29,8 @@ const createDestinationTemplate = (destinations, pointType, pointDestination, po
   );
 };
 
-const createEventEditTemplate = (point, destinations) => {
-  const {id, type, startDate, endDate, price, isFavorite, destination, services} = point;
+const createEventEditTemplate = (pointData, destinations) => {
+  const {id, type, startDate, endDate, price, isFavorite, destination, services} = pointData;
   return (
     `<li class="trip-events__item">
       <form class="event  event--edit" action="#" method="post">
@@ -124,7 +124,7 @@ const createEventEditTemplate = (point, destinations) => {
 export default class EventEdit extends AbstractView {
   constructor(point, destinations) {
     super();
-    this._point = point;
+    this._data = EventEdit.parsePointToData(point, destinations);
     this._destinations = destinations;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
@@ -133,12 +133,12 @@ export default class EventEdit extends AbstractView {
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._point, this._destinations);
+    return createEventEditTemplate(this._data, this._destinations);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._point);
+    this._callback.formSubmit(EventEdit.parseDataToPoint(this._data));
   }
 
   _formResetHandler(evt) {
@@ -181,6 +181,20 @@ export default class EventEdit extends AbstractView {
   setRollupButtonClickHandler(callback) {
     this._callback._rollupButtonClick = callback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollupButtonClickHandler);
+  }
+
+  static parsePointToData(point) {
+    return Object.assign(
+        {},
+        point
+    );
+  }
+
+  static parseDataToPoint(pointData) {
+    return Object.assign(
+        {},
+        pointData
+    );
   }
 }
 
