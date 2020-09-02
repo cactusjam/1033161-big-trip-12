@@ -34,7 +34,7 @@ export default class Point {
     this._pointEditComponent.setFormSubmitHandler(this._handleSubmitPointEdit);
     this._pointEditComponent.setFormResetHandler(this._handleResetPointEdit);
     this._pointEditComponent.setRollupButtonClickHandler(this._handleResetPointEdit);
-    this._pointEditComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._pointEditComponent.setFavoriteChangeHandler(this._handleFavoriteClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this._pointListContainer, this._pointComponent);

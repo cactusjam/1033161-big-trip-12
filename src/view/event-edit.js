@@ -124,16 +124,60 @@ const createEventEditTemplate = (pointData, destinations) => {
 export default class EventEdit extends AbstractView {
   constructor(point, destinations) {
     super();
-    this._data = EventEdit.parsePointToData(point, destinations);
+    this._data = EventEdit.parsePointToData(point);
     this._destinations = destinations;
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._offersChangeHandler = this._offersChangeHandler.bind(this);
+    // this._pointPriceChangeHandler = this._pointPriceChangeHandler.bind(this);
+    // this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
+    // this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
+
+    this._setInnerHandlers();
+  }
+
+  reset(point) {
+    this.updateData(
+        EventEdit.parsePointToData(point, this._destinations)
+    );
   }
 
   getTemplate() {
     return createEventEditTemplate(this._data, this._destinations);
+  }
+
+  updateData(update) {
+    if (!update) {
+      return;
+    }
+
+    this._data = Object.assign(
+        {},
+        this._data,
+        update
+    );
+
+    this.updateElement();
+  }
+
+  updateElement() {
+    let prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    parent.replaceChild(newElement, prevElement);
+    prevElement = null; // Чтобы окончательно "убить" ссылку на prevElement
+  }
+
+  _offersChangeHandler(evt) {
+    this.updateData({
+      type: evt.target.value
+    });
   }
 
   _formSubmitHandler(evt) {
@@ -153,19 +197,18 @@ export default class EventEdit extends AbstractView {
 
   _favoriteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.favoriteClick();
+    this.updateData({
+      isFavorite: !this._data.isFavorite
+    }, true);
+
+    this._callback.favoriteClick(this._data.isFavorite);
   }
 
   restoreHandlers() {
+    this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormResetHandler(this._callback.formReset);
     this.setRollupButtonClickHandler(this._callback._rollupButtonClick);
-    this.setFavoriteClickHandler(this._callback.favoriteClick);
-  }
-
-  setFavoriteClickHandler(callback) {
-    this._callback.favoriteClick = callback;
-    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`click`, this._favoriteClickHandler);
   }
 
   setFormSubmitHandler(callback) {
@@ -181,6 +224,25 @@ export default class EventEdit extends AbstractView {
   setRollupButtonClickHandler(callback) {
     this._callback._rollupButtonClick = callback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollupButtonClickHandler);
+  }
+
+  _setOffersChangeHandlers() {
+    const offerElements = this.getElement().querySelectorAll(`.event__offer-checkbox`);
+    offerElements.forEach((offerElement) => {
+      offerElement.addEventListener(`change`, this._offersChangeHandler);
+    });
+  }
+
+  setFavoriteChangeHandler(callback) {
+    this._callback.favoriteClick = callback;
+  }
+
+  _setInnerHandlers() {
+    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`click`, this._favoriteClickHandler);
+    this.getElement().querySelector(`.event__type-list`).addEventListener(`click`, this._pointTypeChangeHandler);
+    this.getElement().querySelector(`.event__field-group--destination`).addEventListener(`change`, this._pointCityChangeHandler);
+    this.getElement().querySelector(`.event__input--price`).addEventListener(`change`, this._pointPriceChangeHandler);
+    this._setOffersChangeHandlers();
   }
 
   static parsePointToData(point) {
