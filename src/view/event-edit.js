@@ -131,9 +131,9 @@ export default class EventEdit extends SmartView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
-    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
-    this._typeListClickHandler = this._typeListClickHandler.bind(this);
-    this._offersChangeHandler = this._offersChangeHandler.bind(this);
+    this._favoriteChangeHandler = this._favoriteChangeHandler.bind(this);
+    this._typeListChangeHandler = this._typeListChangeHandler.bind(this);
+    this._offerChangeHandler = this._offerChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._priceChangeHandler = this._priceChangeHandler.bind(this);
     // пока не сообразила как
@@ -153,7 +153,7 @@ export default class EventEdit extends SmartView {
     return createEventEditTemplate(this._data, this._destinations);
   }
 
-  _offersChangeHandler(evt) {
+  _offerChangeHandler(evt) {
     evt.preventDefault();
     this.updateData(
         {[evt.target.value]: evt.target.checked}, true
@@ -175,7 +175,7 @@ export default class EventEdit extends SmartView {
     this._callback._rollupButtonClick();
   }
 
-  _favoriteClickHandler(evt) {
+  _favoriteChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
       isFavorite: !this._data.isFavorite
@@ -184,7 +184,7 @@ export default class EventEdit extends SmartView {
     this._callback.favoriteClick(this._data.isFavorite);
   }
 
-  _typeListClickHandler(evt) {
+  _typeListChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
       type: evt.target.value
@@ -234,9 +234,9 @@ export default class EventEdit extends SmartView {
   }
 
   _setOffersChangeHandlers() {
-    const offerElements = this.getElement().querySelectorAll(`.event__offer-checkbox`);
-    offerElements.forEach((offerElement) => {
-      offerElement.addEventListener(`change`, this._offersChangeHandler);
+    const offerCheckbox = this.getElement().querySelectorAll(`.event__offer-checkbox`);
+    offerCheckbox.forEach((offer) => {
+      offer.addEventListener(`change`, this._offerChangeHandler);
     });
   }
 
@@ -245,8 +245,8 @@ export default class EventEdit extends SmartView {
   }
 
   _setInnerHandlers() {
-    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`change`, this._favoriteClickHandler);
-    this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, this._typeListClickHandler);
+    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`change`, this._favoriteChangeHandler);
+    this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, this._typeListChangeHandler);
     this.getElement().querySelector(`.event__field-group--destination`).addEventListener(`change`, this._destinationChangeHandler);
     this.getElement().querySelector(`.event__input--price`).addEventListener(`change`, this._priceChangeHandler);
     this._setOffersChangeHandlers();
