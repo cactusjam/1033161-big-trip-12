@@ -2,7 +2,7 @@ import {convertDate} from "../utils/date.js";
 import {getTypeParticle, getFirstUpperCase} from "../utils/utils.js";
 import {TRANSFER_TYPES, ACTIVITY_TYPES} from "../constants.js";
 import SmartView from "./smart.js";
-import {getRandomInteger, getRandomDescription} from "../mock/card.js";
+import {getRandomArray, photos, getRandomDescription} from "../mock/card.js";
 
 const createRadioTemplate = (cardType, legendTypes, pointId) => {
   return (
@@ -202,8 +202,7 @@ export default class EventEdit extends SmartView {
         name: evt.target.value,
         destination: {
           description: getRandomDescription(),
-          photos: new Array(getRandomInteger(1, 5)).fill().map(() =>
-            `http://picsum.photos/248/152?r=${Math.random()}`)
+          photos: getRandomArray(photos)
         }
       });
     }
