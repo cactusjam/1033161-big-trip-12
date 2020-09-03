@@ -1,7 +1,7 @@
 import {convertDate} from "../utils/date.js";
 import {getTypeParticle, getFirstUpperCase} from "../utils/utils.js";
 import {TRANSFER_TYPES, ACTIVITY_TYPES} from "../constants.js";
-import AbstractView from "./abstract.js";
+import SmartView from "./smart.js";
 import {getRandomInteger, getRandomDescription} from "../mock/card.js";
 
 const createRadioTemplate = (cardType, legendTypes, pointId) => {
@@ -122,7 +122,7 @@ const createEventEditTemplate = (pointData, destinations) => {
   );
 };
 
-export default class EventEdit extends AbstractView {
+export default class EventEdit extends SmartView {
   constructor(point, destinations) {
     super();
     this._data = EventEdit.parsePointToData(point);
@@ -151,37 +151,6 @@ export default class EventEdit extends AbstractView {
 
   getTemplate() {
     return createEventEditTemplate(this._data, this._destinations);
-  }
-
-  updateData(update, justDataUpdating) {
-    if (!update) {
-      return;
-    }
-
-    this._data = Object.assign(
-        {},
-        this._data,
-        update
-    );
-
-    if (justDataUpdating) {
-      return;
-    }
-
-    this.updateElement();
-  }
-
-  updateElement() {
-    let prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-    prevElement = null;
-
-    this.restoreHandlers();
   }
 
   _offersChangeHandler(evt) {
