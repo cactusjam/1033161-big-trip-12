@@ -3,22 +3,22 @@ import {getStartDate, getEndDate} from "../mock/utils.js";
 
 const services = [
   {
-    key: `luggage`,
+    type: `luggage`,
     title: `Add luggage`,
     price: 30
   },
   {
-    key: `comfort`,
+    type: `comfort`,
     title: `Switch to comfort class`,
     price: 100
   },
   {
-    key: `meal`,
+    type: `meal`,
     title: `Add meal`,
     price: 15
   },
   {
-    key: `seats`,
+    type: `seats`,
     title: `Choose seats`,
     price: 5
   }

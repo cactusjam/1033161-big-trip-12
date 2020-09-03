@@ -91,8 +91,8 @@ const createEventEditTemplate = (pointData, destinations) => {
               <div class="event__available-offers">
               ${services.map((offer) =>`
               <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.key}-1" type="checkbox" value="${offer.key} name="event-offer-${offer.key}" ${isActivated ? `checked` : ``}>
-                <label class="event__offer-label" for="event-offer-${offer.key}-1">
+                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" value="${offer.type} name="event-offer-${offer.type}" ${isActivated ? `checked` : ``}>
+                <label class="event__offer-label" for="event-offer-${offer.type}-1">
                   <span class="event__offer-title">${offer.title}</span>
                   +
                   €&nbsp;<span class="event__offer-price">${offer.price}</span>
