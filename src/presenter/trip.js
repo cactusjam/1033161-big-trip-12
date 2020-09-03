@@ -26,6 +26,7 @@ export default class Trip {
     this._eventMessageComponent = new EventMessageView();
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleCardChange = this._handleCardChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init(tripCards) {
@@ -49,6 +50,12 @@ export default class Trip {
     }
 
     this._currentSortType = sortType;
+  }
+
+  _handleModeChange() {
+    Object
+      .values(this._pointPresenter)
+      .forEach((presenter) => presenter.resetView());
   }
 
   _handleSortTypeChange(sortType) {

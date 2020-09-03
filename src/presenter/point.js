@@ -8,13 +8,15 @@ const Mode = {
   EDITING: `EDITING`
 };
 export default class Point {
-  constructor(pointListContainer, changeData) {
+  constructor(pointListContainer, changeData, changeMode) {
     this._pointListContainer = pointListContainer;
     this._changeData = changeData;
+    this._changeMode = changeMode;
     this._destinations = null;
     this._point = null;
     this._pointComponent = null;
     this._pointEditComponent = null;
+    this._mode = Mode.DEFAULT;
     this._handleRollupPoint = this._handleRollupPoint.bind(this);
     this._handleRollupPointEdit = this._handleRollupPointEdit.bind(this);
     this._handleSubmitPointEdit = this._handleSubmitPointEdit.bind(this);
@@ -49,6 +51,7 @@ export default class Point {
     if (this._mode === Mode.EDITING) {
       replace(this._pointEditComponent, prevPointEditComponent);
     }
+
     remove(prevPointComponent);
     remove(prevPointEditComponent);
   }
@@ -64,8 +67,15 @@ export default class Point {
     }
   }
 
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceFormToEvent();
+    }
+  }
+
   _replaceEventToForm() {
     replace(this._pointEditComponent, this._pointComponent);
+    this._changeMode();
     this._mode = Mode.EDITING;
   }
 
