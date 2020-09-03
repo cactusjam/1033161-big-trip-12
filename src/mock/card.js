@@ -3,22 +3,22 @@ import {getStartDate, getEndDate} from "../mock/utils.js";
 
 const services = [
   {
-    type: `luggage`,
+    key: `luggage`,
     title: `Add luggage`,
     price: 30
   },
   {
-    type: `comfort`,
+    key: `comfort`,
     title: `Switch to comfort class`,
     price: 100
   },
   {
-    type: `meal`,
+    key: `meal`,
     title: `Add meal`,
     price: 15
   },
   {
-    type: `seats`,
+    key: `seats`,
     title: `Choose seats`,
     price: 5
   }
@@ -85,7 +85,8 @@ const generateCard = () => {
     endDate,
     duration,
     price: getRandomInteger(5, 1000),
-    isFavorite: Boolean(Math.round(Math.random()) * 0.5)
+    isFavorite: Boolean(Math.round(Math.random()) * 0.5),
+    isActivated: Boolean(Math.round(Math.random()) * 0.5)
   };
 };
 
@@ -93,10 +94,5 @@ const generateCards = (count) => new Array(count)
 .fill()
 .map(generateCard)
 .sort((a, b) => a.startDate - b.startDate);
-
-// const cards = new Array(CARD_COUNT)
-//   .fill()
-//   .map(generateCard)
-//   .sort((a, b) => a.startDate - b.startDate);
 
 export {generateCards};

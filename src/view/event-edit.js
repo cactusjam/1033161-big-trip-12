@@ -30,7 +30,7 @@ const createDestinationTemplate = (destinations, pointType, pointDestination, po
 };
 
 const createEventEditTemplate = (pointData, destinations) => {
-  const {id, type, startDate, endDate, price, isFavorite, destination, services} = pointData;
+  const {id, type, startDate, endDate, price, isFavorite, isActivated, destination, services} = pointData;
   return (
     `<li class="trip-events__item">
       <form class="event  event--edit" action="#" method="post">
@@ -90,8 +90,8 @@ const createEventEditTemplate = (pointData, destinations) => {
               <div class="event__available-offers">
               ${services.map((offer) =>`
               <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" name="event-offer-${offer.type}" ${isFavorite ? `checked` : ``}>
-                <label class="event__offer-label" for="event-offer-${offer.type}-1">
+                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.key}-1" type="checkbox" value="${offer.key} name="event-offer-${offer.key}" ${isActivated ? `checked` : ``}>
+                <label class="event__offer-label" for="event-offer-${offer.key}-1">
                   <span class="event__offer-title">${offer.title}</span>
                   +
                   €&nbsp;<span class="event__offer-price">${offer.price}</span>
@@ -131,6 +131,7 @@ export default class EventEdit extends AbstractView {
     this._formResetHandler = this._formResetHandler.bind(this);
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._typeListClickHandler = this._typeListClickHandler.bind(this);
     this._offersChangeHandler = this._offersChangeHandler.bind(this);
     // this._pointPriceChangeHandler = this._pointPriceChangeHandler.bind(this);
     // this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
@@ -149,7 +150,7 @@ export default class EventEdit extends AbstractView {
     return createEventEditTemplate(this._data, this._destinations);
   }
 
-  updateData(update) {
+  updateData(update, justDataUpdating) {
     if (!update) {
       return;
     }
@@ -159,6 +160,10 @@ export default class EventEdit extends AbstractView {
         this._data,
         update
     );
+
+    if (justDataUpdating) {
+      return;
+    }
 
     this.updateElement();
   }
@@ -171,13 +176,27 @@ export default class EventEdit extends AbstractView {
     const newElement = this.getElement();
 
     parent.replaceChild(newElement, prevElement);
-    prevElement = null; // Чтобы окончательно "убить" ссылку на prevElement
+    prevElement = null;
+
+    this.restoreHandlers();
   }
 
   _offersChangeHandler(evt) {
-    this.updateData({
-      type: evt.target.value
+    evt.preventDefault();
+    const offerKey = evt.target.value;
+    const isActivated = evt.target.checked;
+    const offers = this._data.services.map((offer) => {
+      if (offerKey === offer.key) {
+        return Object.assign(
+            {}, (offer, {isActivated})
+        );
+      }
+      return offer;
     });
+
+    this.updateData({
+      offers,
+    }, true);
   }
 
   _formSubmitHandler(evt) {
@@ -204,11 +223,11 @@ export default class EventEdit extends AbstractView {
     this._callback.favoriteClick(this._data.isFavorite);
   }
 
-  restoreHandlers() {
-    this._setInnerHandlers();
-    this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setFormResetHandler(this._callback.formReset);
-    this.setRollupButtonClickHandler(this._callback._rollupButtonClick);
+  _typeListClickHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      type: evt.target.value
+    });
   }
 
   setFormSubmitHandler(callback) {
@@ -238,11 +257,18 @@ export default class EventEdit extends AbstractView {
   }
 
   _setInnerHandlers() {
-    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`click`, this._favoriteClickHandler);
-    this.getElement().querySelector(`.event__type-list`).addEventListener(`click`, this._pointTypeChangeHandler);
+    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`change`, this._favoriteClickHandler);
+    this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, this._typeListClickHandler);
     this.getElement().querySelector(`.event__field-group--destination`).addEventListener(`change`, this._pointCityChangeHandler);
     this.getElement().querySelector(`.event__input--price`).addEventListener(`change`, this._pointPriceChangeHandler);
     this._setOffersChangeHandlers();
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormResetHandler(this._callback.formReset);
+    this.setRollupButtonClickHandler(this._callback._rollupButtonClick);
   }
 
   static parsePointToData(point) {

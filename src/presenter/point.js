@@ -1,6 +1,6 @@
 import EventEditView from "../view/event-edit.js";
 import TripEventView from "../view/trip-event.js";
-import {render, RenderPosition, replace, remove} from "../utils/dom.js";
+import {render, replace, remove} from "../utils/dom.js";
 import {isEscapeEvent} from "../utils/dom-event.js";
 
 const Mode = {
@@ -35,6 +35,7 @@ export default class Point {
     this._pointEditComponent.setFormResetHandler(this._handleResetPointEdit);
     this._pointEditComponent.setRollupButtonClickHandler(this._handleResetPointEdit);
     this._pointEditComponent.setFavoriteChangeHandler(this._handleFavoriteClick);
+
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this._pointListContainer, this._pointComponent);
