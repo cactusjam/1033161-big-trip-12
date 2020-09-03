@@ -2,6 +2,7 @@ import {convertDate} from "../utils/date.js";
 import {getTypeParticle, getFirstUpperCase} from "../utils/utils.js";
 import {TRANSFER_TYPES, ACTIVITY_TYPES} from "../constants.js";
 import AbstractView from "./abstract.js";
+import {getRandomInteger, getRandomDescription} from "../mock/card.js";
 
 const createRadioTemplate = (cardType, legendTypes, pointId) => {
   return (
@@ -133,7 +134,9 @@ export default class EventEdit extends AbstractView {
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._typeListClickHandler = this._typeListClickHandler.bind(this);
     this._offersChangeHandler = this._offersChangeHandler.bind(this);
-    // this._pointPriceChangeHandler = this._pointPriceChangeHandler.bind(this);
+    this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._priceChangeHandler = this._priceChangeHandler.bind(this);
+    // пока не сообразила как
     // this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
     // this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
 
@@ -183,20 +186,9 @@ export default class EventEdit extends AbstractView {
 
   _offersChangeHandler(evt) {
     evt.preventDefault();
-    const offerKey = evt.target.value;
-    const isActivated = evt.target.checked;
-    const offers = this._data.services.map((offer) => {
-      if (offerKey === offer.key) {
-        return Object.assign(
-            {}, (offer, {isActivated})
-        );
-      }
-      return offer;
-    });
-
-    this.updateData({
-      offers,
-    }, true);
+    this.updateData(
+        {[evt.target.value]: evt.target.checked}, true
+    );
   }
 
   _formSubmitHandler(evt) {
@@ -230,6 +222,34 @@ export default class EventEdit extends AbstractView {
     });
   }
 
+  _destinationChangeHandler(evt) {
+    evt.preventDefault();
+    const destination = this._destinations.find((item) => item.name === evt.target.value);
+    if (destination === undefined) {
+      evt.target.value = this._data.destination.name;
+      return;
+    } else if (evt.target.value !== this._data.destination.name) {
+      this.updateData({
+        name: evt.target.value,
+        destination: {
+          description: getRandomDescription(),
+          photos: new Array(getRandomInteger(1, 5)).fill().map(() =>
+            `http://picsum.photos/248/152?r=${Math.random()}`)
+        }
+      });
+    }
+    this.updateData({
+      destination
+    });
+  }
+
+  _priceChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      price: evt.target.value,
+    }, true);
+  }
+
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
@@ -259,8 +279,8 @@ export default class EventEdit extends AbstractView {
   _setInnerHandlers() {
     this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`change`, this._favoriteClickHandler);
     this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, this._typeListClickHandler);
-    this.getElement().querySelector(`.event__field-group--destination`).addEventListener(`change`, this._pointCityChangeHandler);
-    this.getElement().querySelector(`.event__input--price`).addEventListener(`change`, this._pointPriceChangeHandler);
+    this.getElement().querySelector(`.event__field-group--destination`).addEventListener(`change`, this._destinationChangeHandler);
+    this.getElement().querySelector(`.event__input--price`).addEventListener(`change`, this._priceChangeHandler);
     this._setOffersChangeHandlers();
   }
 

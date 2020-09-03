@@ -95,4 +95,4 @@ const generateCards = (count) => new Array(count)
 .map(generateCard)
 .sort((a, b) => a.startDate - b.startDate);
 
-export {generateCards};
+export {generateCards, getRandomArray, getRandomDescription, getRandomInteger};
