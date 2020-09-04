@@ -8,6 +8,7 @@ import {BlockTitle} from "./constants.js";
 import {generateCards} from "./mock/card.js";
 import {filterNames} from "./mock/filter.js";
 import TripPresenter from "./presenter/trip.js";
+import {destinations} from "./mock/destinations.js";
 
 const CARD_COUNT = 20;
 const tripCards = generateCards(CARD_COUNT);
@@ -30,4 +31,4 @@ render(tripMain, new TripInfoView(), RenderPosition.AFTER_BEGIN);
 const tripEventButtonComponent = new AddEventButtonView();
 render(tripMain, tripEventButtonComponent);
 
-tripPresenter.init(tripCards);
+tripPresenter.init(tripCards, destinations);

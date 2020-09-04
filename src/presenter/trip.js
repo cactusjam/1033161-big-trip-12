@@ -6,17 +6,16 @@ import EventMessageView from "../view/event-message.js";
 import {render, RenderPosition, remove} from "../utils/dom.js";
 import {groupCardsByDay} from "../utils/date.js";
 import {sortEventsByTime, sortEventsByPrice, updateItemById} from "../utils/utils.js";
-import {destinations} from "../mock/destinations.js";
 import {BlockTitle, EventMessage, SortType} from "../constants.js";
 import PointPresenter from "./point.js";
 
 export default class Trip {
-  constructor(eventsContainer, renderBlock) {
+  constructor(container, renderBlock) {
     this._tripCards = [];
     this._destinations = [];
     this._pointPresenter = {};
     this._existTripDays = [];
-    this._eventsContainer = eventsContainer;
+    this._eventsContainer = container;
     this._handleCardChange = this._handleCardChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._renderBlock = renderBlock;
@@ -29,7 +28,7 @@ export default class Trip {
     this._handleModeChange = this._handleModeChange.bind(this);
   }
 
-  init(tripCards) {
+  init(tripCards, destinations) {
     this._tripCards = tripCards.slice();
     this._sourceTripCards = tripCards.slice();
     this._destinations = destinations;

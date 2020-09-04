@@ -245,10 +245,12 @@ export default class EventEdit extends SmartView {
   }
 
   _setInnerHandlers() {
-    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`change`, this._favoriteChangeHandler);
-    this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, this._typeListChangeHandler);
-    this.getElement().querySelector(`.event__field-group--destination`).addEventListener(`change`, this._destinationChangeHandler);
-    this.getElement().querySelector(`.event__input--price`).addEventListener(`change`, this._priceChangeHandler);
+    const element = this.getElement();
+
+    element.querySelector(`.event__favorite-checkbox`).addEventListener(`change`, this._favoriteChangeHandler);
+    element.querySelector(`.event__type-list`).addEventListener(`change`, this._typeListChangeHandler);
+    element.querySelector(`.event__field-group--destination`).addEventListener(`change`, this._destinationChangeHandler);
+    element.querySelector(`.event__input--price`).addEventListener(`change`, this._priceChangeHandler);
     this._setOffersChangeHandlers();
   }
 
