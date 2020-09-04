@@ -2,7 +2,14 @@ import {convertDate} from "../utils/date.js";
 import {getTypeParticle, getFirstUpperCase} from "../utils/utils.js";
 import {TRANSFER_TYPES, ACTIVITY_TYPES} from "../constants.js";
 import SmartView from "./smart.js";
-import {getRandomArray, photos, getRandomDescription} from "../mock/card.js";
+
+const BLANK_DESTINATION = {
+  destination: {
+    name: ``,
+    description: ``,
+    photos: []
+  },
+};
 
 const createRadioTemplate = (cardType, legendTypes, pointId) => {
   return (
@@ -15,14 +22,14 @@ const createRadioTemplate = (cardType, legendTypes, pointId) => {
   );
 };
 
-const createDestinationTemplate = (destinations, pointType, pointDestination, pointId) => {
+const createDestinationTemplate = (destinations, pointType, destination, pointId) => {
   const typeName = getFirstUpperCase(pointType);
   return (
     `<div class="event__field-group  event__field-group--destination">
       <label class="event__label  event__type-output" for="event-destination-${pointId}">
         ${typeName} ${getTypeParticle(pointType)}
       </label>
-      <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${pointDestination.name}" list="destination-list-${pointId}">
+      <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${destination.name}" list="destination-list-${pointId}">
       <datalist id="destination-list-${pointId}">
       ${destinations.map(({name}) => `<option value="${name}"></option>`).join(``)}
       </datalist>
@@ -123,7 +130,7 @@ const createEventEditTemplate = (pointData, destinations) => {
 };
 
 export default class EventEdit extends SmartView {
-  constructor(point, destinations) {
+  constructor(point, destinations = BLANK_DESTINATION) {
     super();
     this._data = EventEdit.parsePointToData(point);
     this._destinations = destinations;
@@ -136,9 +143,6 @@ export default class EventEdit extends SmartView {
     this._offerChangeHandler = this._offerChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._priceChangeHandler = this._priceChangeHandler.bind(this);
-    // пока не сообразила как
-    // this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
-    // this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -199,11 +203,7 @@ export default class EventEdit extends SmartView {
       return;
     } else if (evt.target.value !== this._data.destination.name) {
       this.updateData({
-        name: evt.target.value,
-        destination: {
-          description: getRandomDescription(),
-          photos: getRandomArray(photos)
-        }
+        destination
       });
     }
     this.updateData({
