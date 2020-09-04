@@ -16,7 +16,7 @@ const sortEventsByTime = (eventA, eventB) => {
   return duration;
 };
 
-const updateItem = (items, update) => {
+const updateItemById = (items, update) => {
   const index = items.findIndex((item) => item.id === update.id);
 
   if (index === -1) {
@@ -30,4 +30,4 @@ const updateItem = (items, update) => {
   ];
 };
 
-export {getTypeParticle, getFirstUpperCase, sortEventsByPrice, sortEventsByTime, updateItem};
+export {getTypeParticle, getFirstUpperCase, sortEventsByPrice, sortEventsByTime, updateItemById};

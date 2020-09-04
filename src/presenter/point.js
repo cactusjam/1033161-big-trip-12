@@ -9,7 +9,7 @@ const Mode = {
 };
 export default class Point {
   constructor(pointListContainer, changeData, changeMode) {
-    this._pointListContainer = pointListContainer;
+    this._container = pointListContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
     this._destinations = null;
@@ -40,7 +40,7 @@ export default class Point {
 
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
-      render(this._pointListContainer, this._pointComponent);
+      render(this._container, this._pointComponent);
       return;
     }
 

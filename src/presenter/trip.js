@@ -5,7 +5,7 @@ import TripEventsView from "../view/trip-events.js";
 import EventMessageView from "../view/event-message.js";
 import {render, RenderPosition, remove} from "../utils/dom.js";
 import {groupCardsByDay} from "../utils/date.js";
-import {sortEventsByTime, sortEventsByPrice, updateItem} from "../utils/utils.js";
+import {sortEventsByTime, sortEventsByPrice, updateItemById} from "../utils/utils.js";
 import {destinations} from "../mock/destinations.js";
 import {BlockTitle, EventMessage, SortType} from "../constants.js";
 import PointPresenter from "./point.js";
@@ -93,8 +93,8 @@ export default class Trip {
   }
 
   _handleCardChange(updatedCard) {
-    this._tripCards = updateItem(this._tripCards, updatedCard);
-    this._sourceTripCards = updateItem(this._sourceTripCards, updatedCard);
+    this._tripCards = updateItemById(this._tripCards, updatedCard);
+    this._sourceTripCards = updateItemById(this._sourceTripCards, updatedCard);
     this._pointPresenter[updatedCard.id].init(updatedCard, this._destinations);
   }
 
