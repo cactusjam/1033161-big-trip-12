@@ -6,11 +6,11 @@ import EventMessageView from "../view/event-message.js";
 import {render, RenderPosition, remove} from "../utils/dom.js";
 import {groupCardsByDay} from "../utils/date.js";
 import {sortEventsByTime, sortEventsByPrice, updateItemById} from "../utils/utils.js";
-import {BlockTitle, EventMessage, SortType} from "../constants.js";
+import {EventMessage, SortType} from "../constants.js";
 import PointPresenter from "./point.js";
 
 export default class Trip {
-  constructor(container, renderBlock) {
+  constructor(container) {
     this._tripCards = [];
     this._destinations = [];
     this._pointPresenter = {};
@@ -18,7 +18,6 @@ export default class Trip {
     this._eventsContainer = container;
     this._handleCardChange = this._handleCardChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
-    this._renderBlock = renderBlock;
     this._currentSortType = SortType.DEFAULT;
     this._sortComponent = new SortView();
     this._tripDaysComponent = new TripDaysView();
@@ -68,7 +67,6 @@ export default class Trip {
   }
 
   _renderSort() {
-    this._renderBlock(this._eventsContainer, BlockTitle.TRIP_EVENTS, this._sortComponent);
     render(this._eventsContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
