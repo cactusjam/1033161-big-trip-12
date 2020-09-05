@@ -51,11 +51,13 @@ export default class Sort extends AbstractView {
   _showDay(visible) {
     const dayItemNode = this.getElement().querySelector(`.trip-sort__item--day`);
 
-    if (visible) {
-      dayItemNode.textContent = DAY;
-    } else {
-      dayItemNode.textContent = ``;
-    }
+    // if (visible) {
+    //   dayItemNode.textContent = DAY;
+    // } else {
+    //   dayItemNode.textContent = ``;
+    // }
+
+    dayItemNode.textContent = visible ? DAY : ``;
   }
 
   _typeChangeHandler(evt) {

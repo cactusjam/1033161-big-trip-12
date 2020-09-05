@@ -23,8 +23,6 @@ export default class Trip {
     this._tripDaysComponent = new TripDaysView();
     this._eventMessageComponent = new EventMessageView();
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-    this._handleCardChange = this._handleCardChange.bind(this);
-    this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init(tripCards, destinations) {

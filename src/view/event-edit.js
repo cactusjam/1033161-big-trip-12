@@ -80,7 +80,7 @@ const createEventEditTemplate = (pointData, destinations) => {
               <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
             </div>
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-            <button class="event__reset-btn" type="reset">Cancel</button>
+            <button class="event__reset-btn" type="reset">Delete</button>
             <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
             <label class="event__favorite-btn" for="event-favorite-1">
               <span class="visually-hidden">Add to favorite</span>
@@ -198,17 +198,14 @@ export default class EventEdit extends SmartView {
   _destinationChangeHandler(evt) {
     evt.preventDefault();
     const destination = this._destinations.find((item) => item.name === evt.target.value);
-    if (destination === undefined) {
-      evt.target.value = this._data.destination.name;
-      return;
-    } else if (evt.target.value !== this._data.destination.name) {
+
+    if (destination && evt.target.value !== this._data.destination.name) {
       this.updateData({
         destination
       });
+      return;
     }
-    this.updateData({
-      destination
-    });
+    evt.target.value = this._data.destination.name;
   }
 
   _priceChangeHandler(evt) {

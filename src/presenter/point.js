@@ -22,7 +22,7 @@ export default class Point {
     this._handleSubmitPointEdit = this._handleSubmitPointEdit.bind(this);
     this._handleResetPointEdit = this._handleResetPointEdit.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
-    this._handleEscKeyDown = this._handleEscKeyDown.bind(this);
+    this._handleEscKeyDown = this._escKeyDownHandler.bind(this);
   }
 
   init(point, destinations) {
@@ -84,7 +84,7 @@ export default class Point {
     this._mode = Mode.DEFAULT;
   }
 
-  _handleEscKeyDown(evt) {
+  _escKeyDownHandler(evt) {
     if (isEscapeEvent(evt)) {
       evt.preventDefault();
       this._pointEditComponent.reset(this._point);
@@ -94,12 +94,12 @@ export default class Point {
 
   _handleRollupPoint() {
     this._replaceEventToForm();
-    document.addEventListener(`keydown`, this._handleEscKeyDown);
+    document.addEventListener(`keydown`, this._escKeyDownHandler);
   }
 
   _handleRollupPointEdit() {
     this._replaceFormToEvent();
-    document.removeEventListener(`keydown`, this._handleEscKeyDown);
+    document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
   _handleSubmitPointEdit(editedPoint) {
