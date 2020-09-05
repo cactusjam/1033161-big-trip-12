@@ -85,7 +85,7 @@ const generateCard = () => {
     endDate,
     duration,
     price: getRandomInteger(5, 1000),
-    isFavorite: Boolean(Math.round(Math.random()) * 0.5)
+    isFavorite: Boolean(Math.round(Math.random()) * 0.5),
   };
 };
 
@@ -94,9 +94,4 @@ const generateCards = (count) => new Array(count)
 .map(generateCard)
 .sort((a, b) => a.startDate - b.startDate);
 
-// const cards = new Array(CARD_COUNT)
-//   .fill()
-//   .map(generateCard)
-//   .sort((a, b) => a.startDate - b.startDate);
-
-export {generateCards};
+export {generateCards, getRandomArray, getRandomDescription, photos};

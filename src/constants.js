@@ -3,12 +3,6 @@ const EventMessage = {
   LOADING: `Loading...`,
 };
 
-const BlockTitle = {
-  SWITCH: `Switch trip view`,
-  FILTER: `Filter events`,
-  TRIP_EVENTS: `Trip events`
-};
-
 const KeyboardKey = {
   ESCAPE: `Escape`,
   ESCAPE_IE: `Esc`,
@@ -41,4 +35,4 @@ const SortType = {
   PRICE: `Price`
 };
 
-export {EventMessage, BlockTitle, KeyboardKey, TypeParticle, TRANSFER_TYPES, ACTIVITY_TYPES, SortType};
+export {EventMessage, KeyboardKey, TypeParticle, TRANSFER_TYPES, ACTIVITY_TYPES, SortType};

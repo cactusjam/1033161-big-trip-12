@@ -6,15 +6,28 @@ const getTypeParticle = (type) => ACTIVITY_TYPES.includes(type)
 
 const getFirstUpperCase = (element) => element[0].toUpperCase() + element.slice(1);
 
-export const sortEventsByPrice = (priceA, priceB) => {
+const sortEventsByPrice = (priceA, priceB) => {
   return priceB.price - priceA.price;
 };
 
-export const sortEventsByTime = (eventA, eventB) => {
-  const durationA = new Date(eventA.endDate) - new Date(eventA.startDate);
-  const durationB = new Date(eventB.endDate) - new Date(eventB.startDate);
+const sortEventsByTime = (eventA, eventB) => {
+  const duration = (eventB.endDate - eventB.startDate) - (eventA.endDate - eventA.startDate);
 
-  return durationB - durationA;
+  return duration;
 };
 
-export {getTypeParticle, getFirstUpperCase};
+const updateItemById = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1)
+  ];
+};
+
+export {getTypeParticle, getFirstUpperCase, sortEventsByPrice, sortEventsByTime, updateItemById};

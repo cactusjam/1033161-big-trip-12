@@ -1,4 +1,4 @@
-import {getTimeFormat, formatDuration} from "../utils/date.js";
+import {getTimeFormat, formatDuration, convertDateToISOString} from "../utils/date.js";
 import AbstractView from "./abstract.js";
 import {getTypeParticle, getFirstUpperCase} from "../utils/utils.js";
 
@@ -15,9 +15,9 @@ const createTripEventTemplate = (point) => {
         <h3 class="event__title">${typeName} ${getTypeParticle(type)} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${startDate.toISOString()}">${getTimeFormat(startDate)}</time>
+            <time class="event__start-time" datetime="${convertDateToISOString(startDate)}">${getTimeFormat(startDate)}</time>
             &mdash;
-            <time class="event__end-time" datetime="${endDate.toISOString()}">${getTimeFormat(endDate)}</time>
+            <time class="event__end-time" datetime="${convertDateToISOString(endDate)}">${getTimeFormat(endDate)}</time>
           </p>
           <p class="event__duration">${formattedDuration}</p>
         </div>

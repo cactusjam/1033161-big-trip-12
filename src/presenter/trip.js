@@ -2,21 +2,22 @@ import SortView from "../view/sort.js";
 import TripDaysView from "../view/trip-days.js";
 import TripDayView from "../view/trip-day.js";
 import TripEventsView from "../view/trip-events.js";
-import TripEventView from "../view/trip-event.js";
-import EventEditView from "../view/event-edit.js";
 import EventMessageView from "../view/event-message.js";
-import {render, RenderPosition, replace} from "../utils/dom.js";
+import {render, RenderPosition, remove} from "../utils/dom.js";
 import {groupCardsByDay} from "../utils/date.js";
-import {sortEventsByTime, sortEventsByPrice} from "../utils/utils.js";
-import {isEscapeEvent} from "../utils/dom-event.js";
-import {destinations} from "../mock/destinations.js";
-import {BlockTitle, EventMessage, SortType} from "../constants.js";
+import {sortEventsByTime, sortEventsByPrice, updateItemById} from "../utils/utils.js";
+import {EventMessage, SortType} from "../constants.js";
+import PointPresenter from "./point.js";
 
 export default class Trip {
-  constructor(eventsContainer, renderBlock) {
+  constructor(container) {
     this._tripCards = [];
-    this._eventsContainer = eventsContainer;
-    this._renderBlock = renderBlock;
+    this._destinations = [];
+    this._pointPresenter = {};
+    this._existTripDays = [];
+    this._eventsContainer = container;
+    this._handleCardChange = this._handleCardChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
     this._currentSortType = SortType.DEFAULT;
     this._sortComponent = new SortView();
     this._tripDaysComponent = new TripDaysView();
@@ -24,9 +25,11 @@ export default class Trip {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
-  init(tripCards) {
+  init(tripCards, destinations) {
     this._tripCards = tripCards.slice();
     this._sourceTripCards = tripCards.slice();
+    this._destinations = destinations;
+
     this._renderTrip();
   }
 
@@ -45,6 +48,12 @@ export default class Trip {
     this._currentSortType = sortType;
   }
 
+  _handleModeChange() {
+    Object
+      .values(this._pointPresenter)
+      .forEach((presenter) => presenter.resetView());
+  }
+
   _handleSortTypeChange(sortType) {
     if (this._currentSortType === sortType) {
       return;
@@ -52,16 +61,10 @@ export default class Trip {
 
     this._sortEvents(sortType);
     this._clearEvents();
-    if (this._currentSortType === `event`) {
-      this._sortComponent.getElement().querySelector(`.trip-sort__item--day`).innerHTML = `Day`;
-    } else {
-      this._sortComponent.getElement().querySelector(`.trip-sort__item--day`).innerHTML = ``;
-    }
     this._renderTripEvents();
   }
 
   _renderSort() {
-    this._renderBlock(this._eventsContainer, BlockTitle.TRIP_EVENTS, this._sortComponent);
     render(this._eventsContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
@@ -84,13 +87,31 @@ export default class Trip {
     render(this._eventsContainer, this._eventMessageComponent(EventMessage.NO_EVENTS));
   }
 
+  _handleCardChange(updatedCard) {
+    this._tripCards = updateItemById(this._tripCards, updatedCard);
+    this._sourceTripCards = updateItemById(this._sourceTripCards, updatedCard);
+    this._pointPresenter[updatedCard.id].init(updatedCard, this._destinations);
+  }
+
+  _handleModeChange() {
+    Object
+      .values(this._pointPresenter)
+      .forEach((presenter) => presenter.resetView());
+  }
+
   _clearEvents() {
-    this._tripDaysComponent._element.innerHTML = ``;
+    Object
+    .values(this._pointPresenter)
+    .forEach((presenter) => presenter.destroy());
+    this._pointPresenter = {};
+    this._existTripDays.forEach(remove);
+    this._existTripDays = [];
+    remove(this._tripDaysComponent);
   }
 
   _renderEvents() {
     if (this._currentSortType !== SortType.DEFAULT) {
-      const tripDayComponent = new TripDayView();
+      const tripDayComponent = new TripDayView(0, new Date());
       render(this._tripDaysComponent, tripDayComponent);
 
       const tripEventsComponent = new TripEventsView();
@@ -119,41 +140,8 @@ export default class Trip {
   }
 
   _renderCard(card, eventList) {
-    const tripEventComponent = new TripEventView(card);
-    const eventEditComponent = new EventEditView(card, destinations);
-
-    const replaceEventToForm = () => {
-      replace(eventEditComponent, tripEventComponent);
-    };
-
-    const replaceFormToEvent = () => {
-      replace(tripEventComponent, eventEditComponent);
-    };
-
-    const escKeyDownHandler = (evt) => {
-      if (isEscapeEvent(evt)) {
-        replaceFormToEvent();
-      }
-    };
-
-    tripEventComponent.setRollupButtonClickHandler(() => {
-      replaceEventToForm();
-      document.addEventListener(`keydown`, escKeyDownHandler);
-    });
-
-    eventEditComponent.setFormSubmitHandler(() => {
-      replaceFormToEvent();
-      document.removeEventListener(`keydown`, escKeyDownHandler);
-    });
-
-    eventEditComponent.setFormResetHandler(() => {
-      replaceFormToEvent();
-    });
-
-    eventEditComponent.setRollupButtonClickHandler(() => {
-      replaceFormToEvent();
-    });
-
-    render(eventList, tripEventComponent, RenderPosition.BEFORE_END);
+    const pointPresenter = new PointPresenter(eventList, this._handleCardChange, this._handleModeChange);
+    pointPresenter.init(card, this._destinations);
+    this._pointPresenter[card.id] = pointPresenter;
   }
 }

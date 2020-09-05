@@ -1,18 +1,20 @@
 import AbstractView from "./abstract.js";
 import {SortType} from "../constants.js";
 
+const DAY = `Day`;
+
 const createSortTemplate = () => {
   return (
     `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-      <span class="trip-sort__item  trip-sort__item--day">Day</span>
+      <span class="trip-sort__item  trip-sort__item--day">${DAY}</span>
 
       <div class="trip-sort__item  trip-sort__item--event">
-        <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-event" checked data-sort-type="${SortType.DEFAULT}">
+        <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="${SortType.DEFAULT}">
         <label class="trip-sort__btn" for="sort-event">Event</label>
       </div>
 
       <div class="trip-sort__item  trip-sort__item--time">
-        <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" data-sort-type="${SortType.TIME}">
+        <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="${SortType.TIME}">
         <label class="trip-sort__btn" for="sort-time">
           Time
           <svg class="trip-sort__direction-icon" width="8" height="10" viewBox="0 0 8 10">
@@ -22,7 +24,7 @@ const createSortTemplate = () => {
       </div>
 
       <div class="trip-sort__item  trip-sort__item--price">
-        <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" data-sort-type="${SortType.PRICE}">
+        <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="${SortType.PRICE}">
         <label class="trip-sort__btn" for="sort-price">
           Price
           <svg class="trip-sort__direction-icon" width="8" height="10" viewBox="0 0 8 10">
@@ -39,23 +41,37 @@ const createSortTemplate = () => {
 export default class Sort extends AbstractView {
   constructor() {
     super();
-    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
+    this._typeChangeHandler = this._typeChangeHandler.bind(this);
   }
 
   getTemplate() {
     return createSortTemplate();
   }
 
-  _sortTypeChangeHandler(evt) {
+  _showDay(visible) {
+    const dayItemNode = this.getElement().querySelector(`.trip-sort__item--day`);
+
+    // if (visible) {
+    //   dayItemNode.textContent = DAY;
+    // } else {
+    //   dayItemNode.textContent = ``;
+    // }
+
+    dayItemNode.textContent = visible ? DAY : ``;
+  }
+
+  _typeChangeHandler(evt) {
     if (evt.target.tagName !== `INPUT`) {
       return;
     }
     evt.preventDefault();
-    this._callback.sortTypeChange(evt.target.dataset.sortType);
+    const currentSortType = evt.target.value;
+    this._showDay(currentSortType === SortType.DEFAULT);
+    this._callback.sortTypeChange(currentSortType);
   }
 
   setSortTypeChangeHandler(callback) {
     this._callback.sortTypeChange = callback;
-    this.getElement().addEventListener(`change`, this._sortTypeChangeHandler);
+    this.getElement().addEventListener(`change`, this._typeChangeHandler);
   }
 }
