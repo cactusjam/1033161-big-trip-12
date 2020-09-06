@@ -2,6 +2,7 @@ import {convertDate} from "../utils/date.js";
 import {getTypeParticle, getFirstUpperCase} from "../utils/utils.js";
 import {TRANSFER_TYPES, ACTIVITY_TYPES} from "../constants.js";
 import SmartView from "./smart.js";
+import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const BLANK_DESTINATION = {
   destination: {
