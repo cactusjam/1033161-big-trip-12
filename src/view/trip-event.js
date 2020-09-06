@@ -3,8 +3,8 @@ import AbstractView from "./abstract.js";
 import {getTypeParticle, getFirstUpperCase} from "../utils/utils.js";
 
 const createTripEventTemplate = (point) => {
-  const {type, destination, services, price, startDate, endDate, duration} = point;
-  const formattedDuration = formatDuration(duration);
+  const {type, destination, services, price, startDate, endDate} = point;
+  const formattedDuration = formatDuration(startDate, endDate);
   const typeName = getFirstUpperCase(type);
   return (
     `<li class="trip-events__item">

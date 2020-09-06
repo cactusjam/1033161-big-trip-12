@@ -71,7 +71,6 @@ const getRandomDescription = () => {
 const generateCard = () => {
   const startDate = getStartDate();
   const endDate = getEndDate(startDate);
-  const duration = endDate - startDate;
   return {
     id: getRandomInteger(1, 4000),
     type: getRandomTypes(),
@@ -83,7 +82,6 @@ const generateCard = () => {
     services: getRandomArray(services),
     startDate,
     endDate,
-    duration,
     price: getRandomInteger(5, 1000),
     isFavorite: Boolean(Math.round(Math.random()) * 0.5),
   };

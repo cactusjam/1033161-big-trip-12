@@ -1,36 +1,25 @@
-const MINUTE = 60 * 1000;
-const HOUR = 60 * MINUTE;
-const DAY = 24 * HOUR;
-const HOURS_PER_DAY = 24;
-const MINUTES_PER_HOUR = 60;
+import moment from "moment";
 
-const getTimeFormat = (date) => {
-  return date.toLocaleTimeString(`en-GB`, {hour: `2-digit`, minute: `2-digit`, hour12: false});
-};
+const isDate = (date) => date instanceof Date;
 
-const getDayFormat = new Intl.DateTimeFormat(`en-GB`, {
-  month: `short`,
-  day: `numeric`,
-}).format;
+const getTimeFormat = (date) => moment(date).format(`HH:mm`);
+
+const getDayFormat = (date) => moment(date).format(`MMM D`);
 
 const convertDateNumbers = (value) => String(value).padStart(2, `0`);
 
-const convertDate = (time) => {
-  return `${convertDateNumbers(time.getDate())}/${convertDateNumbers(time.getMonth())}/${convertDateNumbers(time.getFullYear().toString().substr(-2))} ${convertDateNumbers(time.getHours())}:${convertDateNumbers(time.getMinutes())}`;
-};
+const convertDate = (date) => isDate(date) ? moment(date).format(`DD/MM/YY HH:mm`) : ``;
 
-const formatDuration = (duration) => {
+const formatDuration = (start, end) => {
+  const momentDiff = moment(end).diff(moment(start));
+  const momentDuration = moment.duration(momentDiff);
 
-  const durationDays = Math.floor(duration / DAY);
-  const durationDaysResult = durationDays > 0 ? `${convertDateNumbers(durationDays)}D` : ``;
-
-  const durationHours = Math.floor(duration / HOUR % HOURS_PER_DAY);
-  const durationHoursResult = durationDays > 0 || durationHours > 0 ? `${convertDateNumbers(durationHours)}H` : ``;
-
-  const durationMinutes = Math.floor(duration / MINUTE % MINUTES_PER_HOUR);
-  const durationMinutesResult = durationMinutes > 0 ? `${convertDateNumbers(durationMinutes)}M` : ``;
-
-  return `${durationDaysResult} ${durationHoursResult} ${durationMinutesResult}`;
+  const duration = {
+    days: momentDuration.get(`days`) > 0 ? `${convertDateNumbers(momentDuration.get(`days`))}D` : ``,
+    hours: momentDuration.get(`days`) > 0 || momentDuration.get(`hours`) > 0 ? `${convertDateNumbers(momentDuration.get(`hours`))}H` : ``,
+    minutes: momentDuration.get(`minutes`) > 0 ? `${convertDateNumbers(momentDuration.get(`minutes`))}M` : ``,
+  };
+  return `${duration.days} ${duration.hours} ${duration.minutes}`;
 };
 
 const convertDateToDay = (date) => {
@@ -53,11 +42,7 @@ const groupCardsByDay = (cardsCollection) => {
   return cardsCollection.reduce(reduceCardByDay, {});
 };
 
-const convertDateToISOString = (date) => {
-  const convertedDate = new Date(date);
-  convertedDate.setHours(convertedDate.getHours() - convertedDate.getTimezoneOffset() / MINUTES_PER_HOUR);
+const convertDateToISOString = (date) => moment(date).format();
 
-  return convertedDate.toISOString();
-};
 
 export {getTimeFormat, getDayFormat, convertDate, formatDuration, groupCardsByDay, convertDateToISOString};
