@@ -34,10 +34,10 @@ const formatDuration = (duration) => {
 };
 
 const convertDateToDay = (date) => {
-  return `${date.getFullYear()}/-${date.getMonth()}/-${date.getDate()}`;
+  return date.getFullYear() + date.getMonth() + date.getDate();
 };
 
-const groupCardsByDay = (sortedCards) => {
+const groupCardsByDay = (cardsCollection) => {
   const reduceCardByDay = (days, card) => {
     const dayDate = convertDateToDay(card.startDate);
 
@@ -50,7 +50,7 @@ const groupCardsByDay = (sortedCards) => {
     return days;
   };
 
-  return sortedCards.reduce(reduceCardByDay, {});
+  return cardsCollection.reduce(reduceCardByDay, {});
 };
 
 const convertDateToISOString = (date) => {

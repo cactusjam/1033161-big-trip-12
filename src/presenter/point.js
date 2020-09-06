@@ -102,8 +102,8 @@ export default class Point {
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
-  _handleSubmitPointEdit(editedPoint) {
-    this._changeData(editedPoint);
+  _handleSubmitPointEdit(editedPoint, shouldRerender) {
+    this._changeData(editedPoint, shouldRerender);
     this._replaceFormToEvent();
   }
 

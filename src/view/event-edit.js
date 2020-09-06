@@ -220,7 +220,7 @@ export default class EventEdit extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(EventEdit.parseDataToPoint(this._data));
+    this._callback.formSubmit(EventEdit.parseDataToPoint(this._data), this.isStartDateUpdate);
   }
 
   _formResetHandler(evt) {
