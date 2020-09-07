@@ -60,8 +60,7 @@ export default class Trip {
     }
 
     this._sortEvents(sortType);
-    this._clearEvents();
-    this._renderTripEvents();
+    this._rerenderTripEvents();
   }
 
   _renderSort() {
@@ -83,14 +82,22 @@ export default class Trip {
     render(this._eventsContainer, this._tripDaysComponent);
   }
 
+  _rerenderTripEvents() {
+    this._clearEvents();
+    this._renderTripEvents();
+  }
+
   _renderNoEvents() {
     render(this._eventsContainer, this._eventMessageComponent(EventMessage.NO_EVENTS));
   }
 
-  _handleCardChange(updatedCard) {
+  _handleCardChange(updatedCard, shouldRerender) {
     this._tripCards = updateItemById(this._tripCards, updatedCard);
     this._sourceTripCards = updateItemById(this._sourceTripCards, updatedCard);
     this._pointPresenter[updatedCard.id].init(updatedCard, this._destinations);
+    if (shouldRerender) {
+      this._rerenderTripEvents();
+    }
   }
 
   _handleModeChange() {

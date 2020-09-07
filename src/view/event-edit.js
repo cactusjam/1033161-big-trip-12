@@ -2,13 +2,13 @@ import {convertDate} from "../utils/date.js";
 import {getTypeParticle, getFirstUpperCase} from "../utils/utils.js";
 import {TRANSFER_TYPES, ACTIVITY_TYPES} from "../constants.js";
 import SmartView from "./smart.js";
+import flatpickr from "flatpickr";
+import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const BLANK_DESTINATION = {
-  destination: {
-    name: ``,
-    description: ``,
-    photos: []
-  },
+  name: ``,
+  description: ``,
+  photos: []
 };
 
 const createRadioTemplate = (cardType, legendTypes, pointId) => {
@@ -77,7 +77,7 @@ const createEventEditTemplate = (pointData, destinations) => {
                 <span class="visually-hidden">Price</span>
                 €
               </label>
-              <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+              <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
             </div>
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
             <button class="event__reset-btn" type="reset">Delete</button>
@@ -134,6 +134,9 @@ export default class EventEdit extends SmartView {
     super();
     this._data = EventEdit.parsePointToData(point);
     this._destinations = destinations;
+    this._datepicker = null;
+    this._endDatePicker = null;
+    this._isStartDateUpdate = false;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
@@ -143,8 +146,69 @@ export default class EventEdit extends SmartView {
     this._offerChangeHandler = this._offerChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._priceChangeHandler = this._priceChangeHandler.bind(this);
+    this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
+    this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setDatepicker();
+  }
+
+  removeElement() {
+    super.removeElement();
+    if (this._datepicker !== null) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+    if (this._endDatePicker !== null) {
+      this._endDatePicker.destroy();
+      this._endDatePicker = null;
+    }
+  }
+
+  _setDatepicker() {
+    if (this._datepicker !== null) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+    if (this._endDatePicker !== null) {
+      this._endDatePicker.destroy();
+      this._endDatePicker = null;
+    }
+    this._startDatePicker = flatpickr(
+        this.getElement().querySelector(`#event-start-time-1`),
+        {
+          'enableTime': true,
+          'time_24hr': true,
+          'dateFormat': `d/m/y H:i`,
+          'defaultDate': this._data.startDate || new Date(),
+          'maxDate': this._data.endDate,
+          'onChange': this._startDateChangeHandler
+        }
+    );
+    this._endDatePicker = flatpickr(
+        this.getElement().querySelector(`#event-end-time-1`),
+        {
+          'enableTime': true,
+          'time_24hr': true,
+          'dateFormat': `d/m/y H:i`,
+          'defaultDate': this._data.endDate || new Date(),
+          'minDate': this._data.starDate,
+          'onChange': this._endDateChangeHandler
+        }
+    );
+  }
+
+  _startDateChangeHandler([userDate]) {
+    this._isStartDateUpdate = userDate !== this._data.startDate;
+    this.updateData({
+      startDate: userDate
+    }, true);
+  }
+
+  _endDateChangeHandler([userDate]) {
+    this.updateData({
+      endDate: userDate
+    }, true);
   }
 
   reset(point) {
@@ -166,7 +230,7 @@ export default class EventEdit extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(EventEdit.parseDataToPoint(this._data));
+    this._callback.formSubmit(EventEdit.parseDataToPoint(this._data), this._isStartDateUpdate);
   }
 
   _formResetHandler(evt) {
@@ -211,7 +275,7 @@ export default class EventEdit extends SmartView {
   _priceChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      price: evt.target.value,
+      price: typeof evt.target.valueAsNumber,
     }, true);
   }
 
@@ -253,6 +317,7 @@ export default class EventEdit extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormResetHandler(this._callback.formReset);
     this.setRollupButtonClickHandler(this._callback._rollupButtonClick);
