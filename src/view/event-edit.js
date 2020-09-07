@@ -6,11 +6,9 @@ import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const BLANK_DESTINATION = {
-  destination: {
-    name: ``,
-    description: ``,
-    photos: []
-  },
+  name: ``,
+  description: ``,
+  photos: []
 };
 
 const createRadioTemplate = (cardType, legendTypes, pointId) => {
@@ -79,7 +77,7 @@ const createEventEditTemplate = (pointData, destinations) => {
                 <span class="visually-hidden">Price</span>
                 €
               </label>
-              <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+              <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
             </div>
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
             <button class="event__reset-btn" type="reset">Delete</button>
@@ -138,7 +136,7 @@ export default class EventEdit extends SmartView {
     this._destinations = destinations;
     this._datepicker = null;
     this._endDatePicker = null;
-    this.isStartDateUpdate = false;
+    this._isStartDateUpdate = false;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
@@ -201,7 +199,7 @@ export default class EventEdit extends SmartView {
   }
 
   _startDateChangeHandler([userDate]) {
-    this.isStartDateUpdate = userDate !== this._data.startDate;
+    this._isStartDateUpdate = userDate !== this._data.startDate;
     this.updateData({
       startDate: userDate
     }, true);
@@ -232,7 +230,7 @@ export default class EventEdit extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(EventEdit.parseDataToPoint(this._data), this.isStartDateUpdate);
+    this._callback.formSubmit(EventEdit.parseDataToPoint(this._data), this._isStartDateUpdate);
   }
 
   _formResetHandler(evt) {
@@ -277,7 +275,7 @@ export default class EventEdit extends SmartView {
   _priceChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      price: evt.target.value,
+      price: typeof evt.target.valueAsNumber,
     }, true);
   }
 

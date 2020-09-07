@@ -23,7 +23,7 @@ const formatDuration = (start, end) => {
 };
 
 const convertDateToDay = (date) => {
-  return date.getFullYear() + date.getMonth() + date.getDate();
+  return `${date.getDate()}${date.getMonth()}${date.getFullYear()}`;
 };
 
 const groupCardsByDay = (cardsCollections) => {
