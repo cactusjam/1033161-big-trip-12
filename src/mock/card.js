@@ -84,6 +84,7 @@ const generateCard = () => {
     endDate,
     price: getRandomInteger(5, 1000),
     isFavorite: Boolean(Math.round(Math.random()) * 0.5),
+    isActivated: Boolean(Math.round(Math.random()) * 0.5)
   };
 };
 

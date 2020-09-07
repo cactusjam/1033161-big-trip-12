@@ -224,8 +224,14 @@ export default class EventEdit extends SmartView {
   _offerChangeHandler(evt) {
     evt.preventDefault();
     this.updateData(
-        {[evt.target.value]: evt.target.checked}, true
+        {
+          [evt.target.value]: evt.target.checked
+        }, true,
+        {
+          isActivated: !this._data.isActivated
+        }, true
     );
+    this._callback.activeOfferClick(this._data.isActivated);
   }
 
   _formSubmitHandler(evt) {
@@ -294,7 +300,8 @@ export default class EventEdit extends SmartView {
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollupButtonClickHandler);
   }
 
-  _setOffersChangeHandlers() {
+  _setOffersChangeHandlers(callback) {
+    this._callback.activeOfferClick = callback;
     const offerCheckbox = this.getElement().querySelectorAll(`.event__offer-checkbox`);
     offerCheckbox.forEach((offer) => {
       offer.addEventListener(`change`, this._offerChangeHandler);
