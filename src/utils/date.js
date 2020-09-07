@@ -26,7 +26,7 @@ const convertDateToDay = (date) => {
   return date.getFullYear() + date.getMonth() + date.getDate();
 };
 
-const groupCardsByDay = (cardsCollection) => {
+const groupCardsByDay = (cardsCollections) => {
   const reduceCardByDay = (days, card) => {
     const dayDate = convertDateToDay(card.startDate);
 
@@ -39,7 +39,7 @@ const groupCardsByDay = (cardsCollection) => {
     return days;
   };
 
-  return cardsCollection.reduce(reduceCardByDay, {});
+  return cardsCollections.reduce(reduceCardByDay, {});
 };
 
 const convertDateToISOString = (date) => moment(date).format();
