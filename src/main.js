@@ -14,6 +14,7 @@ const tripCards = generateCards(CARD_COUNT);
 
 const pointsModel = new PointsModel();
 pointsModel.setPoints(tripCards);
+pointsModel.setDestinations(destinations);
 
 const siteMainElement = document.querySelector(`.trip-events`);
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
@@ -28,4 +29,4 @@ render(tripMain, new TripInfoView(), RenderPosition.AFTER_BEGIN);
 const tripEventButtonComponent = new AddEventButtonView();
 render(tripMain, tripEventButtonComponent);
 
-tripPresenter.init(tripCards, destinations);
+tripPresenter.init();

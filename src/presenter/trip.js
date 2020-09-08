@@ -5,15 +5,15 @@ import TripEventsView from "../view/trip-events.js";
 import EventMessageView from "../view/event-message.js";
 import {render, RenderPosition, remove} from "../utils/dom.js";
 import {groupCardsByDay} from "../utils/date.js";
-import {sortEventsByTime, sortEventsByPrice, updateItemById} from "../utils/utils.js";
+import {sortEventsByTime, sortEventsByPrice} from "../utils/utils.js";
 import {EventMessage, SortType} from "../constants.js";
 import PointPresenter from "./point.js";
 
 export default class Trip {
   constructor(container, pointsModel) {
     this._pointsModel = pointsModel;
-    this._tripCards = [];
-    this._destinations = [];
+    // this._tripCards = [];
+    // this._destinations = [];
     this._pointPresenter = {};
     this._existTripDays = [];
     this._eventsContainer = container;
@@ -26,33 +26,41 @@ export default class Trip {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
-  init(tripCards, destinations) {
-    this._tripCards = tripCards.slice();
-    this._sourceTripCards = tripCards.slice();
-    this._destinations = destinations;
-
+  init() {
+    this._renderSort();
     this._renderTrip();
   }
 
-  _sortEvents(sortType) {
-    switch (sortType) {
-      case SortType.TIME:
-        this._tripCards.sort(sortEventsByTime);
-        break;
-      case SortType.PRICE:
-        this._tripCards.sort(sortEventsByPrice);
-        break;
-      default:
-        this._tripCards = this._sourceTripCards.slice();
-    }
+  // _sortEvents(sortType) {
+  //   switch (sortType) {
+  //     case SortType.TIME:
+  //       this._tripCards.sort(sortEventsByTime);
+  //       break;
+  //     case SortType.PRICE:
+  //       this._tripCards.sort(sortEventsByPrice);
+  //       break;
+  //     default:
+  //       this._tripCards = this._sourceTripCards.slice();
+  //   }
 
-    this._currentSortType = sortType;
-  }
+  //   this._currentSortType = sortType;
+  // }
 
   _getPoints() {
+    switch (this._currentSortType) {
+      case SortType.TIME:
+        return this._pointsModel.getPoints().slice().sort(sortEventsByTime);
+      case SortType.PRICE:
+        return this._pointsModel.getPoints().slice().sort(sortEventsByPrice);
+      // default:
+      //   return this._pointsModel.getPoints();
+    }
     return this._pointsModel.getPoints();
   }
 
+  _getDestinations() {
+    return this._pointsModel.getDestinations();
+  }
 
   _handleModeChange() {
     Object
@@ -65,7 +73,7 @@ export default class Trip {
       return;
     }
 
-    this._sortEvents(sortType);
+    this.__currentSortType = sortType;
     this._rerenderTripEvents();
   }
 
@@ -75,7 +83,8 @@ export default class Trip {
   }
 
   _renderTrip() {
-    if (this._tripCards.length > 0) {
+    const pointCount = this._getPoints().length;
+    if (pointCount > 0) {
       this._renderTripEvents();
     } else {
       this._renderNoEvents();
@@ -98,9 +107,9 @@ export default class Trip {
   }
 
   _handleCardChange(updatedCard, shouldRerender) {
-    this._tripCards = updateItemById(this._tripCards, updatedCard);
-    this._sourceTripCards = updateItemById(this._sourceTripCards, updatedCard);
-    this._pointPresenter[updatedCard.id].init(updatedCard, this._destinations);
+    // this._tripCards = updateItemById(this._tripCards, updatedCard);
+    // this._sourceTripCards = updateItemById(this._sourceTripCards, updatedCard);
+    this._pointPresenter[updatedCard.id].init(updatedCard, this._getDestinations());
     if (shouldRerender) {
       this._rerenderTripEvents();
     }
@@ -130,9 +139,9 @@ export default class Trip {
       const tripEventsComponent = new TripEventsView();
       render(tripDayComponent, tripEventsComponent);
 
-      this._renderCards(this._tripCards, tripEventsComponent);
+      this._renderCards(this._getPoints(), tripEventsComponent);
     } else {
-      const days = groupCardsByDay(this._tripCards);
+      const days = groupCardsByDay(this._getPoints());
 
       Object.values(days).forEach((dayCards, counter) => {
         const tripDayComponent = new TripDayView(counter + 1, dayCards[0].startDate);
@@ -154,7 +163,7 @@ export default class Trip {
 
   _renderCard(card, eventList) {
     const pointPresenter = new PointPresenter(eventList, this._handleCardChange, this._handleModeChange);
-    pointPresenter.init(card, this._destinations);
+    pointPresenter.init(card, this._getDestinations());
     this._pointPresenter[card.id] = pointPresenter;
   }
 }
