@@ -10,7 +10,8 @@ import {EventMessage, SortType} from "../constants.js";
 import PointPresenter from "./point.js";
 
 export default class Trip {
-  constructor(container) {
+  constructor(container, pointsModel) {
+    this._pointsModel = pointsModel;
     this._tripCards = [];
     this._destinations = [];
     this._pointPresenter = {};
@@ -47,6 +48,11 @@ export default class Trip {
 
     this._currentSortType = sortType;
   }
+
+  _getPoints() {
+    return this._pointsModel.getPoints();
+  }
+
 
   _handleModeChange() {
     Object
