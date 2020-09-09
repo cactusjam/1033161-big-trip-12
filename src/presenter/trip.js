@@ -6,7 +6,7 @@ import EventMessageView from "../view/event-message.js";
 import {render, RenderPosition, remove} from "../utils/dom.js";
 import {groupCardsByDay} from "../utils/date.js";
 import {sortEventsByTime, sortEventsByPrice} from "../utils/utils.js";
-import {EventMessage, SortType} from "../constants.js";
+import {EventMessage, SortType, UserAction, UpdateType} from "../constants.js";
 import PointPresenter from "./point.js";
 
 export default class Trip {
@@ -26,6 +26,7 @@ export default class Trip {
     this._tripDaysComponent = new TripDaysView();
     this._eventMessageComponent = new EventMessageView();
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._pointsModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -104,19 +105,31 @@ export default class Trip {
   // }
 
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
-    // Здесь будем вызывать обновление модели.
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this._pointsModel.update(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this._pointsModel.add(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this._pointsModel.delete(updateType, update);
+        break;
+    }
   }
 
   _handleModelEvent(updateType, data) {
-    console.log(updateType, data);
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this._pointPresenter[data.id].init(data);
+        break;
+      case UpdateType.MINOR:
+      // - обновить список (например, когда задача ушла в архив)
+        break;
+      case UpdateType.MAJOR:
+        // - обновить всю доску (например, при переключении фильтра)
+        break;
+    }
   }
 
   _handleModeChange() {
