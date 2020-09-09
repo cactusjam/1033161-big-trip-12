@@ -1,6 +1,7 @@
 import FilterView from './../view/filter';
-import {render, replace, remove} from "../utils/dom.js";
+import {render, replace, remove, RenderPosition} from "../utils/dom.js";
 import {UpdateType} from "../constants.js";
+import {filter} from "../utils/filter.js";
 
 export default class Filter {
   constructor(filterContainer, tripModel, filterModel) {
@@ -9,10 +10,10 @@ export default class Filter {
     this._filterModel = filterModel;
     this._currentFilter = null;
 
-    this._filterView = null;
+    this._filterComponent = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
-    this._handleTypeChange = this._handleTypeChange.bind(this);
+    this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
 
     this._filterModel.addObserver(this._handleModelEvent);
     this._tripModel.addObserver(this._handleModelEvent);
@@ -21,29 +22,37 @@ export default class Filter {
   init() {
     this._currentFilter = this._filterModel.getFilter();
 
-    const prevFilter = this._filterView;
+    const prevFilterComponent = this._filterComponent;
 
-    this._filterView = new FilterView(this._currentFilter);
-    this._filterView.setTypeChangeHandler(this._handleTypeChange);
+    this._filterComponent = new FilterView(this._currentFilter);
+    this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
 
-    if (prevFilter === null) {
-      render(this._filterContainer, this._filterView);
+    if (prevFilterComponent === null) {
+      render(this._filterContainer, this._filterComponent, RenderPosition.AFTER_END);
       return;
     }
 
-    replace(this._filterView, prevFilter);
-    remove(prevFilter);
+    replace(this._filterComponent, prevFilterComponent);
+    remove(prevFilterComponent);
   }
 
   _handleModelEvent() {
     this.init();
   }
 
-  _handleTypeChange(filterType) {
+  _handleFilterTypeChange(filterType) {
     if (this._currentFilter === filterType) {
       return;
     }
 
     this._filterModel.setFilter(UpdateType.MINOR, filterType);
+  }
+
+  _getFilters() {
+    const points = this._pointsModel.getPoints();
+
+    return Object.entries(filter)
+    .map(([key, value]) => ({[key]: value(points).length}))
+    .reduce((res, el) => Object.assign(res, el), {});
   }
 }
