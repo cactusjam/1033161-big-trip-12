@@ -1,6 +1,7 @@
 import EventEditView from "../view/event-edit.js";
 import TripEventView from "../view/trip-event.js";
 import {render, replace, remove} from "../utils/dom.js";
+import {isDatesEqual} from "../utils/date.js";
 import {isEscapeEvent} from "../utils/dom-event.js";
 import {UserAction, UpdateType} from "../constants.js";
 
@@ -103,12 +104,13 @@ export default class Point {
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
-  _handleSubmitPointEdit(editedPoint, shouldRerender) {
+  _handleSubmitPointEdit(editedPoint) {
+    const isPatchUpdate = isDatesEqual(this._point.startDate, editedPoint.startDate);
+
     this._changeData(
         UserAction.UPDATE_POINT,
-        UpdateType.MINOR,
-        editedPoint,
-        shouldRerender // TODO remove this
+        isPatchUpdate ? UpdateType.PATCH : UpdateType.MINOR,
+        editedPoint
     );
     this._replaceFormToEvent();
   }
@@ -119,7 +121,6 @@ export default class Point {
         UpdateType.MINOR,
         this._point
     );
-    // this._replaceFormToEvent();
   }
 
   _handleFavoriteClick() {

@@ -136,7 +136,6 @@ export default class EventEdit extends SmartView {
     this._destinations = destinations;
     this._datepicker = null;
     this._endDatePicker = null;
-    this._isStartDateUpdate = false;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
@@ -199,7 +198,6 @@ export default class EventEdit extends SmartView {
   }
 
   _startDateChangeHandler([userDate]) {
-    this._isStartDateUpdate = userDate !== this._data.startDate;
     this.updateData({
       startDate: userDate
     }, true);
@@ -236,7 +234,7 @@ export default class EventEdit extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(EventEdit.parseDataToPoint(this._data), this._isStartDateUpdate);
+    this._callback.formSubmit(EventEdit.parseDataToPoint(this._data));
   }
 
   _formDeleteClickHandler(evt) {

@@ -8,6 +8,7 @@ import {filterNames} from "./mock/filter.js";
 import TripPresenter from "./presenter/trip.js";
 import {destinations} from "./mock/destinations.js";
 import PointsModel from "./model/points.js";
+import FilterModel from "./model/filter.js";
 
 const CARD_COUNT = 20;
 const tripCards = generateCards(CARD_COUNT);
@@ -15,6 +16,7 @@ const tripCards = generateCards(CARD_COUNT);
 const pointsModel = new PointsModel();
 pointsModel.setPoints(tripCards);
 pointsModel.setDestinations(destinations);
+const filterModel = new FilterModel();
 
 const siteMainElement = document.querySelector(`.trip-events`);
 const tripControls = document.querySelector(`.trip-main__trip-controls`);

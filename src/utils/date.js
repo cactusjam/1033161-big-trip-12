@@ -44,5 +44,12 @@ const groupCardsByDay = (cardsCollections) => {
 
 const convertDateToISOString = (date) => moment(date).format();
 
+const isDatesEqual = (dateA, dateB) => {
+  if (dateA === null && dateB === null) {
+    return true;
+  }
 
-export {getTimeFormat, getDayFormat, convertDate, formatDuration, groupCardsByDay, convertDateToISOString};
+  return moment(dateA).isSame(dateB, `day`);
+};
+
+export {getTimeFormat, getDayFormat, convertDate, formatDuration, groupCardsByDay, convertDateToISOString, isDatesEqual};
