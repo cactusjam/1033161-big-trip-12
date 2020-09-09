@@ -2,6 +2,7 @@ import EventEditView from "../view/event-edit.js";
 import TripEventView from "../view/trip-event.js";
 import {render, replace, remove} from "../utils/dom.js";
 import {isEscapeEvent} from "../utils/dom-event.js";
+import {UserAction, UpdateType} from "../constants.js";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -103,16 +104,27 @@ export default class Point {
   }
 
   _handleSubmitPointEdit(editedPoint, shouldRerender) {
-    this._changeData(editedPoint, shouldRerender);
+    this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
+        editedPoint,
+        shouldRerender
+    );
     this._replaceFormToEvent();
   }
 
   _handleResetPointEdit() {
+    this._changeData(
+        UserAction.DELETE_POINT,
+        UpdateType.MINOR
+    );
     this._replaceFormToEvent();
   }
 
   _handleFavoriteClick() {
     this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.PATCH,
         Object.assign(
             {},
             this._point,

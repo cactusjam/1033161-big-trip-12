@@ -17,7 +17,9 @@ export default class Trip {
     this._pointPresenter = {};
     this._existTripDays = [];
     this._eventsContainer = container;
-    this._handleCardChange = this._handleCardChange.bind(this);
+    // this._handleCardChange = this._handleCardChange.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._currentSortType = SortType.DEFAULT;
     this._sortComponent = new SortView();
@@ -31,20 +33,6 @@ export default class Trip {
     this._renderTrip();
   }
 
-  // _sortEvents(sortType) {
-  //   switch (sortType) {
-  //     case SortType.TIME:
-  //       this._tripCards.sort(sortEventsByTime);
-  //       break;
-  //     case SortType.PRICE:
-  //       this._tripCards.sort(sortEventsByPrice);
-  //       break;
-  //     default:
-  //       this._tripCards = this._sourceTripCards.slice();
-  //   }
-
-  //   this._currentSortType = sortType;
-  // }
 
   _getPoints() {
     switch (this._currentSortType) {
@@ -106,13 +94,29 @@ export default class Trip {
     render(this._eventsContainer, this._eventMessageComponent(EventMessage.NO_EVENTS));
   }
 
-  _handleCardChange(updatedCard, shouldRerender) {
-    // this._tripCards = updateItemById(this._tripCards, updatedCard);
-    // this._sourceTripCards = updateItemById(this._sourceTripCards, updatedCard);
-    this._pointPresenter[updatedCard.id].init(updatedCard, this._getDestinations());
-    if (shouldRerender) {
-      this._rerenderTripEvents();
-    }
+  // _handleCardChange(updatedCard, shouldRerender) {
+  //   // this._tripCards = updateItemById(this._tripCards, updatedCard);
+  //   // this._sourceTripCards = updateItemById(this._sourceTripCards, updatedCard);
+  //   this._pointPresenter[updatedCard.id].init(updatedCard, this._getDestinations());
+  //   if (shouldRerender) {
+  //     this._rerenderTripEvents();
+  //   }
+  // }
+
+  _handleViewAction(actionType, updateType, update) {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
+  }
+
+  _handleModelEvent(updateType, data) {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
   }
 
   _handleModeChange() {
@@ -162,7 +166,7 @@ export default class Trip {
   }
 
   _renderCard(card, eventList) {
-    const pointPresenter = new PointPresenter(eventList, this._handleCardChange, this._handleModeChange);
+    const pointPresenter = new PointPresenter(eventList, this._handleViewChange, this._handleModeChange);
     pointPresenter.init(card, this._getDestinations());
     this._pointPresenter[card.id] = pointPresenter;
   }
