@@ -37,8 +37,8 @@ const createDestinationTemplate = (destinations, pointType, destination, pointId
   );
 };
 
-const createEventEditTemplate = (pointData, destinations) => {
-  const {id, type, startDate, endDate, price, isFavorite, isActivated, destination, services} = pointData;
+const createEventEditTemplate = (data, destinations) => {
+  const {id, type, startDate, endDate, price, isFavorite, isActivated, destination, services} = data;
   return (
     `<li class="trip-events__item">
       <form class="event  event--edit" action="#" method="post">
@@ -139,7 +139,7 @@ export default class EventEdit extends SmartView {
     this._isStartDateUpdate = false;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._formResetHandler = this._formResetHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
     this._favoriteChangeHandler = this._favoriteChangeHandler.bind(this);
     this._typeListChangeHandler = this._typeListChangeHandler.bind(this);
@@ -239,9 +239,9 @@ export default class EventEdit extends SmartView {
     this._callback.formSubmit(EventEdit.parseDataToPoint(this._data), this._isStartDateUpdate);
   }
 
-  _formResetHandler(evt) {
+  _formDeleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.formReset();
+    this._callback.formReset(EventEdit.parseDataToPoint(this._data));
   }
 
   _rollupButtonClickHandler(evt) {
@@ -290,9 +290,9 @@ export default class EventEdit extends SmartView {
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 
-  setFormResetHandler(callback) {
+  setFormDeleteHandler(callback) {
     this._callback.formReset = callback;
-    this.getElement().addEventListener(`reset`, this._formResetHandler);
+    this.getElement().addEventListener(`reset`, this._formDeleteClickHandler);
   }
 
   setRollupButtonClickHandler(callback) {
@@ -326,7 +326,7 @@ export default class EventEdit extends SmartView {
     this._setInnerHandlers();
     this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setFormResetHandler(this._callback.formReset);
+    this.setFormDeleteHandler(this._callback.formReset);
     this.setRollupButtonClickHandler(this._callback._rollupButtonClick);
   }
 
@@ -337,10 +337,10 @@ export default class EventEdit extends SmartView {
     );
   }
 
-  static parseDataToPoint(pointData) {
+  static parseDataToPoint(data) {
     return Object.assign(
         {},
-        pointData
+        data
     );
   }
 }

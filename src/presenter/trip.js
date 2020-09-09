@@ -110,15 +110,17 @@ export default class Trip {
   // }
 
   _handleViewAction(actionType, updateType, update) {
+    console.log('_handleViewAction update data?', update);
+
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointsModel.update(updateType, update);
+        this._pointsModel.updatePoint(updateType, update);
         break;
       case UserAction.ADD_POINT:
-        this._pointsModel.add(updateType, update);
+        this._pointsModel.addPoint(updateType, update);
         break;
       case UserAction.DELETE_POINT:
-        this._pointsModel.delete(updateType, update);
+        this._pointsModel.deletePoint(updateType, update);
         break;
     }
   }
@@ -194,7 +196,7 @@ export default class Trip {
   }
 
   _renderCard(card, eventList) {
-    const pointPresenter = new PointPresenter(eventList, this._handleViewChange, this._handleModeChange);
+    const pointPresenter = new PointPresenter(eventList, this._handleViewAction, this._handleModeChange);
     pointPresenter.init(card, this._getDestinations());
     this._pointPresenter[card.id] = pointPresenter;
   }

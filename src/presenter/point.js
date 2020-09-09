@@ -21,7 +21,7 @@ export default class Point {
     this._handleRollupPoint = this._handleRollupPoint.bind(this);
     this._handleRollupPointEdit = this._handleRollupPointEdit.bind(this);
     this._handleSubmitPointEdit = this._handleSubmitPointEdit.bind(this);
-    this._handleResetPointEdit = this._handleResetPointEdit.bind(this);
+    this._handleDeletePointEdit = this._handleDeletePointEdit.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleEscKeyDown = this._escKeyDownHandler.bind(this);
   }
@@ -35,8 +35,8 @@ export default class Point {
     this._pointEditComponent = new EventEditView(point, this._destinations);
     this._pointComponent.setRollupButtonClickHandler(this._handleRollupPoint);
     this._pointEditComponent.setFormSubmitHandler(this._handleSubmitPointEdit);
-    this._pointEditComponent.setFormResetHandler(this._handleResetPointEdit);
-    this._pointEditComponent.setRollupButtonClickHandler(this._handleResetPointEdit);
+    this._pointEditComponent.setFormDeleteHandler(this._handleDeletePointEdit);
+    this._pointEditComponent.setRollupButtonClickHandler(this._handleDeletePointEdit);
     this._pointEditComponent.setFavoriteChangeHandler(this._handleFavoriteClick);
 
 
@@ -108,17 +108,18 @@ export default class Point {
         UserAction.UPDATE_POINT,
         UpdateType.MINOR,
         editedPoint,
-        shouldRerender
+        shouldRerender // TODO remove this
     );
     this._replaceFormToEvent();
   }
 
-  _handleResetPointEdit() {
+  _handleDeletePointEdit() {
     this._changeData(
         UserAction.DELETE_POINT,
-        UpdateType.MINOR
+        UpdateType.MINOR,
+        this._point
     );
-    this._replaceFormToEvent();
+    // this._replaceFormToEvent();
   }
 
   _handleFavoriteClick() {
