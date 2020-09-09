@@ -6,27 +6,28 @@ import EventMessageView from "../view/event-message.js";
 import {render, RenderPosition, remove} from "../utils/dom.js";
 import {groupCardsByDay} from "../utils/date.js";
 import {sortEventsByTime, sortEventsByPrice} from "../utils/utils.js";
-import {EventMessage, SortType, UserAction, UpdateType} from "../constants.js";
+import {EventMessage, SortType, UserAction, UpdateType, FilterType} from "../constants.js";
 import PointPresenter from "./point.js";
+import {filter} from "../utils/filter.js";
 
 export default class Trip {
-  constructor(container, pointsModel) {
+  constructor(container, pointsModel, filterModel) {
     this._pointsModel = pointsModel;
-    // this._tripCards = [];
-    // this._destinations = [];
+    this._filterModel = filterModel;
     this._pointPresenter = {};
     this._existTripDays = [];
     this._eventsContainer = container;
     this._sortComponent = null;
-    // this._handleCardChange = this._handleCardChange.bind(this);
+    this._eventMessageNoEventsView = null;
+    this._eventMessageLoadingView = null;
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._currentSortType = SortType.DEFAULT;
     this._tripDaysComponent = new TripDaysView();
-    this._eventMessageComponent = new EventMessageView();
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -34,16 +35,26 @@ export default class Trip {
     this._renderTrip();
   }
 
+  createPoint() {
+    this._currentSortType = SortType.EVENT;
+    const destinations = this._tripModel.getDestinations();
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._pointNewPresenter.init(destinations);
+  }
 
   _getPoints() {
+    const filterType = this._filterModel.getFilter();
+    const points = this._pointsModel.getPoints();
+    const filteredPoints = filter[filterType](points);
+
     switch (this._currentSortType) {
       case SortType.TIME:
-        return this._pointsModel.getPoints().slice().sort(sortEventsByTime);
+        return filteredPoints.sort(sortEventsByTime);
       case SortType.PRICE:
-        return this._pointsModel.getPoints().slice().sort(sortEventsByPrice);
+        return filteredPoints.sort(sortEventsByPrice);
     }
 
-    return this._pointsModel.getPoints();
+    return filteredPoints;
   }
 
   _getDestinations() {
@@ -77,15 +88,19 @@ export default class Trip {
 
   _renderTrip() {
     const pointCount = this._getPoints().length;
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
     if (pointCount > 0) {
       this._renderTripEvents();
-    } else {
-      this._renderNoEvents();
+      return;
     }
+
+    this._renderNoEvents();
   }
 
   _renderTripEvents() {
-    // this._renderSort();
     this._renderEvents();
     render(this._eventsContainer, this._tripDaysComponent);
   }
@@ -97,17 +112,14 @@ export default class Trip {
   }
 
   _renderNoEvents() {
-    render(this._eventsContainer, this._eventMessageComponent(EventMessage.NO_EVENTS));
+    this._eventMessageNoEventsView = new EventMessageView(EventMessage.NO_EVENTS);
+    render(this._eventsContainer, this._eventMessageNoEventsView);
   }
 
-  // _handleCardChange(updatedCard, shouldRerender) {
-  //   // this._tripCards = updateItemById(this._tripCards, updatedCard);
-  //   // this._sourceTripCards = updateItemById(this._sourceTripCards, updatedCard);
-  //   this._pointPresenter[updatedCard.id].init(updatedCard, this._getDestinations());
-  //   if (shouldRerender) {
-  //     this._rerenderTripEvents();
-  //   }
-  // }
+  _renderLoading() {
+    this._renderMessageLoadingView = new EventMessageView(EventMessage.LOADING);
+    render(this._eventsContainer, this._eventMessageLoadingView);
+  }
 
   _handleViewAction(actionType, updateType, update) {
 

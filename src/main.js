@@ -25,7 +25,6 @@ const filterMenu = tripControls.querySelector(`.js-filter`);
 const tripPresenter = new TripPresenter(siteMainElement, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(filterMenu, pointsModel, filterModel);
 render(switchMenu, new TripControlsView(), RenderPosition.AFTER_END);
-// render(filterMenu, new FilterView(filterNames), RenderPosition.AFTER_END);
 
 const tripMain = document.querySelector(`.trip-main`);
 render(tripMain, new TripInfoView(), RenderPosition.AFTER_BEGIN);
@@ -34,3 +33,5 @@ render(tripMain, tripEventButtonComponent);
 
 filterPresenter.init();
 tripPresenter.init();
+
+tripEventButtonComponent.setClickHandler(tripPresenter.createPoint);
