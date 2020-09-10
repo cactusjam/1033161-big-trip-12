@@ -34,6 +34,7 @@ export default class Point {
     const prevPointEditComponent = this._pointEditComponent;
     this._pointComponent = new TripEventView(point);
     this._pointEditComponent = new EventEditView(point, this._destinations);
+
     this._pointComponent.setRollupButtonClickHandler(this._handleRollupPoint);
     this._pointEditComponent.setFormSubmitHandler(this._handleSubmitPointEdit);
     this._pointEditComponent.setFormDeleteHandler(this._handleDeletePointEdit);

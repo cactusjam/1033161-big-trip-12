@@ -9,6 +9,7 @@ import {sortEventsByTime, sortEventsByPrice} from "../utils/utils.js";
 import {EventMessage, SortType, UserAction, UpdateType, FilterType} from "../constants.js";
 import PointPresenter from "./point.js";
 import {filter} from "../utils/filter.js";
+import NewPointPresenter from "./point-new.js";
 
 export default class Trip {
   constructor(container, pointsModel, filterModel) {
@@ -22,11 +23,13 @@ export default class Trip {
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this.createPoint = this.createPoint.bind(this);
     this._currentSortType = SortType.DEFAULT;
     this._tripDaysComponent = new TripDaysView();
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+    this._pointNewPresenter = new NewPointPresenter(this._eventsContainer, this._handleViewAction);
   }
 
   init() {
@@ -36,7 +39,7 @@ export default class Trip {
 
   createPoint() {
     this._currentSortType = SortType.EVENT;
-    const destinations = this._tripModel.getDestinations();
+    const destinations = this._pointsModel.getDestinations();
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._pointNewPresenter.init(destinations);
   }
@@ -114,7 +117,7 @@ export default class Trip {
   _renderNoEvents() {
     this._eventMessageNoEventsView = new EventMessageView(EventMessage.NO_EVENTS);
     render(this._eventsContainer, this._eventMessageNoEventsView);
-
+  }
 
   _handleViewAction(actionType, updateType, update) {
 
@@ -163,7 +166,6 @@ export default class Trip {
     this._existTripDays.forEach(remove);
     this._existTripDays = [];
 
-    remove(this._eventMessageLoadingView);
     remove(this._eventMessageNoEventsView);
     remove(this._sortComponent);
     remove(this._tripDaysComponent);

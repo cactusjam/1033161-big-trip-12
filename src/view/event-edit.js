@@ -37,7 +37,15 @@ const createDestinationTemplate = (destinations, pointType, destination, pointId
   );
 };
 
-const createEventEditTemplate = (data, destinations) => {
+const createResetButtonTemplate = (isAddMode) => {
+  return (
+    `<button class="event__reset-btn" type="reset">
+      ${isAddMode ? `Cancel` : `Delete`}
+    </button>`
+  );
+};
+
+const createEventEditTemplate = (data, destinations, isAddMode) => {
   const {id, type, startDate, endDate, price, isFavorite, isActivated, destination, services} = data;
   return (
     `<li class="trip-events__item">
@@ -80,7 +88,7 @@ const createEventEditTemplate = (data, destinations) => {
               <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
             </div>
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-            <button class="event__reset-btn" type="reset">Delete</button>
+            ${createResetButtonTemplate(isAddMode)}
             <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
             <label class="event__favorite-btn" for="event-favorite-1">
               <span class="visually-hidden">Add to favorite</span>
@@ -130,10 +138,11 @@ const createEventEditTemplate = (data, destinations) => {
 };
 
 export default class EventEdit extends SmartView {
-  constructor(point, destinations = BLANK_DESTINATION) {
+  constructor(point, destinations = BLANK_DESTINATION, isAddMode = false) {
     super();
     this._data = EventEdit.parsePointToData(point);
     this._destinations = destinations;
+    this._isAddMode = isAddMode;
     this._datepicker = null;
     this._endDatePicker = null;
 
@@ -216,7 +225,7 @@ export default class EventEdit extends SmartView {
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._data, this._destinations);
+    return createEventEditTemplate(this._data, this._destinations, this._isAddMode);
   }
 
   _offerChangeHandler(evt) {
@@ -313,7 +322,10 @@ export default class EventEdit extends SmartView {
   _setInnerHandlers() {
     const element = this.getElement();
 
-    element.querySelector(`.event__favorite-checkbox`).addEventListener(`change`, this._favoriteChangeHandler);
+    if (!this._isAddMode) {
+      element.querySelector(`.event__favorite-checkbox`).addEventListener(`change`, this._favoriteChangeHandler);
+    }
+
     element.querySelector(`.event__type-list`).addEventListener(`change`, this._typeListChangeHandler);
     element.querySelector(`.event__field-group--destination`).addEventListener(`change`, this._destinationChangeHandler);
     element.querySelector(`.event__input--price`).addEventListener(`change`, this._priceChangeHandler);
