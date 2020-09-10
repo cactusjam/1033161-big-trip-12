@@ -19,7 +19,6 @@ export default class Trip {
     this._eventsContainer = container;
     this._sortComponent = null;
     this._eventMessageNoEventsView = null;
-    this._eventMessageLoadingView = null;
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -88,6 +87,7 @@ export default class Trip {
 
   _renderTrip() {
     const pointCount = this._getPoints().length;
+
     if (this._isLoading) {
       this._renderLoading();
       return;
@@ -114,12 +114,7 @@ export default class Trip {
   _renderNoEvents() {
     this._eventMessageNoEventsView = new EventMessageView(EventMessage.NO_EVENTS);
     render(this._eventsContainer, this._eventMessageNoEventsView);
-  }
 
-  _renderLoading() {
-    this._renderMessageLoadingView = new EventMessageView(EventMessage.LOADING);
-    render(this._eventsContainer, this._eventMessageLoadingView);
-  }
 
   _handleViewAction(actionType, updateType, update) {
 
@@ -168,6 +163,8 @@ export default class Trip {
     this._existTripDays.forEach(remove);
     this._existTripDays = [];
 
+    remove(this._eventMessageLoadingView);
+    remove(this._eventMessageNoEventsView);
     remove(this._sortComponent);
     remove(this._tripDaysComponent);
 
