@@ -29,7 +29,7 @@ export default class Trip {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
-    this._pointNewPresenter = new NewPointPresenter(this._eventsContainer, this._handleViewAction);
+    this._pointNewPresenter = new NewPointPresenter(this._handleViewAction);
   }
 
   init() {
@@ -41,7 +41,7 @@ export default class Trip {
     this._currentSortType = SortType.EVENT;
     const destinations = this._pointsModel.getDestinations();
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._pointNewPresenter.init(destinations);
+    this._pointNewPresenter.init(this._sortComponent, destinations);
   }
 
   _getPoints() {
@@ -57,10 +57,6 @@ export default class Trip {
     }
 
     return filteredPoints;
-  }
-
-  _getDestinations() {
-    return this._pointsModel.getDestinations();
   }
 
   _handleModeChange() {
@@ -85,7 +81,7 @@ export default class Trip {
 
     this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
-    render(this._eventsContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
+    render(this._eventsContainer, this._sortComponent, RenderPosition.AFTER_BEGIN);
   }
 
   _renderTrip() {
@@ -137,7 +133,10 @@ export default class Trip {
   _handleModelEvent(updateType, pointdata) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._pointPresenter[pointdata.id].init(pointdata, this._getDestinations());
+        this._pointPresenter[pointdata.id].init(
+            pointdata,
+            this._pointsModel.getDestinations()
+        );
         break;
       case UpdateType.MINOR:
         this._clearEvents();
@@ -207,7 +206,10 @@ export default class Trip {
 
   _renderCard(card, eventList) {
     const pointPresenter = new PointPresenter(eventList, this._handleViewAction, this._handleModeChange);
-    pointPresenter.init(card, this._getDestinations());
+    pointPresenter.init(
+        card,
+        this._pointsModel.getDestinations()
+    );
     this._pointPresenter[card.id] = pointPresenter;
   }
 }

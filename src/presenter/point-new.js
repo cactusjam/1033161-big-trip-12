@@ -20,8 +20,8 @@ const createEmptyPoint = () => ({
 });
 
 export default class NewPointPresenter {
-  constructor(pointListContainer, changeData) {
-    this._container = pointListContainer;
+  constructor(changeData) {
+    // this._container = container;
     this._changeData = changeData;
 
     this._destinations = null;
@@ -35,7 +35,8 @@ export default class NewPointPresenter {
     this._handleSubmitPointEdit = this._handleSubmitPointEdit.bind(this);
   }
 
-  init(destinations) {
+  init(container, destinations) {
+    this._container = container;
     this._point = createEmptyPoint();
     this._destinations = destinations;
     if (this._pointEditComponent !== null) {
@@ -47,8 +48,7 @@ export default class NewPointPresenter {
     this._pointEditComponent.setFormSubmitHandler(this._handleSubmitPointEdit);
     this._pointEditComponent.setFormDeleteHandler(this._handleDeletePointEdit);
 
-
-    render(this._container, this._pointEditComponent, RenderPosition.AFTER_BEGIN);
+    render(this._container, this._pointEditComponent, RenderPosition.AFTER_END);
 
     document.addEventListener(`keydown`, this._escKeyDownHandler);
   }
