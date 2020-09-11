@@ -53,6 +53,6 @@ export default class Filter {
 
     return Object.entries(filter)
     .map(([key, value]) => ({[key]: value(points).length}))
-    .reduce((res, el) => Object.assign(res, el), {});
+    .reduce((result, element) => Object.assign(result, element), {});
   }
 }

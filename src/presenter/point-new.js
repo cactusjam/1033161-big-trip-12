@@ -5,7 +5,6 @@ import {isEscapeEvent} from "../utils/dom-event.js";
 import {getRandomInteger} from "../mock/utils.js";
 
 const createEmptyPoint = () => ({
-  id: getRandomInteger(1, 4000),
   type: `taxi`,
   destination: {
     name: ``,
@@ -32,7 +31,7 @@ export default class NewPointPresenter {
 
     this._handleDeletePointEdit = this._handleDeletePointEdit.bind(this);
     this._handleDeletePointEdit = this._handleDeletePointEdit.bind(this);
-    this._handleEscKeyDown = this._escKeyDownHandler.bind(this);
+    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handleSubmitPointEdit = this._handleSubmitPointEdit.bind(this);
   }
 
@@ -48,15 +47,10 @@ export default class NewPointPresenter {
     this._pointEditComponent.setFormSubmitHandler(this._handleSubmitPointEdit);
     this._pointEditComponent.setFormDeleteHandler(this._handleDeletePointEdit);
 
-    const sortTripElement = this._container.querySelector(`.trip-sort`);
 
-    if (sortTripElement) {
-      render(sortTripElement, this._pointEditComponent, RenderPosition.AFTER_END);
-    } else {
-      render(this._tripContainer, this._pointEditComponent, RenderPosition.AFTER_BEGIN);
-    }
+    render(this._container, this._pointEditComponent, RenderPosition.AFTER_BEGIN);
 
-    document.addEventListener(`keydown`, this._handleEscKeyDown);
+    document.addEventListener(`keydown`, this._escKeyDownHandler);
   }
 
   destroy() {
@@ -67,19 +61,15 @@ export default class NewPointPresenter {
     remove(this._pointEditComponent);
     this._pointEditComponent = null;
 
-    document.removeEventListener(`keydown`, this._handleEscKeyDown);
+    document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
   _handleSubmitPointEdit(editedPoint) {
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,
-        editedPoint
+        Object.assign({id: getRandomInteger()}, editedPoint)
     );
-    this.destroy();
-  }
-
-  _handleDeletePointEdit() {
     this.destroy();
   }
 

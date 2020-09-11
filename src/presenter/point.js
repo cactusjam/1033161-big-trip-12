@@ -24,7 +24,7 @@ export default class Point {
     this._handleSubmitPointEdit = this._handleSubmitPointEdit.bind(this);
     this._handleDeletePointEdit = this._handleDeletePointEdit.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
-    this._handleEscKeyDown = this._escKeyDownHandler.bind(this);
+    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
   init(point, destinations) {
@@ -62,6 +62,7 @@ export default class Point {
   destroy() {
     remove(this._pointComponent);
     remove(this._pointEditComponent);
+    document.removeEventListener(`keydown`, this._escapeKeydownHandler);
   }
 
   resetView() {
@@ -80,11 +81,13 @@ export default class Point {
     replace(this._pointEditComponent, this._pointComponent);
     this._changeMode();
     this._mode = Mode.EDITING;
+    document.addEventListener(`keydown`, this._escapeKeydownHandler);
   }
 
   _replaceFormToEvent() {
     replace(this._pointComponent, this._pointEditComponent);
     this._mode = Mode.DEFAULT;
+    document.removeEventListener(`keydown`, this._escapeKeydownHandler);
   }
 
   _escKeyDownHandler(evt) {

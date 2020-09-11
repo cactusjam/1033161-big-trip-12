@@ -3,7 +3,6 @@ import TripInfoView from "./view/trip-info.js";
 import AddEventButtonView from "./view/add-event-button.js";
 import {render, RenderPosition} from "./utils/dom.js";
 import {generateCards} from "./mock/card.js";
-// import {filterNames} from "./mock/filter.js";
 import TripPresenter from "./presenter/trip.js";
 import FilterPresenter from "./presenter/filter.js";
 import {destinations} from "./mock/destinations.js";

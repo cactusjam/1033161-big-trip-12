@@ -11,6 +11,11 @@ const BLANK_DESTINATION = {
   photos: []
 };
 
+const ButtonName = {
+  CANCEL: `Cancel`,
+  DELETE: `Delete`,
+};
+
 const createRadioTemplate = (cardType, legendTypes, pointId) => {
   return (
     legendTypes.map((legendType, legendIndex) => {
@@ -40,13 +45,13 @@ const createDestinationTemplate = (destinations, pointType, destination, pointId
 const createResetButtonTemplate = (isAddMode) => {
   return (
     `<button class="event__reset-btn" type="reset">
-      ${isAddMode ? `Cancel` : `Delete`}
+      ${isAddMode ? ButtonName.CANCEL : ButtonName.DELETE}
     </button>`
   );
 };
 
-const createEventEditTemplate = (data, destinations, isAddMode) => {
-  const {id, type, startDate, endDate, price, isFavorite, isActivated, destination, services} = data;
+const createEventEditTemplate = (pointData, destinations, isAddMode) => {
+  const {id, type, startDate, endDate, price, isFavorite, isActivated, destination, services} = pointData;
   return (
     `<li class="trip-events__item">
       <form class="event  event--edit" action="#" method="post">
@@ -149,7 +154,7 @@ export default class EventEdit extends SmartView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
-    this._favoriteChangeHandler = this._favoriteChangeHandler.bind(this);
+    this._favoriteCheckboxClickHandler = this._favoriteCheckboxClickHandler.bind(this);
     this._typeListChangeHandler = this._typeListChangeHandler.bind(this);
     this._offerChangeHandler = this._offerChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
@@ -256,7 +261,7 @@ export default class EventEdit extends SmartView {
     this._callback._rollupButtonClick();
   }
 
-  _favoriteChangeHandler(evt) {
+  _favoriteCheckboxClickHandler(evt) {
     evt.preventDefault();
     this.updateData({
       isFavorite: !this._data.isFavorite
@@ -323,7 +328,7 @@ export default class EventEdit extends SmartView {
     const element = this.getElement();
 
     if (!this._isAddMode) {
-      element.querySelector(`.event__favorite-checkbox`).addEventListener(`change`, this._favoriteChangeHandler);
+      element.querySelector(`.event__favorite-checkbox`).addEventListener(`change`, this._favoriteCheckboxClickHandler);
     }
 
     element.querySelector(`.event__type-list`).addEventListener(`change`, this._typeListChangeHandler);
@@ -347,10 +352,10 @@ export default class EventEdit extends SmartView {
     );
   }
 
-  static parseDataToPoint(data) {
+  static parseDataToPoint(pointData) {
     return Object.assign(
         {},
-        data
+        pointData
     );
   }
 }
