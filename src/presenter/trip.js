@@ -11,7 +11,7 @@ import PointPresenter from "./point.js";
 import {filter} from "../utils/filter.js";
 import NewPointPresenter from "./point-new.js";
 
-export default class Trip {
+export default class TripPresenter {
   constructor(container, pointsModel, filterModel) {
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
@@ -39,9 +39,11 @@ export default class Trip {
 
   createPoint() {
     this._currentSortType = SortType.EVENT;
-    const destinations = this._pointsModel.getDestinations();
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._pointNewPresenter.init(this._sortComponent, destinations);
+    this._pointNewPresenter.init(
+        this._sortComponent,
+        this._getDestinations()
+    );
   }
 
   _getPoints() {
@@ -57,6 +59,10 @@ export default class Trip {
     }
 
     return filteredPoints;
+  }
+
+  _getDestinations() {
+    return this._pointsModel.getDestinations();
   }
 
   _handleModeChange() {
@@ -105,8 +111,8 @@ export default class Trip {
   }
 
   _rerenderTripEvents() {
-    this._renderSort();
     this._clearEvents();
+    this._renderSort();
     this._renderTripEvents();
   }
 
@@ -135,7 +141,7 @@ export default class Trip {
       case UpdateType.PATCH:
         this._pointPresenter[pointdata.id].init(
             pointdata,
-            this._pointsModel.getDestinations()
+            this._getDestinations()
         );
         break;
       case UpdateType.MINOR:
@@ -208,7 +214,7 @@ export default class Trip {
     const pointPresenter = new PointPresenter(eventList, this._handleViewAction, this._handleModeChange);
     pointPresenter.init(
         card,
-        this._pointsModel.getDestinations()
+        this._getDestinations()
     );
     this._pointPresenter[card.id] = pointPresenter;
   }

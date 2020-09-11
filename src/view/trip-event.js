@@ -42,7 +42,7 @@ const createTripEventTemplate = (point) => {
   );
 };
 
-export default class TripEvent extends AbstractView {
+export default class TripEventView extends AbstractView {
   constructor(point) {
     super();
     this._point = point;

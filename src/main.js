@@ -33,4 +33,8 @@ render(tripMain, tripEventButtonComponent);
 filterPresenter.init();
 tripPresenter.init();
 
-tripEventButtonComponent.setClickHandler(tripPresenter.createPoint);
+const pointButtonClickHandler = () => {
+  tripPresenter.createPoint();
+};
+
+tripEventButtonComponent.setClickHandler(pointButtonClickHandler);

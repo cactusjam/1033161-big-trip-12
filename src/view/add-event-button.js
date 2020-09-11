@@ -6,7 +6,7 @@ const createTripEventButtonTemplate = () => {
   );
 };
 
-export default class AddEventButton extends AbstractView {
+export default class AddEventButtonView extends AbstractView {
   constructor() {
     super();
 

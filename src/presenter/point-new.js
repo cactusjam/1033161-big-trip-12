@@ -21,7 +21,6 @@ const createEmptyPoint = () => ({
 
 export default class NewPointPresenter {
   constructor(changeData) {
-    // this._container = container;
     this._changeData = changeData;
 
     this._destinations = null;
@@ -43,7 +42,7 @@ export default class NewPointPresenter {
       return;
     }
 
-    this._pointEditComponent = new EventEditView(this._point, this._destinations, {isAddMode: true});
+    this._pointEditComponent = new EventEditView(this._point, this._destinations, {isAddMode: true}, {isNewPoint: true});
     this._pointEditComponent.setRollupButtonClickHandler(this._handleDeletePointEdit);
     this._pointEditComponent.setFormSubmitHandler(this._handleSubmitPointEdit);
     this._pointEditComponent.setFormDeleteHandler(this._handleDeletePointEdit);

@@ -6,7 +6,7 @@ const DAY = `Day`;
 const createSortTemplate = (currentSortType) => {
   return (
     `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-      <span class="trip-sort__item  trip-sort__item--day">${DAY}</span>
+      <span class="trip-sort__item  trip-sort__item--day">${currentSortType === SortType.DEFAULT ? DAY : ``}</span>
 
       <div class="trip-sort__item  trip-sort__item--event">
         <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="${SortType.DEFAULT}" ${currentSortType === SortType.DEFAULT ? `checked` : ``}>
@@ -38,7 +38,7 @@ const createSortTemplate = (currentSortType) => {
   );
 };
 
-export default class Sort extends AbstractView {
+export default class SortView extends AbstractView {
   constructor(currentSortType) {
     super();
     this._currentSortType = currentSortType;
@@ -49,19 +49,12 @@ export default class Sort extends AbstractView {
     return createSortTemplate(this._currentSortType);
   }
 
-  _showDay(visible) {
-    const dayItemNode = this.getElement().querySelector(`.trip-sort__item--day`);
-
-    dayItemNode.textContent = visible ? DAY : ``;
-  }
-
   _typeChangeHandler(evt) {
     if (evt.target.tagName !== `INPUT`) {
       return;
     }
     evt.preventDefault();
     const currentSortType = evt.target.value;
-    this._showDay(currentSortType === SortType.DEFAULT);
     this._callback.sortTypeChange(currentSortType);
   }
 

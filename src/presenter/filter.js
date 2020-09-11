@@ -3,7 +3,7 @@ import {render, replace, remove, RenderPosition} from "../utils/dom.js";
 import {UpdateType} from "../constants.js";
 import {filter} from "../utils/filter.js";
 
-export default class Filter {
+export default class FilterPresenter {
   constructor(filterContainer, tripModel, filterModel) {
     this._filterContainer = filterContainer;
     this._tripModel = tripModel;
