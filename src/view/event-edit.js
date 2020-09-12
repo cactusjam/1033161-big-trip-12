@@ -140,10 +140,10 @@ const createEventEditTemplate = (pointData, destinations, isAddMode) => {
   );
 };
 
-export default class EventEditView extends SmartView {
+export default class EventEdit extends SmartView {
   constructor(point, destinations = BLANK_DESTINATION, isAddMode = false) {
     super();
-    this._data = EventEditView.parsePointToData(point);
+    this._data = EventEdit.parsePointToData(point);
     this._destinations = destinations;
     this._isAddMode = isAddMode;
     this._datepicker = null;
@@ -223,7 +223,7 @@ export default class EventEditView extends SmartView {
 
   reset(point) {
     this.updateData(
-        EventEditView.parsePointToData(point, this._destinations)
+        EventEdit.parsePointToData(point, this._destinations)
     );
   }
 
@@ -241,17 +241,17 @@ export default class EventEditView extends SmartView {
           isActivated: !this._data.isActivated
         }, true
     );
-    this._callback.activeOfferClick(this._data.isActivated);
+    // this._callback.activeOfferClick(this._data.isActivated);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(EventEditView.parseDataToPoint(this._data));
+    this._callback.formSubmit(EventEdit.parseDataToPoint(this._data));
   }
 
   _formDeleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.formReset(EventEditView.parseDataToPoint(this._data));
+    this._callback.formReset(EventEdit.parseDataToPoint(this._data));
   }
 
   _rollupButtonClickHandler(evt) {
@@ -297,7 +297,6 @@ export default class EventEditView extends SmartView {
 
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
-    // this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
     this.getElement().addEventListener(`submit`, this._formSubmitHandler);
   }
 
@@ -311,8 +310,8 @@ export default class EventEditView extends SmartView {
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollupButtonClickHandler);
   }
 
-  _setOffersChangeHandlers(callback) {
-    this._callback.activeOfferClick = callback;
+  _setOffersChangeHandlers() {
+    // this._callback.activeOfferClick = callback;
     const offerCheckbox = this.getElement().querySelectorAll(`.event__offer-checkbox`);
     offerCheckbox.forEach((offer) => {
       offer.addEventListener(`change`, this._offerChangeHandler);

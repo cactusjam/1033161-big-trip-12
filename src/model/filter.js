@@ -1,18 +1,18 @@
-import Observer from './../utils/observer';
+import ObserverView from './../utils/observer';
 import {FilterType} from './../constants';
 
-export default class FilterModel extends Observer {
+export default class Filter extends ObserverView {
   constructor() {
     super();
     this._current = FilterType.EVERYTHING;
   }
 
-  setFilter(updateType, filter) {
+  set(updateType, filter) {
     this._current = filter;
     this._notify(updateType, filter);
   }
 
-  getFilter() {
+  get() {
     return this._current;
   }
 }

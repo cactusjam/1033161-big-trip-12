@@ -19,60 +19,58 @@ const createEmptyPoint = () => ({
   price: 0,
 });
 
-export default class NewPointPresenter {
+export default class PointNew {
   constructor(changeData) {
     this._changeData = changeData;
 
     this._destinations = null;
-    this._point = null;
-    this._pointComponent = null;
-    this._pointEditComponent = null;
+    this._attributes = null;
+    this._component = null;
 
-    this._handleDeletePointEdit = this._handleDeletePointEdit.bind(this);
-    this._handleDeletePointEdit = this._handleDeletePointEdit.bind(this);
+    this._handleDeleteButtonClick = this._handleDeleteButtonClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
-    this._handleSubmitPointEdit = this._handleSubmitPointEdit.bind(this);
+    this._handleSubmitButtonClick = this._handleSubmitButtonClick.bind(this);
   }
 
   init(container, destinations) {
     this._container = container;
-    this._point = createEmptyPoint();
+    this._attributes = createEmptyPoint();
     this._destinations = destinations;
-    if (this._pointEditComponent !== null) {
+    if (this._component !== null) {
       return;
     }
 
-    this._pointEditComponent = new EventEditView(this._point, this._destinations, {isAddMode: true}, {isNewPoint: true});
-    this._pointEditComponent.setRollupButtonClickHandler(this._handleDeletePointEdit);
-    this._pointEditComponent.setFormSubmitHandler(this._handleSubmitPointEdit);
-    this._pointEditComponent.setFormDeleteHandler(this._handleDeletePointEdit);
+    this._component = new EventEditView(this._attributes, this._destinations, {isAddMode: true}, {isNewPoint: true});
+    this._component.setRollupButtonClickHandler(this._handleDeleteButtonClick);
+    this._component.setFormSubmitHandler(this._handleSubmitButtonClick);
+    this._component.setFormDeleteHandler(this._handleDeleteButtonClick);
 
-    render(this._container, this._pointEditComponent, RenderPosition.AFTER_END);
+    render(this._container, this._component, RenderPosition.AFTER_END);
 
     document.addEventListener(`keydown`, this._escKeyDownHandler);
   }
 
   destroy() {
-    if (this._pointEditComponent === null) {
+    if (this._component === null) {
       return;
     }
 
-    remove(this._pointEditComponent);
-    this._pointEditComponent = null;
+    remove(this._component);
+    this._component = null;
 
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
-  _handleSubmitPointEdit(editedPoint) {
+  _handleSubmitButtonClick(card) {
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,
-        Object.assign({id: getRandomInteger()}, editedPoint)
+        Object.assign({id: getRandomInteger()}, card)
     );
     this.destroy();
   }
 
-  _handleDeletePointEdit() {
+  _handleDeleteButtonClick() {
     this.destroy();
   }
 

@@ -1,6 +1,6 @@
 import SortView from "../view/sort.js";
-import TripDaysView from "../view/trip-days.js";
-import TripDayView from "../view/trip-day.js";
+import DaysView from "../view/days.js";
+import DayView from "../view/day.js";
 import TripEventsView from "../view/trip-events.js";
 import EventMessageView from "../view/event-message.js";
 import {render, RenderPosition, remove} from "../utils/dom.js";
@@ -9,27 +9,27 @@ import {sortEventsByTime, sortEventsByPrice} from "../utils/utils.js";
 import {EventMessage, SortType, UserAction, UpdateType, FilterType} from "../constants.js";
 import PointPresenter from "./point.js";
 import {filter} from "../utils/filter.js";
-import NewPointPresenter from "./point-new.js";
+import PointNewPresenter from "./point-new.js";
 
-export default class TripPresenter {
+export default class Trip {
   constructor(container, pointsModel, filterModel) {
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
     this._pointPresenter = {};
-    this._existTripDays = [];
-    this._eventsContainer = container;
-    this._sortComponent = null;
+    this._existDays = [];
+    this._container = container;
+    this._sort = null;
     this._eventMessageNoEventsView = null;
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this.createPoint = this.createPoint.bind(this);
     this._currentSortType = SortType.DEFAULT;
-    this._tripDaysComponent = new TripDaysView();
+    this._daysComponent = new DaysView();
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
-    this._pointNewPresenter = new NewPointPresenter(this._handleViewAction);
+    this._pointNewPresenter = new PointNewPresenter(this._handleViewAction);
   }
 
   init() {
@@ -39,15 +39,15 @@ export default class TripPresenter {
 
   createPoint() {
     this._currentSortType = SortType.EVENT;
-    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._filterModel.set(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._pointNewPresenter.init(
-        this._sortComponent,
+        this._sort,
         this._getDestinations()
     );
   }
 
   _getPoints() {
-    const filterType = this._filterModel.getFilter();
+    const filterType = this._filterModel.get();
     const points = this._pointsModel.getPoints();
     const filteredPoints = filter[filterType](points);
 
@@ -81,13 +81,13 @@ export default class TripPresenter {
   }
 
   _renderSort() {
-    if (this._sortComponent !== null) {
-      this._sortComponent = null;
+    if (this._sort !== null) {
+      this._sort = null;
     }
 
-    this._sortComponent = new SortView(this._currentSortType);
-    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
-    render(this._eventsContainer, this._sortComponent, RenderPosition.AFTER_BEGIN);
+    this._sort = new SortView(this._currentSortType);
+    this._sort.setKindChangeHandler(this._handleSortTypeChange);
+    render(this._container, this._sort, RenderPosition.AFTER_BEGIN);
   }
 
   _renderTrip() {
@@ -107,7 +107,7 @@ export default class TripPresenter {
 
   _renderTripEvents() {
     this._renderEvents();
-    render(this._eventsContainer, this._tripDaysComponent);
+    render(this._container, this._daysComponent);
   }
 
   _rerenderTripEvents() {
@@ -118,29 +118,29 @@ export default class TripPresenter {
 
   _renderNoEvents() {
     this._eventMessageNoEventsView = new EventMessageView(EventMessage.NO_EVENTS);
-    render(this._eventsContainer, this._eventMessageNoEventsView);
+    render(this._container, this._eventMessageNoEventsView);
   }
 
   _handleViewAction(actionType, updateType, update) {
 
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointsModel.updatePoint(updateType, update);
+        this._pointsModel.update(updateType, update);
         break;
       case UserAction.ADD_POINT:
-        this._pointsModel.addPoint(updateType, update);
+        this._pointsModel.add(updateType, update);
         break;
       case UserAction.DELETE_POINT:
-        this._pointsModel.deletePoint(updateType, update);
+        this._pointsModel.delete(updateType, update);
         break;
     }
   }
 
-  _handleModelEvent(updateType, pointdata) {
+  _handleModelEvent(updateType, pointData) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._pointPresenter[pointdata.id].init(
-            pointdata,
+        this._pointPresenter[pointData.id].init(
+            pointData,
             this._getDestinations()
         );
         break;
@@ -168,12 +168,12 @@ export default class TripPresenter {
     .values(this._pointPresenter)
     .forEach((presenter) => presenter.destroy());
     this._pointPresenter = {};
-    this._existTripDays.forEach(remove);
-    this._existTripDays = [];
+    this._existDays .forEach(remove);
+    this._existDays = [];
 
     remove(this._eventMessageNoEventsView);
-    remove(this._sortComponent);
-    remove(this._tripDaysComponent);
+    remove(this._sort);
+    remove(this._daysComponent);
 
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;
@@ -182,22 +182,22 @@ export default class TripPresenter {
 
   _renderEvents() {
     if (this._currentSortType !== SortType.DEFAULT) {
-      const tripDayComponent = new TripDayView(0, new Date());
-      render(this._tripDaysComponent, tripDayComponent);
+      const dayComponent = new DayView(0, new Date());
+      render(this._daysComponent, dayComponent);
 
       const tripEventsComponent = new TripEventsView();
-      render(tripDayComponent, tripEventsComponent);
+      render(dayComponent, tripEventsComponent);
 
       this._renderCards(this._getPoints(), tripEventsComponent);
     } else {
       const days = groupCardsByDay(this._getPoints());
 
       Object.values(days).forEach((dayCards, counter) => {
-        const tripDayComponent = new TripDayView(counter + 1, dayCards[0].startDate);
-        render(this._tripDaysComponent, tripDayComponent);
+        const dayComponent = new DayView(counter + 1, dayCards[0].startDate);
+        render(this._daysComponent, dayComponent);
 
         const tripEventsComponent = new TripEventsView();
-        render(tripDayComponent, tripEventsComponent);
+        render(dayComponent, tripEventsComponent);
 
         this._renderCards(dayCards, tripEventsComponent);
       });

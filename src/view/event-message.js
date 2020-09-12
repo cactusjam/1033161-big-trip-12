@@ -6,7 +6,7 @@ const createEventMessageTemplate = (message) => {
   );
 };
 
-export default class EventMessageView extends AbstractView {
+export default class EventMessage extends AbstractView {
   constructor(message) {
     super();
     this._message = message;
