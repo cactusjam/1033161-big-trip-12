@@ -241,7 +241,6 @@ export default class EventEdit extends SmartView {
           isActivated: !this._data.isActivated
         }, true
     );
-    // this._callback.activeOfferClick(this._data.isActivated);
   }
 
   _formSubmitHandler(evt) {
@@ -311,7 +310,6 @@ export default class EventEdit extends SmartView {
   }
 
   _setOffersChangeHandlers() {
-    // this._callback.activeOfferClick = callback;
     const offerCheckbox = this.getElement().querySelectorAll(`.event__offer-checkbox`);
     offerCheckbox.forEach((offer) => {
       offer.addEventListener(`change`, this._offerChangeHandler);

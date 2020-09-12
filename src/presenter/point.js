@@ -15,7 +15,7 @@ export default class Point {
     this._changeData = changeData;
     this._changeMode = changeMode;
     this._destinations = null;
-    this._attributes = null;
+    this._card = null;
     this._component = null;
     this._editComponent = null;
     this._mode = Mode.DEFAULT;
@@ -27,13 +27,13 @@ export default class Point {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init(attributes, destinations) {
-    this._attributes = attributes;
+  init(card, destinations) {
+    this._card = card;
     this._destinations = destinations;
     const prevComponent = this._component;
     const prevEditComponent = this._editComponent;
-    this._component = new TripEventView(attributes);
-    this._editComponent = new EventEditView(attributes, this._destinations);
+    this._component = new TripEventView(card);
+    this._editComponent = new EventEditView(card, this._destinations);
 
     this._component.setRollupButtonClickHandler(this._handleRollupPoint);
     this._editComponent.setFormSubmitHandler(this._handleSubmitPointEdit);
@@ -93,7 +93,7 @@ export default class Point {
   _escKeyDownHandler(evt) {
     if (isEscapeEvent(evt)) {
       evt.preventDefault();
-      this._editComponent.reset(this._attributes);
+      this._editComponent.reset(this._card);
       this._replaceFormToEvent();
     }
   }
@@ -109,7 +109,7 @@ export default class Point {
   }
 
   _handleSubmitPointEdit(editedPoint) {
-    const isPatchUpdate = isDatesEqual(this._attributes.startDate, editedPoint.startDate);
+    const isPatchUpdate = isDatesEqual(this._card.startDate, editedPoint.startDate);
 
     this._changeData(
         UserAction.UPDATE_POINT,
@@ -123,7 +123,7 @@ export default class Point {
     this._changeData(
         UserAction.DELETE_POINT,
         UpdateType.MINOR,
-        this._attributes
+        this._card
     );
   }
 
@@ -133,9 +133,9 @@ export default class Point {
         UpdateType.PATCH,
         Object.assign(
             {},
-            this._attributes,
+            this._card,
             {
-              isFavorite: !this._attributes.isFavorite
+              isFavorite: !this._card.isFavorite
             }
         )
     );

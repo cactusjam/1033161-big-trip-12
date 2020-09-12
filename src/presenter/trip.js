@@ -6,7 +6,7 @@ import EventMessageView from "../view/event-message.js";
 import {render, RenderPosition, remove} from "../utils/dom.js";
 import {groupCardsByDay} from "../utils/date.js";
 import {sortEventsByTime, sortEventsByPrice} from "../utils/utils.js";
-import {EventMessage, SortType, UserAction, UpdateType, FilterType} from "../constants.js";
+import {EventMessage, SortType, UserAction, UpdateType, FilterType, InitialDayCounter} from "../constants.js";
 import PointPresenter from "./point.js";
 import {filter} from "../utils/filter.js";
 import PointNewPresenter from "./point-new.js";
@@ -26,7 +26,7 @@ export default class Trip {
     this.createPoint = this.createPoint.bind(this);
     this._currentSortType = SortType.DEFAULT;
     this._daysComponent = new DaysView();
-    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._handleKindChange = this._handleKindChange.bind(this);
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
     this._pointNewPresenter = new PointNewPresenter(this._handleViewAction);
@@ -71,7 +71,7 @@ export default class Trip {
       .forEach((presenter) => presenter.resetView());
   }
 
-  _handleSortTypeChange(sortType) {
+  _handleKindChange(sortType) {
     if (this._currentSortType === sortType) {
       return;
     }
@@ -86,7 +86,7 @@ export default class Trip {
     }
 
     this._sort = new SortView(this._currentSortType);
-    this._sort.setKindChangeHandler(this._handleSortTypeChange);
+    this._sort.setKindChangeHandler(this._handleKindChange);
     render(this._container, this._sort, RenderPosition.AFTER_BEGIN);
   }
 
@@ -182,7 +182,7 @@ export default class Trip {
 
   _renderEvents() {
     if (this._currentSortType !== SortType.DEFAULT) {
-      const dayComponent = new DayView(0, new Date());
+      const dayComponent = new DayView(InitialDayCounter.ZERO, new Date());
       render(this._daysComponent, dayComponent);
 
       const tripEventsComponent = new TripEventsView();

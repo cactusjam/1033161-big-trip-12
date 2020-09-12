@@ -54,4 +54,8 @@ const FilterType = {
   PAST: `Past`,
 };
 
-export {EventMessage, KeyboardKey, TypeParticle, TRANSFER_TYPES, ACTIVITY_TYPES, SortType, UserAction, UpdateType, FilterType};
+const InitialDayCounter = {
+  ZERO: 0
+};
+
+export {EventMessage, KeyboardKey, TypeParticle, TRANSFER_TYPES, ACTIVITY_TYPES, SortType, UserAction, UpdateType, FilterType, InitialDayCounter};
