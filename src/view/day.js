@@ -1,7 +1,7 @@
 import {getDayFormat, convertDateToISOString} from "../utils/date.js";
 import AbstractView from "./abstract.js";
 
-const createTripDayTemplate = (counter, startDate) => {
+const createDayTemplate = (counter, startDate) => {
   return (
     `<li class="trip-days__item day">
       <div class="day__info">
@@ -12,7 +12,7 @@ const createTripDayTemplate = (counter, startDate) => {
   );
 };
 
-export default class TripDay extends AbstractView {
+export default class Day extends AbstractView {
   constructor(counter, startDate) {
     super();
     this._counter = counter;
@@ -20,6 +20,6 @@ export default class TripDay extends AbstractView {
   }
 
   getTemplate() {
-    return createTripDayTemplate(this._counter, this._startDate);
+    return createDayTemplate(this._counter, this._startDate);
   }
 }
