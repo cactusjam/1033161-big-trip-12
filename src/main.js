@@ -5,6 +5,7 @@ import {render, RenderPosition} from "./utils/dom.js";
 import {generateCards} from "./mock/card.js";
 import TripPresenter from "./presenter/trip.js";
 import FilterPresenter from "./presenter/filter.js";
+import StatisticsPresenter from "./presenter/statistics.js";
 import {destinations} from "./mock/destinations.js";
 import PointsModel from "./model/points.js";
 import FilterModel from "./model/filter.js";
@@ -23,6 +24,7 @@ const switchMenu = tripControls.querySelector(`.js-switch`);
 const filterMenu = tripControls.querySelector(`.js-filter`);
 const tripPresenter = new TripPresenter(siteMainBlock, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(filterMenu, pointsModel, filterModel);
+const statisticsPresenter = new StatisticsPresenter(siteMainBlock, pointsModel);
 render(switchMenu, new TripControlsView(), RenderPosition.AFTER_END);
 
 const tripMain = document.querySelector(`.trip-main`);
