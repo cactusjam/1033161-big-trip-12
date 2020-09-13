@@ -27,22 +27,21 @@ export default class Trip {
     this._currentSortType = SortType.DEFAULT;
     this._daysComponent = new DaysView();
     this._handleKindChange = this._handleKindChange.bind(this);
-    this._pointsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
     this._pointNewPresenter = new PointNewPresenter(this._handleViewAction);
   }
 
   init() {
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
     this._renderSort();
     this._renderTrip();
   }
 
-  createPoint() {
-    this._currentSortType = SortType.EVENT;
-    this._filterModel.set(UpdateType.MAJOR, FilterType.EVERYTHING);
+  createPoint(callback) {
     this._pointNewPresenter.init(
-        this._sortComponent,
-        this._getDestinations()
+        // this._sortComponent,
+        this._getDestinations(),
+        callback
     );
   }
 
@@ -122,17 +121,16 @@ export default class Trip {
   }
 
   destroy() {
-    this._clearEvents(true);
+    this._clearEvents({resetSortType: true});
 
     remove(this._daysComponent);
     remove(this._sortComponent);
 
-    this._pointsModel.removeObserver(this._rerenderTripEvents);
-    this._filterModel.removeObserver(this._handleKindChange);
+    this._pointsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   _handleViewAction(actionType, updateType, update) {
-
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this._pointsModel.update(updateType, update);
