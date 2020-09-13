@@ -9,34 +9,55 @@ import StatisticsPresenter from "./presenter/statistics.js";
 import {destinations} from "./mock/destinations.js";
 import PointsModel from "./model/points.js";
 import FilterModel from "./model/filter.js";
+import {FilterType, TabItem} from "./constants";
 
 const CARD_COUNT = 20;
 const tripCards = generateCards(CARD_COUNT);
 
+const filterModel = new FilterModel();
 const pointsModel = new PointsModel();
 pointsModel.setPoints(tripCards);
 pointsModel.setDestinations(destinations);
-const filterModel = new FilterModel();
 
 const siteMainBlock = document.querySelector(`.trip-events`);
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
 const switchMenu = tripControls.querySelector(`.js-switch`);
 const filterMenu = tripControls.querySelector(`.js-filter`);
+
 const tripPresenter = new TripPresenter(siteMainBlock, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(filterMenu, pointsModel, filterModel);
 const statisticsPresenter = new StatisticsPresenter(siteMainBlock, pointsModel);
-render(switchMenu, new TripControlsView(), RenderPosition.AFTER_END);
+
+const tripControlsComponent = new TripControlsView();
+render(switchMenu, tripControlsComponent, RenderPosition.AFTER_END);
 
 const tripMain = document.querySelector(`.trip-main`);
 render(tripMain, new TripInfoView(), RenderPosition.AFTER_BEGIN);
+
 const tripEventButtonComponent = new EventAddButtonView();
 render(tripMain, tripEventButtonComponent);
 
-filterPresenter.init();
-tripPresenter.init();
+const handleSiteMenuClick = (tabItem) => {
+  switch (tabItem) {
+    case TabItem.TABLE:
+      tripPresenter.init();
+      statisticsPresenter.destroy();
+      break;
+    case TabItem.STATISTICS:
+      tripPresenter.destroy();
+      statisticsPresenter.init();
+      break;
+  }
+};
+
+tripControlsComponent.setMenuItemClickHandler(handleSiteMenuClick);
 
 const handleTripEventButtonClick = () => {
   tripPresenter.createPoint();
 };
 
 tripEventButtonComponent.setClickHandler(handleTripEventButtonClick);
+
+filterPresenter.init();
+tripPresenter.init();
+statisticsPresenter.init();

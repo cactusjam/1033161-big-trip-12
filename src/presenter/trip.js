@@ -18,7 +18,7 @@ export default class Trip {
     this._pointPresenter = {};
     this._existDays = [];
     this._container = container;
-    this._sort = null;
+    this._sortComponent = null;
     this._eventMessageNoEventsView = null;
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -41,7 +41,7 @@ export default class Trip {
     this._currentSortType = SortType.EVENT;
     this._filterModel.set(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._pointNewPresenter.init(
-        this._sort,
+        this._sortComponent,
         this._getDestinations()
     );
   }
@@ -81,13 +81,13 @@ export default class Trip {
   }
 
   _renderSort() {
-    if (this._sort !== null) {
-      this._sort = null;
+    if (this._sortComponent !== null) {
+      this._sortComponent = null;
     }
 
-    this._sort = new SortView(this._currentSortType);
-    this._sort.setKindChangeHandler(this._handleKindChange);
-    render(this._container, this._sort, RenderPosition.AFTER_BEGIN);
+    this._sortComponent = new SortView(this._currentSortType);
+    this._sortComponent.setKindChangeHandler(this._handleKindChange);
+    render(this._container, this._sortComponent, RenderPosition.AFTER_BEGIN);
   }
 
   _renderTrip() {
@@ -119,6 +119,16 @@ export default class Trip {
   _renderNoEvents() {
     this._eventMessageNoEventsView = new EventMessageView(EventMessage.NO_EVENTS);
     render(this._container, this._eventMessageNoEventsView);
+  }
+
+  destroy() {
+    this._clearEvents(true);
+
+    remove(this._daysComponent);
+    remove(this._sortComponent);
+
+    this._pointsModel.removeObserver(this._rerenderTripEvents);
+    this._filterModel.removeObserver(this._handleKindChange);
   }
 
   _handleViewAction(actionType, updateType, update) {
@@ -172,7 +182,7 @@ export default class Trip {
     this._existDays = [];
 
     remove(this._eventMessageNoEventsView);
-    remove(this._sort);
+    remove(this._sortComponent);
     remove(this._daysComponent);
 
     if (resetSortType) {
