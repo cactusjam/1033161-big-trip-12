@@ -20,8 +20,9 @@ const createEmptyPoint = () => ({
 });
 
 export default class PointNew {
-  constructor(changeData) {
+  constructor(changeData, newPointFormCloseCallback) {
     this._changeData = changeData;
+    this._newPointFormCloseCallback = newPointFormCloseCallback;
 
     this._destinations = null;
     this._attributes = null;
@@ -68,16 +69,19 @@ export default class PointNew {
         Object.assign({id: getRandomInteger()}, card)
     );
     this.destroy();
+    this._newPointFormCloseCallback();
   }
 
   _handleDeleteButtonClick() {
     this.destroy();
+    this._newPointFormCloseCallback();
   }
 
   _escKeyDownHandler(evt) {
     if (isEscapeEvent(evt)) {
       evt.preventDefault();
       this.destroy();
+      this._newPointFormCloseCallback();
     }
   }
 }

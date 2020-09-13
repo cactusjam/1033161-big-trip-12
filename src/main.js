@@ -9,7 +9,7 @@ import StatisticsPresenter from "./presenter/statistics.js";
 import {destinations} from "./mock/destinations.js";
 import PointsModel from "./model/points.js";
 import FilterModel from "./model/filter.js";
-import {FilterType, TabItem} from "./constants";
+import {TabItem, UpdateType, FilterType} from "./constants";
 
 const CARD_COUNT = 20;
 const tripCards = generateCards(CARD_COUNT);
@@ -24,9 +24,19 @@ const tripControls = document.querySelector(`.trip-main__trip-controls`);
 const switchMenu = tripControls.querySelector(`.js-switch`);
 const filterMenu = tripControls.querySelector(`.js-filter`);
 
-const tripPresenter = new TripPresenter(siteMainBlock, pointsModel, filterModel);
-const filterPresenter = new FilterPresenter(filterMenu, pointsModel, filterModel);
-const statisticsPresenter = new StatisticsPresenter(siteMainBlock, pointsModel);
+const tripEventButtonComponent = new EventAddButtonView();
+
+const newPointFormCloseCallback = () => {
+  tripEventButtonComponent.setMenuItem(true);
+};
+
+const newPointFormOpenedHandler = () => {
+  tripEventButtonComponent.setMenuItem(false);
+};
+
+const tripComponent = new TripPresenter(siteMainBlock, pointsModel, filterModel, newPointFormCloseCallback);
+const filterComponent = new FilterPresenter(filterMenu, pointsModel, filterModel);
+const statisticsComponent = new StatisticsPresenter(siteMainBlock, pointsModel);
 
 const tripControlsComponent = new TripControlsView();
 render(switchMenu, tripControlsComponent, RenderPosition.AFTER_END);
@@ -34,30 +44,38 @@ render(switchMenu, tripControlsComponent, RenderPosition.AFTER_END);
 const tripMain = document.querySelector(`.trip-main`);
 render(tripMain, new TripInfoView(), RenderPosition.AFTER_BEGIN);
 
-const tripEventButtonComponent = new EventAddButtonView();
 render(tripMain, tripEventButtonComponent);
 
 const handleSiteMenuClick = (tabItem) => {
   switch (tabItem) {
     case TabItem.TABLE:
-      tripPresenter.init();
-      statisticsPresenter.destroy();
+      tripComponent.init();
+      statisticsComponent.destroy();
       break;
     case TabItem.STATISTICS:
-      tripPresenter.destroy();
-      statisticsPresenter.init();
+      tripComponent.destroy();
+      statisticsComponent.init();
+      break;
+    case TabItem.NEW_POINT:
+      statisticsComponent.destroy();
+      tripComponent.destroy();
+      filterModel.set(UpdateType.MAJOR, FilterType.EVERYTHING);
+      tripComponent.init();
+      tripComponent.createPoint(newPointFormOpenedHandler);
+      tripControlsComponent.setMenuItem(TabItem.TABLE);
       break;
   }
 };
 
 tripControlsComponent.setMenuItemClickHandler(handleSiteMenuClick);
 
-const handleTripEventButtonClick = () => {
-  tripPresenter.createPoint();
-};
+// const handleTripEventButtonClick = () => {
+//   tripComponent.createPoint();
+// };
 
-tripEventButtonComponent.setClickHandler(handleTripEventButtonClick);
+tripEventButtonComponent.setMenuItemClickHandler(handleSiteMenuClick);
+// tripEventButtonComponent.setMenuItemClickHandler(handleTripEventButtonClick);
 
-filterPresenter.init();
-tripPresenter.init();
-statisticsPresenter.init();
+filterComponent.init();
+tripComponent.init();
+statisticsComponent.init();

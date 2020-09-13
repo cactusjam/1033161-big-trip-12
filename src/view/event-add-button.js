@@ -1,8 +1,9 @@
 import AbstractView from "./abstract.js";
+import {TabItem} from "../constants.js";
 
 const createTripEventButtonTemplate = () => {
   return (
-    `<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow" type="button">New event</button>`
+    `<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow" type="button" data-value="${TabItem.NEW_POINT}">New event</button>`
   );
 };
 
@@ -10,21 +11,37 @@ export default class EventAddButton extends AbstractView {
   constructor() {
     super();
 
-    this._elementClickHandler = this._elementClickHandler.bind(this);
+    this._menuItemClickHandler = this._menuItemClickHandler.bind(this);
   }
 
   getTemplate() {
     return createTripEventButtonTemplate();
   }
 
-  _elementClickHandler(evt) {
+  _menuItemClickHandler(evt) {
     evt.preventDefault();
-    this._callback.buttonClick();
+    this._callback.menuClick(evt.target.getAttribute(`data-value`));
   }
 
-  setClickHandler(callback) {
-    this._callback.buttonClick = callback;
+  setMenuItemClickHandler(callback) {
+    this._callback.menuClick = callback;
 
-    this.getElement().addEventListener(`click`, this._elementClickHandler);
+    this.getElement().addEventListener(`click`, this._menuItemClickHandler);
+  }
+
+  setMenuItem(buttonShouldBeActive) {
+    const button = this.getElement();
+
+    if (buttonShouldBeActive) {
+      button.disabled = false;
+    } else {
+      button.disabled = true;
+    }
+
+    // if (button.disabled) {
+    //   button.disabled = false;
+    // } else {
+    //   button.disabled = true;
+    // }
   }
 }

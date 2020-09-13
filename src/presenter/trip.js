@@ -12,7 +12,7 @@ import {filter} from "../utils/filter.js";
 import PointNewPresenter from "./point-new.js";
 
 export default class Trip {
-  constructor(container, pointsModel, filterModel) {
+  constructor(container, pointsModel, filterModel, newPointFormCloseCallback) {
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
     this._pointPresenter = {};
@@ -27,7 +27,7 @@ export default class Trip {
     this._currentSortType = SortType.DEFAULT;
     this._daysComponent = new DaysView();
     this._handleKindChange = this._handleKindChange.bind(this);
-    this._pointNewPresenter = new PointNewPresenter(this._handleViewAction);
+    this._pointNewPresenter = new PointNewPresenter(this._handleViewAction, newPointFormCloseCallback);
   }
 
   init() {
@@ -39,10 +39,10 @@ export default class Trip {
 
   createPoint(callback) {
     this._pointNewPresenter.init(
-        // this._sortComponent,
-        this._getDestinations(),
-        callback
+        this._sortComponent,
+        this._getDestinations()
     );
+    callback();
   }
 
   _getPoints() {

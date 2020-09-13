@@ -60,7 +60,8 @@ const InitialDayCounter = {
 
 const TabItem = {
   TABLE: `Table`,
-  STATISTICS: `Stats`
+  STATISTICS: `Stats`,
+  NEW_POINT: `New Point`
 };
 
 export {EventMessage, KeyboardKey, TypeParticle, TRANSFER_TYPES, ACTIVITY_TYPES, SortType, UserAction, UpdateType, FilterType, InitialDayCounter, TabItem};
