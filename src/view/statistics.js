@@ -21,7 +21,45 @@ const createStatisticsTemplate = () => {
 };
 
 export default class Statistics extends AbstractView {
+  constructor(points) {
+    super();
+    this._data = this._createData(points);
+
+    this._moneyChart = null;
+    this._timeSpendChart = null;
+    this._timeSpendChart = null;
+
+    this._setCharts();
+  }
+
   getTemplate() {
     return createStatisticsTemplate();
+  }
+
+  removeElement() {
+    super.removeElement();
+    this._removeCharts();
+  }
+
+  _removeCharts() {
+    if (this._moneyChart !== null) {
+      this._moneyChart = null;
+    }
+
+    if (this._timeSpendChart !== null) {
+      this._timeSpendChart = null;
+    }
+
+    if (this._timeSpendChart !== null) {
+      this._timeSpendChart = null;
+    }
+  }
+
+  _setCharts() {
+    this._removeCharts();
+
+    const moneyCtx = this.getElement().querySelector(`.statistics__chart--money`);
+    const transportCtx = this.getElement().querySelector(`.statistics__chart--transport`);
+    const timeSpendCtx = this.getElement().querySelector(`.statistics__chart--time`);
   }
 }
