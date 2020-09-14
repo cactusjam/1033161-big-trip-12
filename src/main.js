@@ -55,6 +55,7 @@ const handleSiteMenuClick = (tabItem) => {
     case TabItem.STATISTICS:
       tripComponent.destroy();
       statisticsComponent.init();
+      tripEventButtonComponent.setMenuItem(true);
       break;
     case TabItem.NEW_POINT:
       statisticsComponent.destroy();

@@ -125,6 +125,7 @@ export default class Trip {
 
     remove(this._daysComponent);
     remove(this._sortComponent);
+    this._pointNewPresenter.destroy();
 
     this._pointsModel.removeObserver(this._handleModelEvent);
     this._filterModel.removeObserver(this._handleModelEvent);
