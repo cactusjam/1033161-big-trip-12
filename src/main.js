@@ -70,13 +70,7 @@ const handleSiteMenuClick = (tabItem) => {
 
 tripControlsComponent.setMenuItemClickHandler(handleSiteMenuClick);
 
-// const handleTripEventButtonClick = () => {
-//   tripComponent.createPoint();
-// };
-
 tripEventButtonComponent.setMenuItemClickHandler(handleSiteMenuClick);
-// tripEventButtonComponent.setMenuItemClickHandler(handleTripEventButtonClick);
 
 filterComponent.init();
 tripComponent.init();
-statisticsComponent.init();
