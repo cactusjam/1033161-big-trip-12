@@ -78,8 +78,6 @@ const createChartData = (points) => {
 };
 
 const renderChart = (chartCtx, chartData, chartConfig) => {
-  chartCtx.height = BAR_HEIGHT * chartData.length;
-
   const labels = [];
   const data = [];
 
@@ -213,6 +211,10 @@ export default class Statistics extends AbstractView {
     const moneyCtx = element.querySelector(`.statistics__chart--money`);
     const transportCtx = element.querySelector(`.statistics__chart--transport`);
     const timeSpendCtx = element.querySelector(`.statistics__chart--time`);
+
+    moneyCtx.height = BAR_HEIGHT * 6;
+    transportCtx.height = BAR_HEIGHT * 4;
+    timeSpendCtx.height = BAR_HEIGHT * 4;
 
     this._moneyChart = renderChart(
         moneyCtx,
