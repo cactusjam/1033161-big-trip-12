@@ -6,7 +6,7 @@ import EventMessageView from "../view/event-message.js";
 import {render, RenderPosition, remove} from "../utils/dom.js";
 import {groupCardsByDay} from "../utils/date.js";
 import {sortEventsByTime, sortEventsByPrice} from "../utils/utils.js";
-import {EventMessage, SortType, UserAction, UpdateType, FilterType, InitialDayCounter} from "../constants.js";
+import {EventMessage, SortType, UserAction, UpdateType, InitialDayCounter} from "../constants.js";
 import PointPresenter from "./point.js";
 import {filter} from "../utils/filter.js";
 import PointNewPresenter from "./point-new.js";
