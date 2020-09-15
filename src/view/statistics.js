@@ -204,7 +204,7 @@ export default class Statistics extends AbstractView {
       .sort((itemA, itemB) => itemB.count - itemA.count);
   }
 
-  _getTimeSpentChartData() {
+  _getSpentTimeChartData() {
     return Object.values(this._points).sort((itemA, itemB) => itemB.duration - itemA.duration);
   }
 
@@ -216,7 +216,7 @@ export default class Statistics extends AbstractView {
 
     this._moneyChart = renderChart(
         moneyCtx,
-        getMoneyChartData(this.points),
+        this._getMoneyChartData(),
         moneyChartSet
     );
 
@@ -228,7 +228,7 @@ export default class Statistics extends AbstractView {
 
     this._timeSpendChart = renderChart(
         timeSpendCtx,
-        this._getTimeSpentChartData(),
+        this._getSpentTimeChartData(),
         timeSpentChartSet
     );
   }
