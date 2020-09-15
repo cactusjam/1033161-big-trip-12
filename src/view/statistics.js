@@ -2,9 +2,10 @@ import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import AbstractView from "./abstract.js";
 import {formatDuration, getHourDuration} from "../utils/date.js";
-import {TRANSFER_TYPES, ActionIcon, ACTIVITY_TYPES} from "../constants.js";
+import {TRANSFER_TYPES, PointTypeOfIcon, ACTIVITY_TYPES} from "../constants.js";
 
 const BAR_HEIGHT = 55;
+const COUNT = 1;
 
 const ChartDataset = {
   BACKGROUND_COLOR: `#ffffff`,
@@ -31,28 +32,28 @@ const ChartTitle = {
 const ChartTick = {
   FONT_COLOR: `#000000`,
   PADDING: 5,
-  FONT_SIZE: 18,
+  FONT_SIZE: 13,
 };
 
-const moneyChartConfig = {
+const moneyChartSet = {
   chartKey: `price`,
   title: `MONEY`,
   dataFormatter: (value) => `€ ${value}`,
 };
 
-const transportChartConfig = {
+const transportChartSet = {
   chartKey: `count`,
   title: `TRANSPORT`,
   dataFormatter: (value) => `${value}x`,
 };
 
-const timeSpentChartConfig = {
+const timeSpentChartSet = {
   chartKey: `duration`,
   title: `TIME SPENT`,
   dataFormatter: (value) => `${formatDuration(0, value)}`,
 };
 
-const convertToData = (points) => {
+const createChartData = (points) => {
   const chartData = {};
 
   points.forEach((point) => {
@@ -62,10 +63,10 @@ const convertToData = (points) => {
       chartData[point.type].count++;
     } else {
       chartData[point.type] = {
-        label: ActionIcon[point.type],
+        label: PointTypeOfIcon[point.type],
         price: point.price,
         duration: getHourDuration(point.startDate, point.endDate),
-        count: 1,
+        count: COUNT,
         groupType: TRANSFER_TYPES.includes(point.type)
           ? TRANSFER_TYPES
           : ACTIVITY_TYPES,
@@ -77,6 +78,8 @@ const convertToData = (points) => {
 };
 
 const renderChart = (chartCtx, chartData, chartConfig) => {
+  chartCtx.height = BAR_HEIGHT * chartData.length;
+
   const labels = [];
   const data = [];
 
@@ -178,7 +181,11 @@ const createStatisticsTemplate = () => {
 export default class Statistics extends AbstractView {
   constructor(points) {
     super();
-    this._points = convertToData(points);
+    this._points = createChartData(points);
+
+    this._moneyChart = null;
+    this._transportChart = null;
+    this._timeSpendChart = null;
 
     this._setCharts();
   }
@@ -207,26 +214,22 @@ export default class Statistics extends AbstractView {
     const transportCtx = element.querySelector(`.statistics__chart--transport`);
     const timeSpendCtx = element.querySelector(`.statistics__chart--time`);
 
-    moneyCtx.height = BAR_HEIGHT * 6;
-    transportCtx.height = BAR_HEIGHT * 4;
-    timeSpendCtx.height = BAR_HEIGHT * 6;
-
-    renderChart(
+    this._moneyChart = renderChart(
         moneyCtx,
-        this._getMoneyChartData(),
-        moneyChartConfig
+        getMoneyChartData(this.points),
+        moneyChartSet
     );
 
-    renderChart(
+    this._transportChart = renderChart(
         transportCtx,
         this._getTransportChartData(),
-        transportChartConfig
+        transportChartSet
     );
 
-    renderChart(
+    this._timeSpendChart = renderChart(
         timeSpendCtx,
         this._getTimeSpentChartData(),
-        timeSpentChartConfig
+        timeSpentChartSet
     );
   }
 }

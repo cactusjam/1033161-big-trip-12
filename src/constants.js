@@ -70,7 +70,7 @@ const StatsType = {
   TIME_SPEND: `time-spend`
 };
 
-const ActionIcon = {
+const PointTypeOfIcon = {
   'taxi': `🚕`,
   'bus': `🚌`,
   'train': `🚂`,
@@ -83,4 +83,4 @@ const ActionIcon = {
   'restaurant': `🍴`,
 };
 
-export {EventMessage, KeyboardKey, TypeParticle, TRANSFER_TYPES, ACTIVITY_TYPES, SortType, UserAction, UpdateType, FilterType, InitialDayCounter, TabItem, StatsType, ActionIcon};
+export {EventMessage, KeyboardKey, TypeParticle, TRANSFER_TYPES, ACTIVITY_TYPES, SortType, UserAction, UpdateType, FilterType, InitialDayCounter, TabItem, StatsType, PointTypeOfIcon};
