@@ -120,11 +120,10 @@ const createEventEditTemplate = (pointData, destinations, isAddMode) => {
           `).join(``)}
           </div>
           </section>
+          ${destination.name.length > 0 ? `
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            ${destination.description.length > 0 ? `
-            <p class="event__destination-description">${destination.description}</p>` : ``
-    }
+            <p class="event__destination-description">${destination.description}</p>
             ${destination.photos.length > 0 ? `
             <div class="event__photos-container">
               <div class="event__photos-tape">
@@ -134,7 +133,7 @@ const createEventEditTemplate = (pointData, destinations, isAddMode) => {
               </div>
             </div>` : ``
     }
-          </section>
+          </section>` : ``}
         </section>
       </form>`
   );
