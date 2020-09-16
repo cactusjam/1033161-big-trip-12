@@ -29,7 +29,7 @@ export default class EventAddButton extends AbstractView {
     this.getElement().addEventListener(`click`, this._menuItemClickHandler);
   }
 
-  setMenuItem(buttonShouldBeActive) {
-    this.getElement().disabled = buttonShouldBeActive ? false : true;
+  setDisabled(value) {
+    this.getElement().disabled = value;
   }
 }

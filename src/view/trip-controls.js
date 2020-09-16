@@ -24,7 +24,8 @@ export default class TripControls extends AbstractView {
   }
 
   setMenuItem(tabsItem) {
-    const menuItems = this.getElement().querySelectorAll(`.trip-tabs__btn`);
+    const element = this.getElement();
+    const menuItems = element.querySelectorAll(`.trip-tabs__btn`);
 
     menuItems.forEach((item) => {
       if (item.classList.contains(ACTIVE_CLASS)) {
@@ -32,7 +33,7 @@ export default class TripControls extends AbstractView {
       }
     });
 
-    const newActiveMenuItem = this.getElement().querySelector(`[data-value=${tabsItem}]`);
+    const newActiveMenuItem = element.querySelector(`[data-value=${tabsItem}]`);
     if (newActiveMenuItem) {
       newActiveMenuItem.classList.add(ACTIVE_CLASS);
     }
@@ -45,13 +46,13 @@ export default class TripControls extends AbstractView {
 
   _menuItemClickHandler(evt) {
     evt.preventDefault();
-
+    const currentActive = evt.target;
     if (evt.target.tagName !== `A`
       || evt.target.classList.contains(`trip-tabs__btn--active`)) {
       return;
     }
 
-    this.setMenuItem(evt.target.getAttribute(`data-value`));
-    this._callback.menuClick(evt.target.getAttribute(`data-value`));
+    this.setMenuItem(currentActive.dataset.value);
+    this._callback.menuClick(currentActive.dataset.value);
   }
 }

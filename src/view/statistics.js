@@ -2,10 +2,11 @@ import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import AbstractView from "./abstract.js";
 import {formatDuration, getHourDuration} from "../utils/date.js";
-import {TRANSFER_TYPES, PointTypeOfIcon, ACTIVITY_TYPES} from "../constants.js";
+import {TRANSFER_TYPES, pointTypeToIcon, ACTIVITY_TYPES} from "../constants.js";
 
 const BAR_HEIGHT = 55;
-const COUNT = 1;
+const COUNT_VALUE = 1;
+const transferTypeSet = new Set(TRANSFER_TYPES);
 
 const ChartDataset = {
   BACKGROUND_COLOR: `#ffffff`,
@@ -35,19 +36,19 @@ const ChartTick = {
   FONT_SIZE: 13,
 };
 
-const moneyChartSet = {
+const moneyChartOptions = {
   chartKey: `price`,
   title: `MONEY`,
   dataFormatter: (value) => `€ ${value}`,
 };
 
-const transportChartSet = {
+const transportChartOptions = {
   chartKey: `count`,
   title: `TRANSPORT`,
   dataFormatter: (value) => `${value}x`,
 };
 
-const timeSpentChartSet = {
+const timeSpentChartOptions = {
   chartKey: `duration`,
   title: `TIME SPENT`,
   dataFormatter: (value) => `${formatDuration(0, value)}`,
@@ -55,19 +56,19 @@ const timeSpentChartSet = {
 
 const createChartData = (points) => {
   return points.reduce((chartData, point) => {
-    const pointType = point.type;
+    const pointType = chartData[point.type];
 
-    if (chartData[pointType]) {
-      chartData[pointType].price += point.price;
-      chartData[pointType].duration += getHourDuration(point.startDate, point.endDate);
-      chartData[pointType].count++;
+    if (pointType) {
+      pointType.price += point.price;
+      pointType.duration += getHourDuration(point.startDate, point.endDate);
+      pointType.count++;
     } else {
-      chartData[pointType] = {
-        label: PointTypeOfIcon[pointType],
+      chartData[point.type] = {
+        label: pointTypeToIcon[point.type],
         price: point.price,
         duration: getHourDuration(point.startDate, point.endDate),
-        count: COUNT,
-        groupType: TRANSFER_TYPES.includes(pointType)
+        count: COUNT_VALUE,
+        groupType: transferTypeSet.has(point.type)
           ? TRANSFER_TYPES
           : ACTIVITY_TYPES,
       };
@@ -219,19 +220,19 @@ export default class Statistics extends AbstractView {
     this._moneyChart = renderChart(
         moneyCtx,
         this._getMoneyChartData(),
-        moneyChartSet
+        moneyChartOptions
     );
 
     this._transportChart = renderChart(
         transportCtx,
         this._getTransportChartData(),
-        transportChartSet
+        transportChartOptions
     );
 
     this._timeSpendChart = renderChart(
         timeSpendCtx,
         this._getSpentTimeChartData(),
-        timeSpentChartSet
+        timeSpentChartOptions
     );
   }
 }

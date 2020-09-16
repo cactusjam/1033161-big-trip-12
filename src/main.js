@@ -27,11 +27,11 @@ const filterMenu = tripControls.querySelector(`.js-filter`);
 const tripEventButtonComponent = new EventAddButtonView();
 
 const newPointFormCloseCallback = () => {
-  tripEventButtonComponent.setMenuItem(true);
+  tripEventButtonComponent.setDisabled(false);
 };
 
 const newPointFormOpenedHandler = () => {
-  tripEventButtonComponent.setMenuItem(false);
+  tripEventButtonComponent.setDisabled(true);
 };
 
 const tripComponent = new TripPresenter(siteMainBlock, pointsModel, filterModel, newPointFormCloseCallback);
@@ -55,7 +55,7 @@ const handleSiteMenuClick = (tabItem) => {
     case TabItem.STATISTICS:
       tripComponent.destroy();
       statisticsComponent.init();
-      tripEventButtonComponent.setMenuItem(true);
+      tripEventButtonComponent.setDisabled(false);
       break;
     case TabItem.NEW_POINT:
       statisticsComponent.destroy();
