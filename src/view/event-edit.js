@@ -107,7 +107,7 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
         </header>
         <section class="event__details">
         ${services.length > 0 ?
-          `<section class="event__section  event__section--offers">
+      `<section class="event__section  event__section--offers">
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
               <div class="event__available-offers">
               ${services.map((offer) =>`
@@ -122,7 +122,7 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
                 `).join(``)}
               </div>
             </section>` : ``
-        }
+    }
           ${destination.name.length > 0 ? `
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
