@@ -16,7 +16,7 @@ const tripCards = generateCards(CARD_COUNT);
 
 const filterModel = new FilterModel();
 const pointsModel = new PointsModel();
-pointsModel.setPoints(tripCards);
+pointsModel.set(tripCards);
 pointsModel.setDestinations(destinations);
 
 const siteMainBlock = document.querySelector(`.trip-events`);

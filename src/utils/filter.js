@@ -1,7 +1,7 @@
 import {FilterType} from "../constants";
 import moment from "moment";
 
-export const filter = {
+const filter = {
   [FilterType.FUTURE]: (points) => points.filter((point) => {
     return moment(point.startDate).isAfter(new Date(), `day`);
   }),
@@ -10,3 +10,5 @@ export const filter = {
   }),
   [FilterType.EVERYTHING]: (points) => points.slice()
 };
+
+export {filter};

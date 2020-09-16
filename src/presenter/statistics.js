@@ -13,7 +13,7 @@ export default class Statistics {
       this.destroy();
     }
 
-    this._component = new StatisticsView(this._pointsModel.getPoints());
+    this._component = new StatisticsView(this._pointsModel.get());
     render(this._container, this._component, RenderPosition.AFTER_END);
   }
 

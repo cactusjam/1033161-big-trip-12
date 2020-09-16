@@ -1,6 +1,6 @@
 import FilterView from '../view/filters';
 import {render, replace, remove, RenderPosition} from "../utils/dom.js";
-import {UpdateType} from "../constants.js";
+import {UpdateType, FilterType} from "../constants.js";
 import {filter} from "../utils/filter.js";
 
 export default class Filter {
@@ -21,10 +21,15 @@ export default class Filter {
 
   init() {
     this._current = this._model.get();
-
     const prevComponent = this._component;
+    const points = this._tripModel.get();
+    const currentFilters = {
+      [FilterType.EVERYTHING]: points.length !== 0,
+      [FilterType.FUTURE]: filter[FilterType.FUTURE](points).length !== 0,
+      [FilterType.PAST]: filter[FilterType.PAST](points).length !== 0,
+    };
 
-    this._component = new FilterView(this._current);
+    this._component = new FilterView(this._current, currentFilters);
     this._component.setTypeChangeHandler(this._handleTypeChange);
 
     if (prevComponent === null) {
@@ -48,8 +53,8 @@ export default class Filter {
     this._model.set(UpdateType.MINOR, type);
   }
 
-  _getType() {
-    const points = this._pointsModel.getPoints();
+  _getFilters() {
+    const points = this._tripModel.get();
 
     return Object.entries(filter)
     .map(([key, value]) => ({[key]: value(points).length}))
