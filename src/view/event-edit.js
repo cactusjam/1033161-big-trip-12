@@ -42,15 +42,15 @@ const createDestinationTemplate = (destinations, pointType, destination, pointId
   );
 };
 
-const createResetButtonTemplate = (isAddMode) => {
+const createResetButtonTemplate = (isNewEvent) => {
   return (
     `<button class="event__reset-btn" type="reset">
-      ${isAddMode ? ButtonName.CANCEL : ButtonName.DELETE}
+      ${isNewEvent ? ButtonName.CANCEL : ButtonName.DELETE}
     </button>`
   );
 };
 
-const createEventEditTemplate = (pointData, destinations, isAddMode) => {
+const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
   const {id, type, startDate, endDate, price, isFavorite, isActivated, destination, services} = pointData;
   return (
     `<form class="trip-events__item event  event--edit" action="#" method="post">
@@ -92,8 +92,8 @@ const createEventEditTemplate = (pointData, destinations, isAddMode) => {
             <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
           </div>
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          ${createResetButtonTemplate(isAddMode)}
-          <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
+          ${createResetButtonTemplate(isNewEvent)}
+          ${!isNewEvent ? `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
           <label class="event__favorite-btn" for="event-favorite-1">
             <span class="visually-hidden">Add to favorite</span>
             <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -102,24 +102,27 @@ const createEventEditTemplate = (pointData, destinations, isAddMode) => {
           </label>
           <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
-        </button>
+        </button>`
+      : ``}
         </header>
         <section class="event__details">
-          <section class="event__section  event__section--offers">
-            <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-            <div class="event__available-offers">
-            ${services.map((offer) =>`
-            <div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" value="${offer.type} name="event-offer-${offer.type}" ${isActivated ? `checked` : ``}>
-              <label class="event__offer-label" for="event-offer-${offer.type}-1">
-                <span class="event__offer-title">${offer.title}</span>
-                +
-                €&nbsp;<span class="event__offer-price">${offer.price}</span>
-              </label>
-            </div>
-          `).join(``)}
-          </div>
-          </section>
+        ${services.length > 0 ?
+          `<section class="event__section  event__section--offers">
+              <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+              <div class="event__available-offers">
+              ${services.map((offer) =>`
+                <div class="event__offer-selector">
+                  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" value="${offer.type} name="event-offer-${offer.type}" ${isActivated ? `checked` : ``}>
+                  <label class="event__offer-label" for="event-offer-${offer.type}-1">
+                    <span class="event__offer-title">${offer.title}</span>
+                    +
+                    €&nbsp;<span class="event__offer-price">${offer.price}</span>
+                  </label>
+                </div>
+                `).join(``)}
+              </div>
+            </section>` : ``
+        }
           ${destination.name.length > 0 ? `
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -131,8 +134,7 @@ const createEventEditTemplate = (pointData, destinations, isAddMode) => {
                 <img class="event__photo" src="${photo}" alt="Event photo">
               `).join(``)}
               </div>
-            </div>` : ``
-    }
+            </div>` : ``}
           </section>` : ``}
         </section>
       </form>`
@@ -140,17 +142,17 @@ const createEventEditTemplate = (pointData, destinations, isAddMode) => {
 };
 
 export default class EventEdit extends SmartView {
-  constructor(point, destinations = BLANK_DESTINATION, isAddMode = false) {
+  constructor(point, destinations = BLANK_DESTINATION, isNewEvent = false) {
     super();
     this._data = EventEdit.parsePointToData(point);
     this._destinations = destinations;
-    this._isAddMode = isAddMode;
+    this._isNewEvent = isNewEvent;
     this._datepicker = null;
     this._endDatePicker = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
-    this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
+    this._rollDownButtonClickHandler = this._rollDownButtonClickHandler.bind(this);
     this._favoriteCheckboxClickHandler = this._favoriteCheckboxClickHandler.bind(this);
     this._typeListChangeHandler = this._typeListChangeHandler.bind(this);
     this._offerChangeHandler = this._offerChangeHandler.bind(this);
@@ -227,7 +229,7 @@ export default class EventEdit extends SmartView {
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._data, this._destinations, this._isAddMode);
+    return createEventEditTemplate(this._data, this._destinations, this._isNewEvent);
   }
 
   _offerChangeHandler(evt) {
@@ -252,9 +254,9 @@ export default class EventEdit extends SmartView {
     this._callback.formReset(EventEdit.parseDataToPoint(this._data));
   }
 
-  _rollupButtonClickHandler(evt) {
+  _rollDownButtonClickHandler(evt) {
     evt.preventDefault();
-    this._callback._rollupButtonClick();
+    this._callback._rollDownButtonClick();
   }
 
   _favoriteCheckboxClickHandler(evt) {
@@ -303,9 +305,9 @@ export default class EventEdit extends SmartView {
     this.getElement().addEventListener(`reset`, this._formDeleteClickHandler);
   }
 
-  setRollupButtonClickHandler(callback) {
-    this._callback._rollupButtonClick = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollupButtonClickHandler);
+  setRollDownButtonClickHandler(callback) {
+    this._callback._rollDownButtonClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollDownButtonClickHandler);
   }
 
   _setOffersChangeHandlers() {
@@ -322,7 +324,7 @@ export default class EventEdit extends SmartView {
   _setInnerHandlers() {
     const element = this.getElement();
 
-    if (!this._isAddMode) {
+    if (!this._isNewEvent) {
       element.querySelector(`.event__favorite-checkbox`).addEventListener(`change`, this._favoriteCheckboxClickHandler);
     }
 
@@ -337,7 +339,7 @@ export default class EventEdit extends SmartView {
     this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormDeleteHandler(this._callback.formReset);
-    this.setRollupButtonClickHandler(this._callback._rollupButtonClick);
+    this.setRollDownButtonClickHandler(this._callback._rollDownButtonClick);
   }
 
   static parsePointToData(point) {

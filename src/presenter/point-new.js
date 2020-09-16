@@ -41,8 +41,7 @@ export default class PointNew {
       return;
     }
 
-    this._component = new EventEditView(this._attributes, this._destinations, {isAddMode: true}, {isNewPoint: true});
-    this._component.setRollupButtonClickHandler(this._handleDeleteButtonClick);
+    this._component = new EventEditView(this._attributes, this._destinations, {isAddMode: true}, {isNewPoint: true}, {isNewEvent: true});
     this._component.setFormSubmitHandler(this._handleSubmitButtonClick);
     this._component.setFormDeleteHandler(this._handleDeleteButtonClick);
 

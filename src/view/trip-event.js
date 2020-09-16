@@ -62,4 +62,5 @@ export default class TripEvent extends AbstractView {
     this._callback.rollupButtonClick = callback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollupButtonClickHandler);
   }
+
 }

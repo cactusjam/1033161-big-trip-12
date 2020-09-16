@@ -38,7 +38,7 @@ export default class Point {
     this._component.setRollupButtonClickHandler(this._handleRollupPoint);
     this._editComponent.setFormSubmitHandler(this._handleSubmitPointEdit);
     this._editComponent.setFormDeleteHandler(this._handleDeletePointEdit);
-    this._editComponent.setRollupButtonClickHandler(this._handleRollupPointEdit);
+    this._editComponent.setRollDownButtonClickHandler(this._handleRollupPointEdit);
     this._editComponent.setFavoriteChangeHandler(this._handleFavoriteClick);
 
 

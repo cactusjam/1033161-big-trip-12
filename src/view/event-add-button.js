@@ -20,7 +20,8 @@ export default class EventAddButton extends AbstractView {
 
   _menuItemClickHandler(evt) {
     evt.preventDefault();
-    this._callback.menuClick(evt.target.getAttribute(`data-value`));
+    const currentActive = evt.target;
+    this._callback.menuClick(currentActive.dataset.value);
   }
 
   setMenuItemClickHandler(callback) {
