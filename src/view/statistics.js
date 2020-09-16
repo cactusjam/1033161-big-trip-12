@@ -54,27 +54,27 @@ const timeSpentChartSet = {
 };
 
 const createChartData = (points) => {
-  const chartData = {};
+  return points.reduce((chartData, point) => {
+    const pointType = point.type;
 
-  points.forEach((point) => {
-    if (chartData[point.type]) {
-      chartData[point.type].price += point.price;
-      chartData[point.type].duration += getHourDuration(point.startDate, point.endDate);
-      chartData[point.type].count++;
+    if (chartData[pointType]) {
+      chartData[pointType].price += point.price;
+      chartData[pointType].duration += getHourDuration(point.startDate, point.endDate);
+      chartData[pointType].count++;
     } else {
-      chartData[point.type] = {
-        label: PointTypeOfIcon[point.type],
+      chartData[pointType] = {
+        label: PointTypeOfIcon[pointType],
         price: point.price,
         duration: getHourDuration(point.startDate, point.endDate),
         count: COUNT,
-        groupType: TRANSFER_TYPES.includes(point.type)
+        groupType: TRANSFER_TYPES.includes(pointType)
           ? TRANSFER_TYPES
           : ACTIVITY_TYPES,
       };
     }
-  });
 
-  return chartData;
+    return chartData;
+  }, {});
 };
 
 const renderChart = (chartCtx, chartData, chartConfig) => {

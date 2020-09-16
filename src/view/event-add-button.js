@@ -30,18 +30,6 @@ export default class EventAddButton extends AbstractView {
   }
 
   setMenuItem(buttonShouldBeActive) {
-    const button = this.getElement();
-
-    if (buttonShouldBeActive) {
-      button.disabled = false;
-    } else {
-      button.disabled = true;
-    }
-
-    // if (button.disabled) {
-    //   button.disabled = false;
-    // } else {
-    //   button.disabled = true;
-    // }
+    this.getElement().disabled = buttonShouldBeActive ? false : true;
   }
 }

@@ -10,7 +10,7 @@ const convertDateNumbers = (value) => String(value).padStart(2, `0`);
 
 const convertDate = (date) => isDate(date) ? moment(date).format(`DD/MM/YY HH:mm`) : ``;
 
-const getHourDuration = (startDate, endDate) => Math.ceil(moment.duration(endDate - startDate).asMilliseconds());
+const getHourDuration = (startDate, endDate) => endDate - startDate;
 
 const formatDuration = (start, end) => {
   const momentDiff = moment(end).diff(moment(start));
