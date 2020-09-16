@@ -58,6 +58,7 @@ export default class PointNew {
     remove(this._component);
     this._component = null;
 
+    this._newPointFormCloseCallback();
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
@@ -68,19 +69,16 @@ export default class PointNew {
         Object.assign({id: getRandomInteger()}, card)
     );
     this.destroy();
-    this._newPointFormCloseCallback();
   }
 
   _handleDeleteButtonClick() {
     this.destroy();
-    this._newPointFormCloseCallback();
   }
 
   _escKeyDownHandler(evt) {
     if (isEscapeEvent(evt)) {
       evt.preventDefault();
       this.destroy();
-      this._newPointFormCloseCallback();
     }
   }
 }
