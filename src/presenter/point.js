@@ -62,11 +62,12 @@ export default class Point {
   destroy() {
     remove(this._component);
     remove(this._editComponent);
-    document.removeEventListener(`keydown`, this._escapeKeydownHandler);
+    document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
+      document.removeEventListener(`keydown`, this._escKeyDownHandler);
       this._replaceFormToEvent();
     }
   }
@@ -75,13 +76,13 @@ export default class Point {
     replace(this._editComponent, this._component);
     this._changeMode();
     this._mode = Mode.EDITING;
-    document.addEventListener(`keydown`, this._escapeKeydownHandler);
+    document.addEventListener(`keydown`, this._escKeyDownHandler);
   }
 
   _replaceFormToEvent() {
     replace(this._component, this._editComponent);
     this._mode = Mode.DEFAULT;
-    document.removeEventListener(`keydown`, this._escapeKeydownHandler);
+    document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
   _escKeyDownHandler(evt) {
@@ -94,12 +95,10 @@ export default class Point {
 
   _handleRollupPoint() {
     this._replaceEventToForm();
-    document.addEventListener(`keydown`, this._escKeyDownHandler);
   }
 
   _handleRollupPointEdit() {
     this._replaceFormToEvent();
-    document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
   _handleSubmitPointEdit(editedPoint) {

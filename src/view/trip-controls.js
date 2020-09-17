@@ -46,13 +46,13 @@ export default class TripControls extends AbstractView {
 
   _menuItemClickHandler(evt) {
     evt.preventDefault();
-    const currentActive = evt.target;
-    if (evt.target.tagName !== `A`
-      || evt.target.classList.contains(`trip-tabs__btn--active`)) {
+    const target = evt.target;
+    if (target.tagName !== `A`
+      || target.classList.contains(`trip-tabs__btn--active`)) {
       return;
     }
 
-    this.setMenuItem(currentActive.dataset.value);
-    this._callback.menuClick(currentActive.dataset.value);
+    this.setMenuItem(target.dataset.value);
+    this._callback.menuClick(target.dataset.value);
   }
 }

@@ -8,7 +8,7 @@ import {groupCardsByDay} from "../utils/date.js";
 import {sortEventsByTime, sortEventsByPrice} from "../utils/utils.js";
 import {EventMessage, SortType, UserAction, UpdateType, InitialDayCounter} from "../constants.js";
 import PointPresenter from "./point.js";
-import {filter} from "../utils/filter.js";
+import {filterTypeToPoints} from "../utils/filter.js";
 import PointNewPresenter from "./point-new.js";
 
 export default class Trip {
@@ -48,7 +48,7 @@ export default class Trip {
   _getPoints() {
     const filterType = this._filterModel.get();
     const points = this._pointsModel.get();
-    const filteredPoints = filter[filterType](points);
+    const filteredPoints = filterTypeToPoints[filterType](points, new Date());
 
     switch (this._currentSortType) {
       case SortType.TIME:

@@ -6,7 +6,7 @@ import {TRANSFER_TYPES, pointTypeToIcon, ACTIVITY_TYPES} from "../constants.js";
 
 const BAR_HEIGHT = 55;
 const COUNT_VALUE = 1;
-const transferTypeSet = new Set(TRANSFER_TYPES);
+const TRANSFER_TYPE_SET = new Set(TRANSFER_TYPES);
 
 const ChartDataset = {
   BACKGROUND_COLOR: `#ffffff`,
@@ -68,7 +68,7 @@ const createChartData = (points) => {
         price: point.price,
         duration: getHourDuration(point.startDate, point.endDate),
         count: COUNT_VALUE,
-        groupType: transferTypeSet.has(point.type)
+        groupType: TRANSFER_TYPE_SET.has(point.type)
           ? TRANSFER_TYPES
           : ACTIVITY_TYPES,
       };

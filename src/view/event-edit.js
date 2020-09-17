@@ -153,7 +153,7 @@ export default class EventEdit extends SmartView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._rollDownButtonClickHandler = this._rollDownButtonClickHandler.bind(this);
-    this._favoriteCheckboxClickHandler = this._favoriteCheckboxClickHandler.bind(this);
+    this._favoriteCheckboxChangeHandler = this._favoriteCheckboxChangeHandler.bind(this);
     this._typeListChangeHandler = this._typeListChangeHandler.bind(this);
     this._offerChangeHandler = this._offerChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
@@ -259,7 +259,7 @@ export default class EventEdit extends SmartView {
     this._callback._rollDownButtonClick();
   }
 
-  _favoriteCheckboxClickHandler(evt) {
+  _favoriteCheckboxChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
       isFavorite: !this._data.isFavorite
@@ -325,7 +325,7 @@ export default class EventEdit extends SmartView {
     const element = this.getElement();
 
     if (!this._isNewEvent) {
-      element.querySelector(`.event__favorite-checkbox`).addEventListener(`change`, this._favoriteCheckboxClickHandler);
+      element.querySelector(`.event__favorite-checkbox`).addEventListener(`change`, this._favoriteCheckboxChangeHandler);
     }
 
     element.querySelector(`.event__type-list`).addEventListener(`change`, this._typeListChangeHandler);
@@ -339,7 +339,10 @@ export default class EventEdit extends SmartView {
     this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormDeleteHandler(this._callback.formReset);
-    this.setRollDownButtonClickHandler(this._callback._rollDownButtonClick);
+
+    if (!this._isNewEvent) {
+      this.setRollDownButtonClickHandler(this._callback._rollDownButtonClick);
+    }
   }
 
   static parsePointToData(point) {
