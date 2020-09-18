@@ -3,13 +3,16 @@ import {FilterType} from "../constants";
 
 const FILTERS = Object.values(FilterType);
 
-const createFiltersTemplate = (filterType) => {
+const createFiltersTemplate = (currentType, availabilities) => {
   return (
     `<form class="trip-filters" action="#" method="get">
-      ${FILTERS.map((filter) => `
+      ${FILTERS.map((type) => `
       <div class="trip-filters__filter">
-        <input id="filter-${filter.toLowerCase()}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${filter}" ${filter === filterType ? `checked` : ``}>
-        <label class="trip-filters__filter-label" for="filter-${filter.toLowerCase()}">${filter}</label>
+        <input id="filter-${type.toLowerCase()}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}"
+        ${type === currentType ? `checked` : ``}
+        ${availabilities[type] ? `` : `disabled`}
+        >
+        <label class="trip-filters__filter-label ${availabilities[type] ? `` : `trip-filters__filter-label--empty`}" for="filter-${type.toLowerCase()}">${type}</label>
       </div>
       `).join(``)}
       <button class="visually-hidden" type="submit">Accept filter</button>
@@ -18,14 +21,15 @@ const createFiltersTemplate = (filterType) => {
 };
 
 export default class Filters extends AbstractView {
-  constructor(currentType) {
+  constructor(currentType, availabilities) {
     super();
     this._currentType = currentType;
+    this._availabilities = availabilities;
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createFiltersTemplate(this._currentType);
+    return createFiltersTemplate(this._currentType, this._availabilities);
   }
 
   setTypeChangeHandler(callback) {

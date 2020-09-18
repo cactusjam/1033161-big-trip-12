@@ -1,7 +1,7 @@
 import FilterView from '../view/filters';
 import {render, replace, remove, RenderPosition} from "../utils/dom.js";
-import {UpdateType} from "../constants.js";
-import {filter} from "../utils/filter.js";
+import {UpdateType, FilterType} from "../constants.js";
+import {filterTypeToPoints} from "../utils/filter.js";
 
 export default class Filter {
   constructor(container, tripModel, model) {
@@ -21,10 +21,10 @@ export default class Filter {
 
   init() {
     this._current = this._model.get();
-
     const prevComponent = this._component;
+    const currentFilters = this._getFilters();
 
-    this._component = new FilterView(this._current);
+    this._component = new FilterView(this._current, currentFilters);
     this._component.setTypeChangeHandler(this._handleTypeChange);
 
     if (prevComponent === null) {
@@ -48,11 +48,18 @@ export default class Filter {
     this._model.set(UpdateType.MINOR, type);
   }
 
-  _getType() {
-    const points = this._pointsModel.getPoints();
+  _getFilters() {
+    const points = this._tripModel.get();
+    const currentDate = new Date();
+    const filters = {};
 
-    return Object.entries(filter)
-    .map(([key, value]) => ({[key]: value(points).length}))
-    .reduce((result, element) => Object.assign(result, element), {});
+    Object
+      .values(FilterType)
+      .forEach((filterTitle) => {
+        const isFilteredTasksExist = filterTypeToPoints[filterTitle](points, currentDate).length > 0;
+        filters[filterTitle] = isFilteredTasksExist;
+      });
+
+    return filters;
   }
 }
