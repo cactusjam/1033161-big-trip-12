@@ -37,11 +37,12 @@ export default class PointNew {
     this._container = container;
     this._attributes = createEmptyPoint();
     this._destinations = destinations;
+    const isNewEvent = true;
     if (this._component !== null) {
       return;
     }
 
-    this._component = new EventEditView(this._attributes, this._destinations, {isAddMode: true}, {isNewPoint: true}, {isNewEvent: true});
+    this._component = new EventEditView(this._attributes, this._destinations, isNewEvent);
     this._component.setFormSubmitHandler(this._handleSubmitButtonClick);
     this._component.setFormDeleteHandler(this._handleDeleteButtonClick);
 
