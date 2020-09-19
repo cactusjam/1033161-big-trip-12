@@ -1,10 +1,11 @@
 import TripControlsView from "./view/trip-controls.js";
-import TripInfoView from "./view/trip-info.js";
+// import TripInfoView from "./view/trip-info.js";
 import EventAddButtonView from "./view/event-add-button.js";
 import {render, RenderPosition} from "./utils/dom.js";
 import {generateCards} from "./mock/card.js";
 import TripPresenter from "./presenter/trip.js";
 import FilterPresenter from "./presenter/filter.js";
+import InfoPresenter from "./presenter/info.js";
 import StatisticsPresenter from "./presenter/statistics.js";
 import {destinations} from "./mock/destinations.js";
 import PointsModel from "./model/points.js";
@@ -33,16 +34,15 @@ const newPointFormCloseCallback = () => {
 const newPointFormOpenedHandler = () => {
   tripEventButtonComponent.setDisabled(true);
 };
+const tripMain = document.querySelector(`.trip-main`);
 
 const tripComponent = new TripPresenter(siteMainBlock, pointsModel, filterModel, newPointFormCloseCallback);
 const filterComponent = new FilterPresenter(filterMenu, pointsModel, filterModel);
 const statisticsComponent = new StatisticsPresenter(siteMainBlock, pointsModel);
+const infoComponent = new InfoPresenter(tripMain, pointsModel, filterModel);
 
 const tripControlsComponent = new TripControlsView();
 render(switchMenu, tripControlsComponent, RenderPosition.AFTER_END);
-
-const tripMain = document.querySelector(`.trip-main`);
-render(tripMain, new TripInfoView(), RenderPosition.AFTER_BEGIN);
 
 render(tripMain, tripEventButtonComponent);
 
@@ -72,5 +72,6 @@ tripControlsComponent.setMenuItemClickHandler(handleSiteMenuClick);
 
 tripEventButtonComponent.setMenuItemClickHandler(handleSiteMenuClick);
 
+infoComponent.init();
 filterComponent.init();
 tripComponent.init();

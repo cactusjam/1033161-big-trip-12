@@ -6,6 +6,10 @@ const getTimeFormat = (date) => moment(date).format(`HH:mm`);
 
 const getDayFormat = (date) => moment(date).format(`MMM D`);
 
+const getMonthFormat = (date) => {
+  return moment(date).format(`MMM DD`);
+};
+
 const convertDateNumbers = (value) => String(value).padStart(2, `0`);
 
 const convertDate = (date) => isDate(date) ? moment(date).format(`DD/MM/YY HH:mm`) : ``;
@@ -54,4 +58,4 @@ const isDatesEqual = (dateA, dateB) => {
   return moment(dateA).isSame(dateB, `day`);
 };
 
-export {getTimeFormat, getDayFormat, convertDate, formatDuration, groupCardsByDay, convertDateToISOString, isDatesEqual, getHourDuration};
+export {getTimeFormat, getDayFormat, convertDate, formatDuration, groupCardsByDay, convertDateToISOString, isDatesEqual, getHourDuration, getMonthFormat};

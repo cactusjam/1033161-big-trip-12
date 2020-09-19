@@ -16,4 +16,8 @@ const sortEventsByTime = (eventA, eventB) => {
   return duration;
 };
 
-export {getTypeParticle, getFirstUpperCase, sortEventsByPrice, sortEventsByTime};
+const sortEventsByDate = (eventA, eventB) => {
+  return eventA.startDate - eventB.startDate;
+};
+
+export {getTypeParticle, getFirstUpperCase, sortEventsByPrice, sortEventsByTime, sortEventsByDate};
