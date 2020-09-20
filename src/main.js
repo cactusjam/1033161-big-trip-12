@@ -10,9 +10,15 @@ import StatisticsPresenter from "./presenter/statistics.js";
 import {destinations} from "./mock/destinations.js";
 import PointsModel from "./model/points.js";
 import FilterModel from "./model/filter.js";
+import Api from "./api/api.js";
 import {TabItem, UpdateType, FilterType} from "./constants";
 
 const CARD_COUNT = 20;
+const ApiConfig = {
+  AUTHORIZATION: `Basic 5656vbvhsdskH`,
+  END_POINT: `https://12.ecmascript.pages.academy/big-trip`
+};
+
 const tripCards = generateCards(CARD_COUNT);
 
 const filterModel = new FilterModel();
@@ -25,6 +31,10 @@ const tripControls = document.querySelector(`.trip-main__trip-controls`);
 const switchMenu = tripControls.querySelector(`.js-switch`);
 const filterMenu = tripControls.querySelector(`.js-filter`);
 
+const api = new Api(ApiConfig.END_POINT, ApiConfig.AUTHORIZATION);
+api.getPoints().then((points) => {
+
+});
 const tripEventButtonComponent = new EventAddButtonView();
 
 const newPointFormCloseCallback = () => {
