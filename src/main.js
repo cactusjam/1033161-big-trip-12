@@ -33,8 +33,9 @@ const filterMenu = tripControls.querySelector(`.js-filter`);
 
 const api = new Api(ApiConfig.END_POINT, ApiConfig.AUTHORIZATION);
 api.getPoints().then((points) => {
-
+  console.log(points);
 });
+
 const tripEventButtonComponent = new EventAddButtonView();
 
 const newPointFormCloseCallback = () => {

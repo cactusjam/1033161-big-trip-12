@@ -16,6 +16,18 @@ const ButtonName = {
   DELETE: `Delete`,
 };
 
+const isOfferInclude = (offers, currentOffer) => offers.some((offer) => (
+  offer.title === currentOffer.title && offer.price === currentOffer.price
+));
+
+const convertToRenderedServices = (offers, activeOffers) => offers.map((offer) => {
+  return {
+    title: offer.title,
+    price: offer.price,
+    isActivated: activeOffers.length > 0 && isOfferInclude(activeOffers, offer),
+  };
+});
+
 const createRadioTemplate = (cardType, legendTypes, pointId) => {
   return (
     legendTypes.map((legendType, legendIndex) => {
@@ -51,7 +63,8 @@ const createResetButtonTemplate = (isNewEvent) => {
 };
 
 const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
-  const {id, type, startDate, endDate, price, isFavorite, isActivated, destination, services} = pointData;
+  const {id, type, startDate, endDate, price, isFavorite, destination, renderedServices} = pointData;
+
   return (
     `<form class="trip-events__item event  event--edit" action="#" method="post">
         <header class="event__header">
@@ -106,14 +119,14 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
       : ``}
         </header>
         <section class="event__details">
-        ${services.length > 0 ?
+        ${renderedServices.length > 0 ?
       `<section class="event__section  event__section--offers">
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
               <div class="event__available-offers">
-              ${services.map((offer) =>`
+              ${renderedServices.map((offer, index) =>`
                 <div class="event__offer-selector">
-                  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" value="${offer.type} name="event-offer-${offer.type}" ${isActivated ? `checked` : ``}>
-                  <label class="event__offer-label" for="event-offer-${offer.type}-1">
+                  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-${index}" type="checkbox" name="event-offer-${offer.type}" ${offer.isActivated ? `checked` : ``}>
+                  <label class="event__offer-label" for="event-offer-${offer.type}-${index}">
                     <span class="event__offer-title">${offer.title}</span>
                     +
                     €&nbsp;<span class="event__offer-price">${offer.price}</span>
@@ -142,10 +155,12 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
 };
 
 export default class EventEdit extends SmartView {
-  constructor(point, destinations = BLANK_DESTINATION, isNewEvent = false) {
+  constructor(point, destinations = BLANK_DESTINATION, offers, isNewEvent = false) {
     super();
-    this._data = EventEdit.parsePointToData(point);
+
+    this._data = EventEdit.parsePointToData(point, offers);
     this._destinations = destinations;
+    this._offers = offers;
     this._isNewEvent = isNewEvent;
     this._datepicker = null;
     this._endDatePicker = null;
@@ -224,7 +239,7 @@ export default class EventEdit extends SmartView {
 
   reset(point) {
     this.updateData(
-        EventEdit.parsePointToData(point, this._destinations)
+        EventEdit.parsePointToData(point, this._offers)
     );
   }
 
@@ -234,14 +249,23 @@ export default class EventEdit extends SmartView {
 
   _offerChangeHandler(evt) {
     evt.preventDefault();
-    this.updateData(
-        {
-          [evt.target.value]: evt.target.checked
-        }, true,
-        {
-          isActivated: !this._data.isActivated
-        }, true
-    );
+    const title = evt.target.dataset.title;
+    const price = Number(evt.target.dataset.price);
+    const renderedServices = this._data.renderedServices.map((offer) => {
+      if (offer.title !== title && offer.price !== price) {
+        return offer;
+      }
+
+      return {
+        title,
+        price,
+        isActivated: evt.target.checked,
+      };
+    });
+
+    this.updateData({
+      renderedServices,
+    }, true);
   }
 
   _formSubmitHandler(evt) {
@@ -270,8 +294,17 @@ export default class EventEdit extends SmartView {
 
   _typeListChangeHandler(evt) {
     evt.preventDefault();
+
+    const type = evt.target.value.toLowerCase();
+    const typeOffers = this._offers[type];
+
+    const renderedServices = typeOffers.length > 0
+      ? convertToRenderedServices(typeOffers, [])
+      : [];
+
     this.updateData({
-      type: evt.target.value
+      type,
+      renderedServices
     });
   }
 
@@ -345,10 +378,20 @@ export default class EventEdit extends SmartView {
     }
   }
 
-  static parsePointToData(point) {
+  static parsePointToData(point, offers) {
+    const {type} = point;
+    const typeOffers = offers[type];
+
+    const renderedServices = typeOffers.length > 0
+      ? convertToRenderedServices(typeOffers, point.services)
+      : [];
+
     return Object.assign(
         {},
-        point
+        point,
+        {
+          renderedServices
+        }
     );
   }
 

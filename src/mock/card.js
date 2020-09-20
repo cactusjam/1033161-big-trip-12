@@ -1,5 +1,11 @@
-import {getRandomArray, getRandomInteger} from "../mock/utils.js";
-import {getStartDate, getEndDate} from "../mock/utils.js";
+import {
+  getRandomArray,
+  getRandomInteger
+} from "../mock/utils.js";
+import {
+  getStartDate,
+  getEndDate
+} from "../mock/utils.js";
 
 const services = [
   {
@@ -31,6 +37,155 @@ const getRandomTypes = () => {
   const randomIndex = getRandomInteger(0, Types.length - 1);
 
   return Types[randomIndex];
+};
+
+const mockedOffers = {
+  "taxi": [
+    {
+      "title": "Upgrade to a business class",
+      "price": 190
+    },
+    {
+      "title": "Choose the radio station",
+      "price": 30
+    },
+    {
+      "title": "Choose temperature",
+      "price": 170
+    },
+    {
+      "title": "Drive quickly, I'm in a hurry",
+      "price": 100
+    },
+    {
+      "title": "Drive slowly",
+      "price": 110
+    }
+  ],
+  "bus": [
+    {
+      "title": "Infotainment system",
+      "price": 50
+    },
+    {
+      "title": "Order meal",
+      "price": 100
+    },
+    {
+      "title": "Choose seats",
+      "price": 190
+    }
+  ],
+  "train": [
+    {
+      "title": "Book a taxi at the arrival point",
+      "price": 110
+    },
+    {
+      "title": "Order a breakfast",
+      "price": 80
+    },
+    {
+      "title": "Wake up at a certain time",
+      "price": 140
+    }
+  ],
+  "flight": [
+    {
+      "title": "Choose meal",
+      "price": 120
+    },
+    {
+      "title": "Choose seats",
+      "price": 90
+    },
+    {
+      "title": "Upgrade to comfort class",
+      "price": 120
+    },
+    {
+      "title": "Upgrade to business class",
+      "price": 120
+    },
+    {
+      "title": "Add luggage",
+      "price": 170
+    },
+    {
+      "title": "Business lounge",
+      "price": 160
+    }
+  ],
+  "check-in": [
+    {
+      "title": "Choose the time of check-in",
+      "price": 70
+    },
+    {
+      "title": "Choose the time of check-out",
+      "price": 190
+    },
+    {
+      "title": "Add breakfast",
+      "price": 110
+    },
+    {
+      "title": "Laundry",
+      "price": 140
+    },
+    {
+      "title": "Order a meal from the restaurant",
+      "price": 30
+    }
+  ],
+  "sightseeing": [],
+  "ship": [
+    {
+      "title": "Choose meal",
+      "price": 130
+    },
+    {
+      "title": "Choose seats",
+      "price": 160
+    },
+    {
+      "title": "Upgrade to comfort class",
+      "price": 170
+    },
+    {
+      "title": "Upgrade to business class",
+      "price": 150
+    },
+    {
+      "title": "Add luggage",
+      "price": 100
+    },
+    {
+      "title": "Business lounge",
+      "price": 40
+    }
+  ],
+  "transport": [],
+  "drive": [
+    {
+      "title": "Choose comfort class",
+      "price": 110
+    },
+    {
+      "title": "Choose business class",
+      "price": 180
+    }
+  ],
+  "restaurant": [
+    {
+      "title": "Choose live music",
+      "price": 150
+    },
+    {
+      "title": "Choose VIP area",
+      "price": 70
+    }
+  ],
 };
 
 const photos = [
@@ -83,14 +238,19 @@ const generateCard = () => {
     startDate,
     endDate,
     price: getRandomInteger(5, 1000),
-    isFavorite: Boolean(Math.round(Math.random()) * 0.5),
-    isActivated: Boolean(Math.round(Math.random()) * 0.5)
+    isFavorite: Boolean(Math.round(Math.random()) * 0.5)
   };
 };
 
 const generateCards = (count) => new Array(count)
-.fill()
-.map(generateCard)
-.sort((a, b) => a.startDate - b.startDate);
+  .fill()
+  .map(generateCard)
+  .sort((a, b) => a.startDate - b.startDate);
 
-export {generateCards, getRandomArray, getRandomDescription, photos};
+export {
+  generateCards,
+  getRandomArray,
+  getRandomDescription,
+  photos,
+  mockedOffers
+};

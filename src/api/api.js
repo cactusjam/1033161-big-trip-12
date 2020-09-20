@@ -1,3 +1,5 @@
+import PointsModel from "../model/points.js";
+
 const Method = {
   GET: `GET`,
   PUT: `PUT`
@@ -23,17 +25,19 @@ export default class Api {
 
   getPoints() {
     return this._load({url: Url.POINTS})
-      .then(Api.toJSON);
+      .then(Api.toJSON)
+      .then((points) => points.map(PointsModel.adaptToClient));
   }
 
   updatePoint(point) {
     return this._load({
       url: `{Url.POINTS}/${point.id}`,
       method: Method.PUT,
-      body: JSON.stringify(point),
+      body: JSON.stringify(PointsModel.adaptPointToServer(point)),
       headers: new Headers({"Content-Type": `application/json`})
     })
-      .then(Api.toJSON);
+      .then(Api.toJSON)
+      .then(PointsModel.adaptToClient);
   }
 
   _load({

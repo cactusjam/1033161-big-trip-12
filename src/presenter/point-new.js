@@ -15,7 +15,6 @@ const createEmptyPoint = () => ({
   endDate: new Date(),
   services: [],
   isFavorite: false,
-  isActivated: false,
   price: 0,
 });
 
@@ -42,7 +41,7 @@ export default class PointNew {
       return;
     }
 
-    this._component = new EventEditView(this._attributes, this._destinations, isNewEvent);
+    this._component = new EventEditView(this._attributes, this._destinations, this._offers, isNewEvent);
     this._component.setFormSubmitHandler(this._handleSubmitButtonClick);
     this._component.setFormDeleteHandler(this._handleDeleteButtonClick);
 

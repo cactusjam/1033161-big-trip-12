@@ -4,11 +4,13 @@ import {render, replace, remove} from "../utils/dom.js";
 import {isDatesEqual} from "../utils/date.js";
 import {isEscapeEvent} from "../utils/dom-event.js";
 import {UserAction, UpdateType} from "../constants.js";
+import {mockedOffers} from "../mock/card.js";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
   EDITING: `EDITING`
 };
+
 export default class Point {
   constructor(container, changeData, changeMode) {
     this._container = container;
@@ -25,6 +27,8 @@ export default class Point {
     this._handleDeletePointEdit = this._handleDeletePointEdit.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+
+    this._offers = mockedOffers; // убрать
   }
 
   init(card, destinations) {
@@ -33,7 +37,7 @@ export default class Point {
     const prevComponent = this._component;
     const prevEditComponent = this._editComponent;
     this._component = new TripEventView(card);
-    this._editComponent = new EventEditView(card, this._destinations);
+    this._editComponent = new EventEditView(card, this._destinations, this._offers);
 
     this._component.setRollupButtonClickHandler(this._handleRollupPoint);
     this._editComponent.setFormSubmitHandler(this._handleSubmitPointEdit);
