@@ -5,6 +5,7 @@ import {isDatesEqual} from "../utils/date.js";
 import {isEscapeEvent} from "../utils/dom-event.js";
 import {UserAction, UpdateType} from "../constants.js";
 import {mockedOffers} from "../mock/card.js";
+import {generateId} from "../utils/utils.js";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -111,7 +112,7 @@ export default class Point {
     this._changeData(
         UserAction.UPDATE_POINT,
         isPatchUpdate ? UpdateType.PATCH : UpdateType.MINOR,
-        editedPoint
+        Object.assign({id: generateId()}, editedPoint)
     );
     this._replaceFormToEvent();
   }

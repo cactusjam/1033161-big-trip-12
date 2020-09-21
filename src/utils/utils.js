@@ -20,4 +20,6 @@ const sortEventsByDate = (eventA, eventB) => {
   return eventA.startDate - eventB.startDate;
 };
 
-export {getTypeParticle, getFirstUpperCase, sortEventsByPrice, sortEventsByTime, sortEventsByDate};
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
+export {getTypeParticle, getFirstUpperCase, sortEventsByPrice, sortEventsByTime, sortEventsByDate, generateId};
