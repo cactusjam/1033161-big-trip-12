@@ -2,7 +2,6 @@ import EventEditView from "../view/event-edit.js";
 import {render, remove, RenderPosition} from "../utils/dom.js";
 import {UserAction, UpdateType} from "../constants.js";
 import {isEscapeEvent} from "../utils/dom-event.js";
-import {getRandomInteger} from "../mock/utils.js";
 
 const createEmptyPoint = () => ({
   type: `taxi`,
@@ -57,6 +56,18 @@ export default class PointNew {
       isDisabled: true,
       isSaving: true
     });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._component.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    this._taskEditComponent.shake(resetFormState);
   }
 
   destroy() {

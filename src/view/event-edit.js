@@ -49,15 +49,15 @@ const createRadioTemplate = (cardType, legendTypes, pointId) => {
   );
 };
 
-const createDestinationTemplate = (destinations, pointType, destination, pointId) => {
+const createDestinationTemplate = (destinations, pointType, destination) => {
   const typeName = getFirstUpperCase(pointType);
   return (
     `<div class="event__field-group  event__field-group--destination">
-      <label class="event__label  event__type-output" for="event-destination-${pointId}">
+      <label class="event__label  event__type-output" for="event-destination-1">
         ${typeName} ${getTypeParticle(pointType)}
       </label>
-      <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${destination.name}" list="destination-list-${pointId}">
-      <datalist id="destination-list-${pointId}">
+      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
+      <datalist id="destination-list-1">
       ${destinations.map(({name}) => `<option value="${name}"></option>`).join(``)}
       </datalist>
     </div>`
@@ -95,7 +95,7 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent, isDisabled
               </fieldset>
             </div>
           </div>
-          ${createDestinationTemplate(destinations, type, destination, id)}
+          ${createDestinationTemplate(destinations, type, destination)}
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">
               From

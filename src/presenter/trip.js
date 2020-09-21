@@ -157,6 +157,9 @@ export default class Trip {
         this._api.updatePoint(update)
           .then((response) => {
             this._pointsModel.update(updateType, response);
+          })
+          .catch(() => {
+            this._pointPresenter[update.id].setViewState(State.ABORTING);
           });
         break;
       case UserAction.ADD_POINT:
@@ -164,6 +167,9 @@ export default class Trip {
         this._api.addPoint(update)
           .then((response) => {
             this._pointsModel.add(updateType, response);
+          })
+          .catch(() => {
+            this._pointNewPresenter.setAborting();
           });
         break;
       case UserAction.DELETE_POINT:
@@ -171,6 +177,9 @@ export default class Trip {
         this._api.deletePoint(update)
           .then(() => {
             this._pointsModel.delete(updateType, update);
+          })
+          .catch(() => {
+            this._pointPresenter[update.id].setViewState(State.ABORTING);
           });
         break;
     }
