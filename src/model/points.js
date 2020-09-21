@@ -8,8 +8,9 @@ export default class Points extends ObserverView {
     this._destinations = [];
   }
 
-  set(points) {
-    this._attributes = points.slice();
+  set(updateType, points) {
+    this._points = points.slice();
+    this._notify(updateType);
   }
 
   setDestinations(destinations) {

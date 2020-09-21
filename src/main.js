@@ -84,6 +84,10 @@ infoComponent.init();
 filterComponent.init();
 tripComponent.init();
 
-api.getPoints().then((points) => {
-  pointsModel.set(points);
-});
+api.getPoints()
+  .then((points) => {
+    pointsModel.set(UpdateType.INIT, points);
+  })
+  .catch(() => {
+    pointsModel.set(UpdateType.INIT, []);
+  });
