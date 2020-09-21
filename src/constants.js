@@ -1,6 +1,7 @@
 const EventMessage = {
   NO_EVENTS: `Click New Event to create your first point`,
   LOADING: `Loading...`,
+  ERROR: `Error loading data, try again later..`
 };
 
 const KeyboardKey = {

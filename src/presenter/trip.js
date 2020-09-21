@@ -18,8 +18,13 @@ export default class Trip {
     this._pointPresenter = {};
     this._existDays = [];
     this._container = container;
+
     this._sortComponent = null;
-    this._eventMessageNoEventsView = null;
+    this._isLoading = true;
+
+    this._noEventsComponent = new EventMessageView(EventMessage.NO_EVENTS);
+    this._errorComponent = new EventMessageView(EventMessage.ERROR);
+    this._loadingComponent = new EventMessageView(EventMessage.LOADING);
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -96,6 +101,7 @@ export default class Trip {
       this._renderLoading();
       return;
     }
+
     if (pointCount > 0) {
       this._renderTripEvents();
       return;
@@ -116,8 +122,15 @@ export default class Trip {
   }
 
   _renderNoEvents() {
-    this._eventMessageNoEventsView = new EventMessageView(EventMessage.NO_EVENTS);
-    render(this._container, this._eventMessageNoEventsView);
+    render(this._container, this._noEventsComponent);
+  }
+
+  _renderLoading() {
+    render(this._container, this._loadingComponent);
+  }
+
+  _renderError() {
+    render(this._container, this._errorComponent);
   }
 
   destroy() {
@@ -163,6 +176,15 @@ export default class Trip {
         this._renderSort();
         this._renderTrip();
         break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderTrip();
+        break;
+      case UpdateType.ERROR:
+        remove(this._loadingComponent);
+        this._renderError();
+        break;
     }
   }
 
@@ -181,7 +203,9 @@ export default class Trip {
     this._existDays .forEach(remove);
     this._existDays = [];
 
-    remove(this._eventMessageNoEventsView);
+    remove(this._noEventsComponent);
+    remove(this._errorComponent);
+    remove(this._loadingComponent);
     remove(this._sortComponent);
     remove(this._daysComponent);
 
