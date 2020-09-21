@@ -52,7 +52,7 @@ export default class PointNew {
   }
 
   setSaving() {
-    this._taskEditComponent.updateData({
+    this._component.updateData({
       isDisabled: true,
       isSaving: true
     });
@@ -67,7 +67,7 @@ export default class PointNew {
       });
     };
 
-    this._taskEditComponent.shake(resetFormState);
+    this._component.shake(resetFormState);
   }
 
   destroy() {

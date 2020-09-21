@@ -24,7 +24,6 @@ export default class Trip {
     this._api = api;
 
     this._noEventsComponent = new EventMessageView(EventMessage.NO_EVENTS);
-    this._errorComponent = new EventMessageView(EventMessage.ERROR);
     this._loadingComponent = new EventMessageView(EventMessage.LOADING);
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -39,7 +38,6 @@ export default class Trip {
   init() {
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
-    this._renderSort();
     this._renderTrip();
   }
 
@@ -109,7 +107,9 @@ export default class Trip {
     }
 
     if (pointCount > 0) {
+      remove(this._sortComponent);
       this._renderTripEvents();
+      this._renderSort();
       return;
     }
 
@@ -128,15 +128,11 @@ export default class Trip {
   }
 
   _renderNoEvents() {
-    render(this._container, this._noEventsComponent);
+    render(this._container, this._noEventsComponent, RenderPosition.AFTER_BEGIN);
   }
 
   _renderLoading() {
-    render(this._container, this._loadingComponent);
-  }
-
-  _renderError() {
-    render(this._container, this._errorComponent);
+    render(this._container, this._loadingComponent, RenderPosition.AFTER_BEGIN);
   }
 
   destroy() {
@@ -190,7 +186,8 @@ export default class Trip {
       case UpdateType.PATCH:
         this._pointPresenter[pointData.id].init(
             pointData,
-            this._getDestinations()
+            this._getDestinations(),
+            this._getOffers()
         );
         break;
       case UpdateType.MINOR:
@@ -207,10 +204,6 @@ export default class Trip {
         this._isLoading = false;
         remove(this._loadingComponent);
         this._renderTrip();
-        break;
-      case UpdateType.ERROR:
-        remove(this._loadingComponent);
-        this._renderError();
         break;
     }
   }
@@ -231,7 +224,6 @@ export default class Trip {
     this._existDays = [];
 
     remove(this._noEventsComponent);
-    remove(this._errorComponent);
     remove(this._loadingComponent);
     remove(this._sortComponent);
     remove(this._daysComponent);

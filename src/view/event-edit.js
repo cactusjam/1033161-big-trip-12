@@ -1,5 +1,5 @@
 import {convertDate} from "../utils/date.js";
-import {getTypeParticle, getFirstUpperCase} from "../utils/utils.js";
+import {getTypeParticle, getFirstUpperCase, isTownAvailable} from "../utils/utils.js";
 import {TRANSFER_TYPES, ACTIVITY_TYPES} from "../constants.js";
 import SmartView from "./smart.js";
 import flatpickr from "flatpickr";
@@ -25,6 +25,10 @@ const SaveButtonName = {
 const getDeleteCaption = (isDeleting) => `${
   isDeleting ? ButtonName.DELETING : ButtonName.DELETE
 }`;
+
+const getDestination = (destinations, destinationName) => destinations.find((item) => (
+  item.name === destinationName
+));
 
 const isOfferInclude = (offers, currentOffer) => offers.some((offer) => (
   offer.title === currentOffer.title && offer.price === currentOffer.price
@@ -72,8 +76,9 @@ const createResetButtonTemplate = (isNewEvent, isDeleting) => {
   );
 };
 
-const createEventEditTemplate = (pointData, destinations, isNewEvent, isDisabled, isSaving) => {
-  const {id, type, startDate, endDate, price, isFavorite, destination, renderedServices} = pointData;
+const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
+  const {id, type, startDate, endDate, price, isFavorite, destination, renderedServices, isDisabled, isSaving, isInvalid} = pointData;
+  const isDisabledSaveButton = isInvalid || isDisabled;
 
   return (
     `<form class="trip-events__item event  event--edit" action="#" method="post">
@@ -114,7 +119,9 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent, isDisabled
             </label>
             <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
           </div>
-          <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? SaveButtonName.SAVING : SaveButtonName.SAVE}</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabledSaveButton ? `disabled` : ``}>
+            ${isSaving ? SaveButtonName.SAVING : SaveButtonName.SAVE}
+          </button>
           ${createResetButtonTemplate(isNewEvent)}
           ${!isNewEvent ? `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
           <label class="event__favorite-btn" for="event-favorite-1">
@@ -167,7 +174,7 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent, isDisabled
 export default class EventEdit extends SmartView {
   constructor(point, destinations = BLANK_DESTINATION, offers, isNewEvent = false) {
     super();
-    this._data = EventEdit.parsePointToData(point, offers);
+    this._data = EventEdit.parsePointToData(point, destinations, offers);
     this._destinations = destinations;
     this._offers = offers;
     this._isNewEvent = isNewEvent;
@@ -248,7 +255,7 @@ export default class EventEdit extends SmartView {
 
   reset(point) {
     this.updateData(
-        EventEdit.parsePointToData(point, this._offers)
+        EventEdit.parsePointToData(point, this._destinations, this._offers)
     );
   }
 
@@ -292,13 +299,10 @@ export default class EventEdit extends SmartView {
     this._callback._rollDownButtonClick();
   }
 
-  _favoriteCheckboxChangeHandler(evt) {
-    evt.preventDefault();
+  _favoriteCheckboxChangeHandler() {
     this.updateData({
       isFavorite: !this._data.isFavorite
     }, true);
-
-    this._callback.favoriteClick(this._data.isFavorite);
   }
 
   _typeListChangeHandler(evt) {
@@ -319,15 +323,17 @@ export default class EventEdit extends SmartView {
 
   _destinationChangeHandler(evt) {
     evt.preventDefault();
-    const destination = this._destinations.find((item) => item.name === evt.target.value);
+    const target = evt.target.value;
+    const destination = getDestination(this._destinations, target);
 
-    if (destination && evt.target.value !== this._data.destination.name) {
+    if (isTownAvailable(target, this._destinations)) {
       this.updateData({
-        destination
+        destination,
+        isInvalid: !destination
       });
       return;
     }
-    evt.target.value = this._data.destination.name;
+    target = this._data.destination.name;
   }
 
   _priceChangeHandler(evt) {
@@ -371,7 +377,7 @@ export default class EventEdit extends SmartView {
     }
 
     element.querySelector(`.event__type-list`).addEventListener(`change`, this._typeListChangeHandler);
-    element.querySelector(`.event__field-group--destination`).addEventListener(`change`, this._destinationChangeHandler);
+    element.querySelector(`.event__input--destination`).addEventListener(`change`, this._destinationChangeHandler);
     element.querySelector(`.event__input--price`).addEventListener(`change`, this._priceChangeHandler);
     this._setOffersChangeHandlers();
   }
@@ -387,8 +393,9 @@ export default class EventEdit extends SmartView {
     }
   }
 
-  static parsePointToData(point, offers) {
-    const {type} = point;
+  static parsePointToData(point, destinations, offers) {
+    const {type, destination} = point;
+    const isInvalidDestination = !getDestination(destinations, destination.name);
     const typeOffers = offers[type];
 
     const renderedServices = typeOffers.length > 0
@@ -402,7 +409,8 @@ export default class EventEdit extends SmartView {
           renderedServices,
           isDisabled: false,
           isSaving: false,
-          isDeleting: false
+          isDeleting: false,
+          isInvalid: isInvalidDestination
         }
     );
   }
@@ -411,6 +419,7 @@ export default class EventEdit extends SmartView {
     delete pointData.isDisabled;
     delete pointData.isSaving;
     delete pointData.isDeleting;
+    delete pointData.isInvalid;
 
     return Object.assign(
         {},

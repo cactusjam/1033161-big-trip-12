@@ -1,30 +1,23 @@
 import TripControlsView from "./view/trip-controls.js";
-// import TripInfoView from "./view/trip-info.js";
 import EventAddButtonView from "./view/event-add-button.js";
 import {render, RenderPosition} from "./utils/dom.js";
-// import {generateCards} from "./mock/card.js";
 import TripPresenter from "./presenter/trip.js";
 import FilterPresenter from "./presenter/filter.js";
 import InfoPresenter from "./presenter/info.js";
 import StatisticsPresenter from "./presenter/statistics.js";
-// import {destinations} from "./mock/destinations.js";
 import PointsModel from "./model/points.js";
 import FilterModel from "./model/filter.js";
 import Api from "./api/api.js";
 import {TabItem, UpdateType, FilterType} from "./constants";
 
-// const CARD_COUNT = 20;
 const ApiConfig = {
   AUTHORIZATION: `Basic 5656vbvhsdskH`,
   END_POINT: `https://12.ecmascript.pages.academy/big-trip`
 };
 
-// const tripCards = generateCards(CARD_COUNT);
 const api = new Api(ApiConfig.END_POINT, ApiConfig.AUTHORIZATION);
 const filterModel = new FilterModel();
 const pointsModel = new PointsModel();
-// pointsModel.set(tripCards);
-// pointsModel.setDestinations(destinations);
 
 const tripMain = document.querySelector(`.trip-main`);
 const siteMainBlock = document.querySelector(`.trip-events`);
@@ -92,7 +85,6 @@ Promise.all([
     tripControlsComponent.setMenuItemClickHandler(handleSiteMenuClick);
     tripEventButtonComponent.setMenuItemClickHandler(handleSiteMenuClick);
   })
-  .catch((err) => {
-    console.log('errr', err);
+  .catch(() => {
     pointsModel.set(UpdateType.INIT, []);
   });

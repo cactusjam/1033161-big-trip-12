@@ -4,8 +4,6 @@ import {render, replace, remove} from "../utils/dom.js";
 import {isDatesEqual} from "../utils/date.js";
 import {isEscapeEvent} from "../utils/dom-event.js";
 import {UserAction, UpdateType, State} from "../constants.js";
-// import {mockedOffers} from "../mock/card.js";
-// import {generateId} from "../utils/utils.js";
 
 const Mode = {
   DEFAULT: `DEFAULT`,

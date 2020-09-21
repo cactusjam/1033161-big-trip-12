@@ -60,7 +60,7 @@ export default class Points extends ObserverView {
     this._notify(updateType, update);
   }
 
-  deletePoint(updateType, update) {
+  delete(updateType, update) {
     const index = getPointIndex(this._points, update);
 
     if (index === -1) {
