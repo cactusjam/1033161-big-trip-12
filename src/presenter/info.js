@@ -49,7 +49,6 @@ export default class Info {
   }
 
   _updateViews() {
-    // console.log('INIT IN INFO');
     this.init();
   }
 }

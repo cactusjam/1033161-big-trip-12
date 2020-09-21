@@ -23,6 +23,10 @@ export default class Points extends ObserverView {
     this._offers = offers;
   }
 
+  getOffers() {
+    return this._offers;
+  }
+
   get() {
     return this._points;
   }
@@ -56,7 +60,7 @@ export default class Points extends ObserverView {
     this._notify(updateType, update);
   }
 
-  delete(updateType, update) {
+  deletePoint(updateType, update) {
     const index = getPointIndex(this._points, update);
 
     if (index === -1) {
@@ -102,7 +106,23 @@ export default class Points extends ObserverView {
     return adaptedPoint;
   }
 
-  static adaptPointToServer(point) {
+  static adaptOffersToClient(offers) {
+    return offers.reduce((mapOffer, offer) => {
+      mapOffer[offer.type] = offer.offers;
+      return mapOffer;
+    }, {});
+  }
+
+  static adaptOffersToServer(offers) {
+    return Object
+        .keys(offers)
+        .map((key) => ({
+          type: key,
+          offers: offers[key],
+        }));
+  }
+
+  static adaptToServer(point) {
     const adaptedPoint = Object.assign(
         {},
         point,

@@ -92,6 +92,7 @@ Promise.all([
     tripControlsComponent.setMenuItemClickHandler(handleSiteMenuClick);
     tripEventButtonComponent.setMenuItemClickHandler(handleSiteMenuClick);
   })
-  .catch(() => {
+  .catch((err) => {
+    console.log('errr', err);
     pointsModel.set(UpdateType.INIT, []);
   });

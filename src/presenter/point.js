@@ -3,9 +3,9 @@ import TripEventView from "../view/trip-event.js";
 import {render, replace, remove} from "../utils/dom.js";
 import {isDatesEqual} from "../utils/date.js";
 import {isEscapeEvent} from "../utils/dom-event.js";
-import {UserAction, UpdateType} from "../constants.js";
+import {UserAction, UpdateType, State} from "../constants.js";
 // import {mockedOffers} from "../mock/card.js";
-import {generateId} from "../utils/utils.js";
+// import {generateId} from "../utils/utils.js";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -29,8 +29,6 @@ export default class Point {
     this._handleDeletePointEdit = this._handleDeletePointEdit.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
-
-    // this._offers = mockedOffers; // убрать
   }
 
   init(card, destinations, offers) {
@@ -114,7 +112,7 @@ export default class Point {
     this._changeData(
         UserAction.UPDATE_POINT,
         isPatchUpdate ? UpdateType.PATCH : UpdateType.MINOR,
-        Object.assign({id: generateId()}, editedPoint)
+        editedPoint
     );
     this._replaceFormToEvent();
   }
@@ -139,5 +137,34 @@ export default class Point {
             }
         )
     );
+  }
+
+  setViewState(state) {
+    const resetFormState = () => {
+      this._editComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this._editComponent.updateData({
+          isDisabled: true,
+          isSaving: true
+        });
+        break;
+      case State.DELETING:
+        this._editComponent.updateData({
+          isDisabled: true,
+          isDeleting: true
+        });
+        break;
+      case State.ABORTING:
+        this._component.shake(resetFormState);
+        this._editComponent.shake(resetFormState);
+        break;
+    }
   }
 }

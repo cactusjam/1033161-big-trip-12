@@ -26,16 +26,18 @@ export default class PointNew {
     this._destinations = null;
     this._attributes = null;
     this._component = null;
+    this._offers = null;
 
     this._handleDeleteButtonClick = this._handleDeleteButtonClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handleSubmitButtonClick = this._handleSubmitButtonClick.bind(this);
   }
 
-  init(container, destinations) {
+  init(container, destinations, offers) {
     this._container = container;
     this._attributes = createEmptyPoint();
     this._destinations = destinations;
+    this._offers = offers;
     const isNewEvent = true;
     if (this._component !== null) {
       return;
@@ -50,6 +52,13 @@ export default class PointNew {
     document.addEventListener(`keydown`, this._escKeyDownHandler);
   }
 
+  setSaving() {
+    this._taskEditComponent.updateData({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
   destroy() {
     if (this._component === null) {
       return;
@@ -62,11 +71,11 @@ export default class PointNew {
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
-  _handleSubmitButtonClick(card) {
+  _handleSubmitButtonClick(point) {
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,
-        Object.assign({id: getRandomInteger()}, card)
+        point
     );
     this.destroy();
   }

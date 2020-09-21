@@ -6,7 +6,7 @@ import EventMessageView from "../view/event-message.js";
 import {render, RenderPosition, remove} from "../utils/dom.js";
 import {groupCardsByDay} from "../utils/date.js";
 import {sortEventsByTime, sortEventsByPrice} from "../utils/utils.js";
-import {EventMessage, SortType, UserAction, UpdateType, InitialDayCounter} from "../constants.js";
+import {EventMessage, SortType, UserAction, UpdateType, InitialDayCounter, State} from "../constants.js";
 import PointPresenter from "./point.js";
 import {filterTypeToPoints} from "../utils/filter.js";
 import PointNewPresenter from "./point-new.js";
@@ -46,7 +46,8 @@ export default class Trip {
   createPoint(callback) {
     this._pointNewPresenter.init(
         this._sortComponent,
-        this._getDestinations()
+        this._getDestinations(),
+        this._getOffers()
     );
     callback();
   }
@@ -68,6 +69,10 @@ export default class Trip {
 
   _getDestinations() {
     return this._pointsModel.getDestinations();
+  }
+
+  _getOffers() {
+    return this._pointsModel.getOffers();
   }
 
   _handleModeChange() {
@@ -148,22 +153,25 @@ export default class Trip {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._api.updateTask(update)
-        .then((response) => {
-          this._pointsModel.update(updateType, response);
-        });
+        this._pointPresenter[update.id].setViewState(State.SAVING);
+        this._api.updatePoint(update)
+          .then((response) => {
+            this._pointsModel.update(updateType, response);
+          });
         break;
       case UserAction.ADD_POINT:
+        this._pointNewPresenter.setSaving();
         this._api.addPoint(update)
-        .then((response) => {
-          this._pointsModel.add(updateType, response);
-        });
+          .then((response) => {
+            this._pointsModel.add(updateType, response);
+          });
         break;
       case UserAction.DELETE_POINT:
+        this._pointPresenter[update.id].setViewState(State.DELETING);
         this._api.deletePoint(update)
-        .then(() => {
-          this._pointsModel.delete(updateType, update);
-        });
+          .then(() => {
+            this._pointsModel.delete(updateType, update);
+          });
         break;
     }
   }
@@ -258,7 +266,8 @@ export default class Trip {
     const pointPresenter = new PointPresenter(eventList, this._handleViewAction, this._handleModeChange);
     pointPresenter.init(
         card,
-        this._getDestinations()
+        this._getDestinations(),
+        this._getOffers()
     );
     this._pointPresenter[card.id] = pointPresenter;
   }

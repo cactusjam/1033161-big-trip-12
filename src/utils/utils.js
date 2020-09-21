@@ -20,8 +20,6 @@ const sortEventsByDate = (eventA, eventB) => {
   return eventA.startDate - eventB.startDate;
 };
 
-const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
-
 const adaptDestinationsToClient = (pointDestinations) =>
   pointDestinations.map((pointDestination) => ({
     name: pointDestination.name,
@@ -32,4 +30,4 @@ const adaptDestinationsToClient = (pointDestinations) =>
     }))
   }));
 
-export {getTypeParticle, getFirstUpperCase, sortEventsByPrice, sortEventsByTime, sortEventsByDate, generateId, adaptDestinationsToClient};
+export {getTypeParticle, getFirstUpperCase, sortEventsByPrice, sortEventsByTime, sortEventsByDate, adaptDestinationsToClient};

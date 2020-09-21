@@ -50,7 +50,7 @@ export default class Api {
     return this._load({
       url: `{Url.POINTS}/${point.id}`,
       method: Method.PUT,
-      body: JSON.stringify(PointsModel.adaptPointToServer(point)),
+      body: JSON.stringify(PointsModel.adaptToServer(point)),
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then(Api.toJSON)
@@ -106,7 +106,7 @@ export default class Api {
     return response.json();
   }
 
-  static catchError(err) {
-    throw err;
+  static catchError(error) {
+    throw error;
   }
 }

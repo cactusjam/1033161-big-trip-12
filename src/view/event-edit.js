@@ -14,7 +14,17 @@ const BLANK_DESTINATION = {
 const ButtonName = {
   CANCEL: `Cancel`,
   DELETE: `Delete`,
+  DELETING: `Deleting...`,
 };
+
+const SaveButtonName = {
+  SAVE: `Save`,
+  SAVING: `Saving...`,
+};
+
+const getDeleteCaption = (isDeleting) => `${
+  isDeleting ? ButtonName.DELETING : ButtonName.DELETE
+}`;
 
 const isOfferInclude = (offers, currentOffer) => offers.some((offer) => (
   offer.title === currentOffer.title && offer.price === currentOffer.price
@@ -54,15 +64,15 @@ const createDestinationTemplate = (destinations, pointType, destination, pointId
   );
 };
 
-const createResetButtonTemplate = (isNewEvent) => {
+const createResetButtonTemplate = (isNewEvent, isDeleting) => {
   return (
     `<button class="event__reset-btn" type="reset">
-      ${isNewEvent ? ButtonName.CANCEL : ButtonName.DELETE}
+      ${isNewEvent ? ButtonName.CANCEL : getDeleteCaption(isDeleting)}
     </button>`
   );
 };
 
-const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
+const createEventEditTemplate = (pointData, destinations, isNewEvent, isDisabled, isSaving) => {
   const {id, type, startDate, endDate, price, isFavorite, destination, renderedServices} = pointData;
 
   return (
@@ -104,7 +114,7 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
             </label>
             <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
           </div>
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? SaveButtonName.SAVING : SaveButtonName.SAVE}</button>
           ${createResetButtonTemplate(isNewEvent)}
           ${!isNewEvent ? `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
           <label class="event__favorite-btn" for="event-favorite-1">
@@ -125,7 +135,7 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
               <div class="event__available-offers">
               ${renderedServices.map((offer, index) =>`
                 <div class="event__offer-selector">
-                  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-${index}" type="checkbox" name="event-offer-${offer.type}" ${offer.isActivated ? `checked` : ``}>
+                  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-${index}" type="checkbox" name="event-offer-${offer.type}" ${offer.isActivated ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
                   <label class="event__offer-label" for="event-offer-${offer.type}-${index}">
                     <span class="event__offer-title">${offer.title}</span>
                     +
@@ -144,7 +154,7 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
             <div class="event__photos-container">
               <div class="event__photos-tape">
               ${destination.photos.map((photo) => `
-                <img class="event__photo" src="${photo}" alt="Event photo">
+                <img class="event__photo" src="${photo.href}" alt="Event photo">
               `).join(``)}
               </div>
             </div>` : ``}
@@ -157,7 +167,6 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
 export default class EventEdit extends SmartView {
   constructor(point, destinations = BLANK_DESTINATION, offers, isNewEvent = false) {
     super();
-
     this._data = EventEdit.parsePointToData(point, offers);
     this._destinations = destinations;
     this._offers = offers;
@@ -390,12 +399,19 @@ export default class EventEdit extends SmartView {
         {},
         point,
         {
-          renderedServices
+          renderedServices,
+          isDisabled: false,
+          isSaving: false,
+          isDeleting: false
         }
     );
   }
 
   static parseDataToPoint(pointData) {
+    delete pointData.isDisabled;
+    delete pointData.isSaving;
+    delete pointData.isDeleting;
+
     return Object.assign(
         {},
         pointData
