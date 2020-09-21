@@ -117,7 +117,7 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
               <span class="visually-hidden">Price</span>
               €
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}" required>
           </div>
           <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabledSaveButton ? `disabled` : ``}>
             ${isSaving ? SaveButtonName.SAVING : SaveButtonName.SAVE}
