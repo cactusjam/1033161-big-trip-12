@@ -1,5 +1,5 @@
 import {convertDate} from "../utils/date.js";
-import {getTypeParticle, getFirstUpperCase, isTownAvailable} from "../utils/utils.js";
+import {getTypeParticle, getFirstUpperCase} from "../utils/utils.js";
 import {TRANSFER_TYPES, ACTIVITY_TYPES} from "../constants.js";
 import SmartView from "./smart.js";
 import flatpickr from "flatpickr";
