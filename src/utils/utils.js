@@ -30,14 +30,4 @@ const adaptDestinationsToClient = (pointDestinations) =>
     }))
   }));
 
-const isTownAvailable = (town, destinations) => {
-  for (let i = 0; i < destinations.length; i++) {
-    if (destinations[i].name === town) {
-      return true;
-    }
-  }
-
-  return false;
-};
-
-export {getTypeParticle, getFirstUpperCase, sortEventsByPrice, sortEventsByTime, sortEventsByDate, adaptDestinationsToClient, isTownAvailable};
+export {getTypeParticle, getFirstUpperCase, sortEventsByPrice, sortEventsByTime, sortEventsByDate, adaptDestinationsToClient};

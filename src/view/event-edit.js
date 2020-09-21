@@ -323,17 +323,16 @@ export default class EventEdit extends SmartView {
 
   _destinationChangeHandler(evt) {
     evt.preventDefault();
-    const target = evt.target.value;
-    const destination = getDestination(this._destinations, target);
+    const destination = getDestination(this._destinations, evt.target.value);
 
-    if (isTownAvailable(target, this._destinations)) {
+    if (destination && evt.target.value !== this._data.destination.name) {
       this.updateData({
         destination,
         isInvalid: !destination
       });
       return;
     }
-    target = this._data.destination.name;
+    evt.target.value = this._data.destination.name;
   }
 
   _priceChangeHandler(evt) {
@@ -396,6 +395,7 @@ export default class EventEdit extends SmartView {
   static parsePointToData(point, destinations, offers) {
     const {type, destination} = point;
     const isInvalidDestination = !getDestination(destinations, destination.name);
+
     const typeOffers = offers[type];
 
     const renderedServices = typeOffers.length > 0
