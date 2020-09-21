@@ -22,4 +22,14 @@ const sortEventsByDate = (eventA, eventB) => {
 
 const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
-export {getTypeParticle, getFirstUpperCase, sortEventsByPrice, sortEventsByTime, sortEventsByDate, generateId};
+const adaptDestinationsToClient = (pointDestinations) =>
+  pointDestinations.map((pointDestination) => ({
+    name: pointDestination.name,
+    description: pointDestination.description,
+    photos: pointDestination.pictures.map((picture) => ({
+      href: picture.src,
+      description: picture.description,
+    }))
+  }));
+
+export {getTypeParticle, getFirstUpperCase, sortEventsByPrice, sortEventsByTime, sortEventsByDate, generateId, adaptDestinationsToClient};

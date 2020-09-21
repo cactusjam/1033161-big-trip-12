@@ -1,8 +1,11 @@
 import PointsModel from "../model/points.js";
+import {adaptDestinationsToClient} from '../utils/utils.js';
 
 const Method = {
   GET: `GET`,
-  PUT: `PUT`
+  PUT: `PUT`,
+  POST: `POST`,
+  DELETE: `DELETE`
 };
 
 const SuccessHTTPStatusRange = {
@@ -13,14 +16,28 @@ const SuccessHTTPStatusRange = {
 const Url = {
   POINTS: `points`,
   OFFERS: `offers`,
-  DESTINATIONS: `destinations`,
-  SYNC: `sync`
+  DESTINATIONS: `destinations`
 };
 
 export default class Api {
   constructor(endPoint, authorization) {
     this._endPoint = endPoint;
     this._authorization = authorization;
+  }
+
+  getDestinations() {
+    return this._load({url: Url.DESTINATIONS})
+      .then(Api.toJSON)
+      .then((destinations) => adaptDestinationsToClient(destinations)
+      );
+  }
+
+  getOffers() {
+    return this._load({url: Url.OFFERS})
+      .then(Api.toJSON)
+      .then((offers) => {
+        return PointsModel.adaptOffersToClient(offers);
+      });
   }
 
   getPoints() {
@@ -38,6 +55,24 @@ export default class Api {
     })
       .then(Api.toJSON)
       .then(PointsModel.adaptToClient);
+  }
+
+  addPoint(point) {
+    return this._load({
+      url: Url.POINTS,
+      method: Method.POST,
+      body: JSON.stringify(PointsModel.adaptToServer(point)),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON)
+      .then(PointsModel.adaptToClient);
+  }
+
+  deletePoint(point) {
+    return this._load({
+      url: `${Url.POINTS}/${point.id}`,
+      method: Method.DELETE
+    });
   }
 
   _load({

@@ -20,7 +20,7 @@ const ApiConfig = {
 };
 
 // const tripCards = generateCards(CARD_COUNT);
-
+const api = new Api(ApiConfig.END_POINT, ApiConfig.AUTHORIZATION);
 const filterModel = new FilterModel();
 const pointsModel = new PointsModel();
 // pointsModel.set(tripCards);
@@ -32,8 +32,6 @@ const tripControls = tripMain.querySelector(`.trip-main__trip-controls`);
 const switchMenu = tripControls.querySelector(`.js-switch`);
 const filterMenu = tripControls.querySelector(`.js-filter`);
 
-const api = new Api(ApiConfig.END_POINT, ApiConfig.AUTHORIZATION);
-
 const tripEventButtonComponent = new EventAddButtonView();
 
 const newPointFormCloseCallback = () => {
@@ -44,13 +42,12 @@ const newPointFormOpenedHandler = () => {
   tripEventButtonComponent.setDisabled(true);
 };
 
-const tripComponent = new TripPresenter(siteMainBlock, pointsModel, filterModel, newPointFormCloseCallback);
+const tripComponent = new TripPresenter(siteMainBlock, pointsModel, filterModel, api, newPointFormCloseCallback);
 const filterComponent = new FilterPresenter(filterMenu, pointsModel, filterModel);
 const statisticsComponent = new StatisticsPresenter(siteMainBlock, pointsModel);
 const infoComponent = new InfoPresenter(tripMain, pointsModel, filterModel);
 
 const tripControlsComponent = new TripControlsView();
-render(switchMenu, tripControlsComponent, RenderPosition.AFTER_END);
 
 render(tripMain, tripEventButtonComponent);
 
@@ -76,17 +73,24 @@ const handleSiteMenuClick = (tabItem) => {
   }
 };
 
-tripControlsComponent.setMenuItemClickHandler(handleSiteMenuClick);
-
-tripEventButtonComponent.setMenuItemClickHandler(handleSiteMenuClick);
-
 infoComponent.init();
 filterComponent.init();
 tripComponent.init();
 
-api.getPoints()
-  .then((points) => {
+Promise.all([
+  api.getDestinations(),
+  api.getOffers(),
+  api.getPoints()
+])
+  .then((values) => {
+    const [destinations, offers, points] = values;
+
+    pointsModel.setDestinations(destinations);
+    pointsModel.setOffers(offers);
     pointsModel.set(UpdateType.INIT, points);
+    render(switchMenu, tripControlsComponent, RenderPosition.AFTER_END);
+    tripControlsComponent.setMenuItemClickHandler(handleSiteMenuClick);
+    tripEventButtonComponent.setMenuItemClickHandler(handleSiteMenuClick);
   })
   .catch(() => {
     pointsModel.set(UpdateType.INIT, []);

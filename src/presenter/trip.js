@@ -12,7 +12,7 @@ import {filterTypeToPoints} from "../utils/filter.js";
 import PointNewPresenter from "./point-new.js";
 
 export default class Trip {
-  constructor(container, pointsModel, filterModel, newPointFormCloseCallback) {
+  constructor(container, pointsModel, filterModel, api, newPointFormCloseCallback) {
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
     this._pointPresenter = {};
@@ -21,6 +21,7 @@ export default class Trip {
 
     this._sortComponent = null;
     this._isLoading = true;
+    this._api = api;
 
     this._noEventsComponent = new EventMessageView(EventMessage.NO_EVENTS);
     this._errorComponent = new EventMessageView(EventMessage.ERROR);
@@ -147,13 +148,22 @@ export default class Trip {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointsModel.update(updateType, update);
+        this._api.updateTask(update)
+        .then((response) => {
+          this._pointsModel.update(updateType, response);
+        });
         break;
       case UserAction.ADD_POINT:
-        this._pointsModel.add(updateType, update);
+        this._api.addPoint(update)
+        .then((response) => {
+          this._pointsModel.add(updateType, response);
+        });
         break;
       case UserAction.DELETE_POINT:
-        this._pointsModel.delete(updateType, update);
+        this._api.deletePoint(update)
+        .then(() => {
+          this._pointsModel.delete(updateType, update);
+        });
         break;
     }
   }

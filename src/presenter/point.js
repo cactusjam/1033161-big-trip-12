@@ -4,7 +4,7 @@ import {render, replace, remove} from "../utils/dom.js";
 import {isDatesEqual} from "../utils/date.js";
 import {isEscapeEvent} from "../utils/dom-event.js";
 import {UserAction, UpdateType} from "../constants.js";
-import {mockedOffers} from "../mock/card.js";
+// import {mockedOffers} from "../mock/card.js";
 import {generateId} from "../utils/utils.js";
 
 const Mode = {
@@ -21,6 +21,7 @@ export default class Point {
     this._card = null;
     this._component = null;
     this._editComponent = null;
+    this._offers = null;
     this._mode = Mode.DEFAULT;
     this._handleRollupPoint = this._handleRollupPoint.bind(this);
     this._handleRollupPointEdit = this._handleRollupPointEdit.bind(this);
@@ -29,12 +30,13 @@ export default class Point {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
 
-    this._offers = mockedOffers; // убрать
+    // this._offers = mockedOffers; // убрать
   }
 
-  init(card, destinations) {
+  init(card, destinations, offers) {
     this._card = card;
     this._destinations = destinations;
+    this._offers = offers;
     const prevComponent = this._component;
     const prevEditComponent = this._editComponent;
     this._component = new TripEventView(card);
