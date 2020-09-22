@@ -1,7 +1,7 @@
-import ObserverView from './../utils/observer';
+import Observer from './../utils/observer';
 import {FilterType} from './../constants';
 
-export default class Filter extends ObserverView {
+export default class Filter extends Observer {
   constructor() {
     super();
     this._current = FilterType.EVERYTHING;

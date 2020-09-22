@@ -1,6 +1,6 @@
 const EventMessage = {
   NO_EVENTS: `Click New Event to create your first point`,
-  LOADING: `Loading...`,
+  LOADING: `Loading...`
 };
 
 const KeyboardKey = {
@@ -45,7 +45,8 @@ const UserAction = {
 const UpdateType = {
   PATCH: `PATCH`,
   MINOR: `MINOR`,
-  MAJOR: `MAJOR`
+  MAJOR: `MAJOR`,
+  INIT: `INIT`
 };
 
 const FilterType = {
@@ -83,4 +84,10 @@ const pointTypeToIcon = {
   'restaurant': `🍴`,
 };
 
-export {EventMessage, KeyboardKey, TypeParticle, TRANSFER_TYPES, ACTIVITY_TYPES, SortType, UserAction, UpdateType, FilterType, InitialDayCounter, TabItem, StatsType, pointTypeToIcon};
+const State = {
+  SAVING: `SAVING`,
+  DELETING: `DELETING`,
+  ABORTING: `ABORTING`,
+};
+
+export {EventMessage, KeyboardKey, TypeParticle, TRANSFER_TYPES, ACTIVITY_TYPES, SortType, UserAction, UpdateType, FilterType, InitialDayCounter, TabItem, StatsType, pointTypeToIcon, State};

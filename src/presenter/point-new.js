@@ -2,7 +2,6 @@ import EventEditView from "../view/event-edit.js";
 import {render, remove, RenderPosition} from "../utils/dom.js";
 import {UserAction, UpdateType} from "../constants.js";
 import {isEscapeEvent} from "../utils/dom-event.js";
-import {getRandomInteger} from "../mock/utils.js";
 
 const createEmptyPoint = () => ({
   type: `taxi`,
@@ -15,7 +14,6 @@ const createEmptyPoint = () => ({
   endDate: new Date(),
   services: [],
   isFavorite: false,
-  isActivated: false,
   price: 0,
 });
 
@@ -27,27 +25,49 @@ export default class PointNew {
     this._destinations = null;
     this._attributes = null;
     this._component = null;
+    this._offers = null;
 
     this._handleDeleteButtonClick = this._handleDeleteButtonClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handleSubmitButtonClick = this._handleSubmitButtonClick.bind(this);
   }
 
-  init(container, destinations) {
+  init(container, destinations, offers) {
     this._container = container;
     this._attributes = createEmptyPoint();
     this._destinations = destinations;
+    this._offers = offers;
+    const isNewEvent = true;
     if (this._component !== null) {
       return;
     }
 
-    this._component = new EventEditView(this._attributes, this._destinations, {isAddMode: true}, {isNewPoint: true}, {isNewEvent: true});
+    this._component = new EventEditView(this._attributes, this._destinations, this._offers, isNewEvent);
     this._component.setFormSubmitHandler(this._handleSubmitButtonClick);
     this._component.setFormDeleteHandler(this._handleDeleteButtonClick);
 
     render(this._container, this._component, RenderPosition.AFTER_END);
 
     document.addEventListener(`keydown`, this._escKeyDownHandler);
+  }
+
+  setSaving() {
+    this._component.updateData({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._component.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    this._component.shake(resetFormState);
   }
 
   destroy() {
@@ -62,11 +82,11 @@ export default class PointNew {
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
-  _handleSubmitButtonClick(card) {
+  _handleSubmitButtonClick(point) {
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,
-        Object.assign({id: getRandomInteger()}, card)
+        point
     );
     this.destroy();
   }

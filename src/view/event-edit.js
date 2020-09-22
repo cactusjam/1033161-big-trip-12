@@ -14,7 +14,44 @@ const BLANK_DESTINATION = {
 const ButtonName = {
   CANCEL: `Cancel`,
   DELETE: `Delete`,
+  DELETING: `Deleting...`,
 };
+
+const SaveButtonName = {
+  SAVE: `Save`,
+  SAVING: `Saving...`,
+};
+
+const getDeleteCaption = (isDeleting) => `${
+  isDeleting ? ButtonName.DELETING : ButtonName.DELETE
+}`;
+
+const getDestination = (destinations, destinationName) => destinations.find((item) => (
+  item.name === destinationName
+));
+
+const isOfferInclude = (offers, currentOffer) => offers.some((offer) => (
+  offer.title === currentOffer.title && offer.price === currentOffer.price
+));
+
+const convertToRenderedServices = (offers, activeOffers) => offers.map((offer) => {
+  return {
+    title: offer.title,
+    price: offer.price,
+    isActivated: activeOffers.length > 0 && isOfferInclude(activeOffers, offer),
+  };
+});
+
+const convertFromRenderedServices = (renderedServices) => renderedServices.reduce((offers, offer) => {
+  if (offer.isActivated) {
+    offers.push({
+      title: offer.title,
+      price: offer.price,
+    });
+  }
+
+  return offers;
+}, []);
 
 const createRadioTemplate = (cardType, legendTypes, pointId) => {
   return (
@@ -27,31 +64,33 @@ const createRadioTemplate = (cardType, legendTypes, pointId) => {
   );
 };
 
-const createDestinationTemplate = (destinations, pointType, destination, pointId) => {
+const createDestinationTemplate = (destinations, pointType, destination) => {
   const typeName = getFirstUpperCase(pointType);
   return (
     `<div class="event__field-group  event__field-group--destination">
-      <label class="event__label  event__type-output" for="event-destination-${pointId}">
+      <label class="event__label  event__type-output" for="event-destination-1">
         ${typeName} ${getTypeParticle(pointType)}
       </label>
-      <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${destination.name}" list="destination-list-${pointId}">
-      <datalist id="destination-list-${pointId}">
+      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
+      <datalist id="destination-list-1">
       ${destinations.map(({name}) => `<option value="${name}"></option>`).join(``)}
       </datalist>
     </div>`
   );
 };
 
-const createResetButtonTemplate = (isNewEvent) => {
+const createResetButtonTemplate = (isNewEvent, isDeleting) => {
   return (
     `<button class="event__reset-btn" type="reset">
-      ${isNewEvent ? ButtonName.CANCEL : ButtonName.DELETE}
+      ${isNewEvent ? ButtonName.CANCEL : getDeleteCaption(isDeleting)}
     </button>`
   );
 };
 
 const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
-  const {id, type, startDate, endDate, price, isFavorite, isActivated, destination, services} = pointData;
+  const {id, type, startDate, endDate, price, isFavorite, destination, renderedServices, isDisabled, isSaving, isInvalid} = pointData;
+  const isDisabledSaveButton = isInvalid || isDisabled;
+
   return (
     `<form class="trip-events__item event  event--edit" action="#" method="post">
         <header class="event__header">
@@ -72,7 +111,7 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
               </fieldset>
             </div>
           </div>
-          ${createDestinationTemplate(destinations, type, destination, id)}
+          ${createDestinationTemplate(destinations, type, destination)}
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">
               From
@@ -89,9 +128,11 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
               <span class="visually-hidden">Price</span>
               €
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}" min="0" required>
           </div>
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabledSaveButton ? `disabled` : ``}>
+            ${isSaving ? SaveButtonName.SAVING : SaveButtonName.SAVE}
+          </button>
           ${createResetButtonTemplate(isNewEvent)}
           ${!isNewEvent ? `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
           <label class="event__favorite-btn" for="event-favorite-1">
@@ -106,22 +147,22 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
       : ``}
         </header>
         <section class="event__details">
-        ${services.length > 0 ?
+        ${renderedServices.length > 0 ?
       `<section class="event__section  event__section--offers">
-              <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-              <div class="event__available-offers">
-              ${services.map((offer) =>`
-                <div class="event__offer-selector">
-                  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" value="${offer.type} name="event-offer-${offer.type}" ${isActivated ? `checked` : ``}>
-                  <label class="event__offer-label" for="event-offer-${offer.type}-1">
-                    <span class="event__offer-title">${offer.title}</span>
-                    +
-                    €&nbsp;<span class="event__offer-price">${offer.price}</span>
-                  </label>
-                </div>
-                `).join(``)}
-              </div>
-            </section>` : ``
+        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+        <div class="event__available-offers">
+        ${renderedServices.map((offer, index) =>`
+          <div class="event__offer-selector">
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-${index}" type="checkbox" data-title="${offer.title}" data-price="${offer.price}" name="event-offer-${offer.type}" ${offer.isActivated ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
+            <label class="event__offer-label" for="event-offer-${offer.type}-${index}">
+              <span class="event__offer-title">${offer.title}</span>
+              +
+              €&nbsp;<span class="event__offer-price">${offer.price}</span>
+            </label>
+          </div>
+          `).join(``)}
+        </div>
+      </section>` : ``
     }
           ${destination.name.length > 0 ? `
           <section class="event__section  event__section--destination">
@@ -131,7 +172,7 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
             <div class="event__photos-container">
               <div class="event__photos-tape">
               ${destination.photos.map((photo) => `
-                <img class="event__photo" src="${photo}" alt="Event photo">
+                <img class="event__photo" src="${photo.href}" alt="${photo.description}">
               `).join(``)}
               </div>
             </div>` : ``}
@@ -142,10 +183,11 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
 };
 
 export default class EventEdit extends SmartView {
-  constructor(point, destinations = BLANK_DESTINATION, isNewEvent = false) {
+  constructor(point, destinations = BLANK_DESTINATION, offers, isNewEvent = false) {
     super();
-    this._data = EventEdit.parsePointToData(point);
+    this._data = EventEdit.parsePointToData(point, destinations, offers);
     this._destinations = destinations;
+    this._offers = offers;
     this._isNewEvent = isNewEvent;
     this._datepicker = null;
     this._endDatePicker = null;
@@ -224,7 +266,7 @@ export default class EventEdit extends SmartView {
 
   reset(point) {
     this.updateData(
-        EventEdit.parsePointToData(point, this._destinations)
+        EventEdit.parsePointToData(point, this._destinations, this._offers)
     );
   }
 
@@ -234,14 +276,24 @@ export default class EventEdit extends SmartView {
 
   _offerChangeHandler(evt) {
     evt.preventDefault();
-    this.updateData(
-        {
-          [evt.target.value]: evt.target.checked
-        }, true,
-        {
-          isActivated: !this._data.isActivated
-        }, true
-    );
+    const title = evt.target.dataset.title;
+    const price = Number(evt.target.dataset.price);
+    const renderedServices = this._data.renderedServices.map((offer) => {
+
+      if (offer.title !== title && offer.price !== price) {
+        return offer;
+      }
+
+      return {
+        title,
+        price,
+        isActivated: evt.target.checked,
+      };
+    });
+
+    this.updateData({
+      renderedServices,
+    }, true);
   }
 
   _formSubmitHandler(evt) {
@@ -259,29 +311,36 @@ export default class EventEdit extends SmartView {
     this._callback._rollDownButtonClick();
   }
 
-  _favoriteCheckboxChangeHandler(evt) {
-    evt.preventDefault();
+  _favoriteCheckboxChangeHandler() {
     this.updateData({
       isFavorite: !this._data.isFavorite
     }, true);
-
-    this._callback.favoriteClick(this._data.isFavorite);
   }
 
   _typeListChangeHandler(evt) {
     evt.preventDefault();
+
+    const type = evt.target.value.toLowerCase();
+    const typeOffers = this._offers[type];
+
+    const renderedServices = typeOffers.length > 0
+      ? convertToRenderedServices(typeOffers, [])
+      : [];
+
     this.updateData({
-      type: evt.target.value
+      type,
+      renderedServices
     });
   }
 
   _destinationChangeHandler(evt) {
     evt.preventDefault();
-    const destination = this._destinations.find((item) => item.name === evt.target.value);
+    const destination = getDestination(this._destinations, evt.target.value);
 
     if (destination && evt.target.value !== this._data.destination.name) {
       this.updateData({
-        destination
+        destination,
+        isInvalid: !destination
       });
       return;
     }
@@ -329,7 +388,7 @@ export default class EventEdit extends SmartView {
     }
 
     element.querySelector(`.event__type-list`).addEventListener(`change`, this._typeListChangeHandler);
-    element.querySelector(`.event__field-group--destination`).addEventListener(`change`, this._destinationChangeHandler);
+    element.querySelector(`.event__input--destination`).addEventListener(`change`, this._destinationChangeHandler);
     element.querySelector(`.event__input--price`).addEventListener(`change`, this._priceChangeHandler);
     this._setOffersChangeHandlers();
   }
@@ -345,17 +404,43 @@ export default class EventEdit extends SmartView {
     }
   }
 
-  static parsePointToData(point) {
+  static parsePointToData(point, destinations, offers) {
+    const {type, destination} = point;
+    const isInvalidDestination = !getDestination(destinations, destination.name);
+
+    const typeOffers = offers[type];
+
+    const renderedServices = typeOffers.length > 0
+      ? convertToRenderedServices(typeOffers, point.services)
+      : [];
+
     return Object.assign(
         {},
-        point
+        point,
+        {
+          renderedServices,
+          isDisabled: false,
+          isSaving: false,
+          isDeleting: false,
+          isInvalid: isInvalidDestination
+        }
     );
   }
 
   static parseDataToPoint(pointData) {
+    const services = convertFromRenderedServices(pointData.renderedServices);
+
+    delete pointData.isDisabled;
+    delete pointData.isSaving;
+    delete pointData.isDeleting;
+    delete pointData.isInvalid;
+
     return Object.assign(
         {},
-        pointData
+        pointData,
+        {
+          services
+        }
     );
   }
 }

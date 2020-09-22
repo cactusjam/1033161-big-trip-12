@@ -16,4 +16,18 @@ const sortEventsByTime = (eventA, eventB) => {
   return duration;
 };
 
-export {getTypeParticle, getFirstUpperCase, sortEventsByPrice, sortEventsByTime};
+const sortEventsByDate = (eventA, eventB) => {
+  return eventA.startDate - eventB.startDate;
+};
+
+const adaptDestinationsToClient = (pointDestinations) =>
+  pointDestinations.map((pointDestination) => ({
+    name: pointDestination.name,
+    description: pointDestination.description,
+    photos: pointDestination.pictures.map((picture) => ({
+      href: picture.src,
+      description: picture.description,
+    }))
+  }));
+
+export {getTypeParticle, getFirstUpperCase, sortEventsByPrice, sortEventsByTime, sortEventsByDate, adaptDestinationsToClient};
