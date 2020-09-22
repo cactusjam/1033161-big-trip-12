@@ -85,7 +85,7 @@ export default class Api {
         {method, body, headers}
     )
       .then(Api.checkStatus)
-      // .catch(Api.catchError);
+      .catch(Api.catchError);
   }
 
   static checkStatus(response) {
