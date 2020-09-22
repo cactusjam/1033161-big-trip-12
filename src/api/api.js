@@ -1,5 +1,5 @@
 import PointsModel from "../model/points.js";
-import {adaptDestinationsToClient} from '../utils/utils.js';
+import {adaptDestinationsToClient} from "../utils/utils.js";
 
 const Method = {
   GET: `GET`,
@@ -28,16 +28,13 @@ export default class Api {
   getDestinations() {
     return this._load({url: Url.DESTINATIONS})
       .then(Api.toJSON)
-      .then((destinations) => adaptDestinationsToClient(destinations)
-      );
+      .then(adaptDestinationsToClient);
   }
 
   getOffers() {
     return this._load({url: Url.OFFERS})
       .then(Api.toJSON)
-      .then((offers) => {
-        return PointsModel.adaptOffersToClient(offers);
-      });
+      .then(PointsModel.adaptOffersToClient);
   }
 
   getPoints() {
@@ -88,7 +85,7 @@ export default class Api {
         {method, body, headers}
     )
       .then(Api.checkStatus)
-      .catch(Api.catchError);
+      // .catch(Api.catchError);
   }
 
   static checkStatus(response) {

@@ -42,6 +42,17 @@ const convertToRenderedServices = (offers, activeOffers) => offers.map((offer) =
   };
 });
 
+const convertFromRenderedServices = (renderedServices) => renderedServices.reduce((offers, offer) => {
+  if (offer.isActivated) {
+    offers.push({
+      title: offer.title,
+      price: offer.price,
+    });
+  }
+
+  return offers;
+}, []);
+
 const createRadioTemplate = (cardType, legendTypes, pointId) => {
   return (
     legendTypes.map((legendType, legendIndex) => {
@@ -117,7 +128,7 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
               <span class="visually-hidden">Price</span>
               €
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}" required>
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}" min="0" required>
           </div>
           <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabledSaveButton ? `disabled` : ``}>
             ${isSaving ? SaveButtonName.SAVING : SaveButtonName.SAVE}
@@ -138,20 +149,20 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
         <section class="event__details">
         ${renderedServices.length > 0 ?
       `<section class="event__section  event__section--offers">
-              <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-              <div class="event__available-offers">
-              ${renderedServices.map((offer, index) =>`
-                <div class="event__offer-selector">
-                  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-${index}" type="checkbox" name="event-offer-${offer.type}" ${offer.isActivated ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
-                  <label class="event__offer-label" for="event-offer-${offer.type}-${index}">
-                    <span class="event__offer-title">${offer.title}</span>
-                    +
-                    €&nbsp;<span class="event__offer-price">${offer.price}</span>
-                  </label>
-                </div>
-                `).join(``)}
-              </div>
-            </section>` : ``
+        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+        <div class="event__available-offers">
+        ${renderedServices.map((offer, index) =>`
+          <div class="event__offer-selector">
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-${index}" type="checkbox" data-title="${offer.title}" data-price="${offer.price}" name="event-offer-${offer.type}" ${offer.isActivated ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
+            <label class="event__offer-label" for="event-offer-${offer.type}-${index}">
+              <span class="event__offer-title">${offer.title}</span>
+              +
+              €&nbsp;<span class="event__offer-price">${offer.price}</span>
+            </label>
+          </div>
+          `).join(``)}
+        </div>
+      </section>` : ``
     }
           ${destination.name.length > 0 ? `
           <section class="event__section  event__section--destination">
@@ -161,7 +172,7 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
             <div class="event__photos-container">
               <div class="event__photos-tape">
               ${destination.photos.map((photo) => `
-                <img class="event__photo" src="${photo.href}" alt="Event photo">
+                <img class="event__photo" src="${photo.href}" alt="${photo.description}">
               `).join(``)}
               </div>
             </div>` : ``}
@@ -268,6 +279,7 @@ export default class EventEdit extends SmartView {
     const title = evt.target.dataset.title;
     const price = Number(evt.target.dataset.price);
     const renderedServices = this._data.renderedServices.map((offer) => {
+
       if (offer.title !== title && offer.price !== price) {
         return offer;
       }
@@ -416,6 +428,8 @@ export default class EventEdit extends SmartView {
   }
 
   static parseDataToPoint(pointData) {
+    const services = convertFromRenderedServices(pointData.renderedServices);
+
     delete pointData.isDisabled;
     delete pointData.isSaving;
     delete pointData.isDeleting;
@@ -423,7 +437,10 @@ export default class EventEdit extends SmartView {
 
     return Object.assign(
         {},
-        pointData
+        pointData,
+        {
+          services
+        }
     );
   }
 }

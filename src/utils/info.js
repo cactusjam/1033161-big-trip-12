@@ -1,5 +1,4 @@
-import {getMonthFormat} from "../utils/date.js";
-import moment from "moment";
+import {getMonthFormat, getDayFormat, getDayPlusMonthFormat} from "../utils/date.js";
 
 const LIMIT_ROUTE_CITY = 3;
 
@@ -17,35 +16,25 @@ const getRoute = (points) => {
 };
 
 const getTripDateDuration = (points) => {
-  if (!points.length) {
+  if (points.length === 0) {
     return ``;
   }
 
   const startDate = points[0].startDate;
   const endDate = points[points.length - 1].endDate;
 
-  const endString = startDate.getMonth() === endDate.getMonth()
-    ? moment(endDate).format(`DD`)
-    : moment(endDate).format(`DD MMM`);
+  const endMonthFormat = startDate.getMonth() === endDate.getMonth()
+    ? getDayFormat(endDate)
+    : getDayPlusMonthFormat(endDate);
 
-  return `${getMonthFormat(startDate)}&nbsp;&mdash;&nbsp;${endString}`;
+  return `${getMonthFormat(startDate)}&nbsp;&mdash;&nbsp;${endMonthFormat}`;
 };
 
-const getTotalTripCost = (points) => {
-  let totalTripCost = 0;
-
-  for (const point of points) {
-    totalTripCost += point.price;
-
-    if (point.services) {
-      for (const services of point.services) {
-        totalTripCost += services.price;
-      }
-    }
-  }
-
-  return totalTripCost;
-};
+const getTotalTripCost = (points) =>
+  points.reduce((price, point) => {
+    price += point.price + point.services.reduce((offersPrice, offer) => offersPrice + offer.price, 0);
+    return price;
+  }, 0);
 
 export {getRoute, getTripDateDuration, getTotalTripCost};
 

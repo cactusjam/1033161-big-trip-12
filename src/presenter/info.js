@@ -25,7 +25,8 @@ export default class Info {
   }
 
   _getInfo() {
-    const points = this._pointsModel.get().sort(sortEventsByDate);
+    const newPoints = this._pointsModel.get().slice();
+    const points = newPoints.sort(sortEventsByDate);
 
     this._tripCities = getRoute(points);
     this._tripDuration = getTripDateDuration(points);

@@ -1,13 +1,12 @@
-import ObserverView from "../utils/observer.js";
+import Observer from "../utils/observer.js";
 
 const getPointIndex = (points, point) => points.findIndex((item) => item.id === point.id);
-export default class Points extends ObserverView {
+export default class Points extends Observer {
   constructor() {
     super();
     this._points = [];
     this._destinations = [];
     this._offers = {};
-    this._points = [];
   }
 
   set(updateType, points) {
@@ -128,8 +127,8 @@ export default class Points extends ObserverView {
         point,
         {
           "base_price": point.price,
-          "date_from": point.startDate.toString(),
-          "date_to": point.endDate.toString(),
+          "date_from": point.startDate.toISOString(),
+          "date_to": point.endDate.toISOString(),
           "is_favorite": point.isFavorite,
           "offers": point.services,
           "destination": {

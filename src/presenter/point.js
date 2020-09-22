@@ -138,14 +138,6 @@ export default class Point {
   }
 
   setViewState(state) {
-    const resetFormState = () => {
-      this._editComponent.updateData({
-        isDisabled: false,
-        isSaving: false,
-        isDeleting: false
-      });
-    };
-
     switch (state) {
       case State.SAVING:
         this._editComponent.updateData({
@@ -160,6 +152,13 @@ export default class Point {
         });
         break;
       case State.ABORTING:
+        const resetFormState = () => {
+          this._editComponent.updateData({
+            isDisabled: false,
+            isSaving: false,
+            isDeleting: false
+          });
+        };
         this._component.shake(resetFormState);
         this._editComponent.shake(resetFormState);
         break;

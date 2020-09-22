@@ -154,9 +154,9 @@ export default class Trip {
           .then((response) => {
             this._pointsModel.update(updateType, response);
           })
-          .catch(() => {
-            this._pointPresenter[update.id].setViewState(State.ABORTING);
-          });
+          // .catch(() => {
+          //   this._pointPresenter[update.id].setViewState(State.ABORTING);
+          // });
         break;
       case UserAction.ADD_POINT:
         this._pointNewPresenter.setSaving();
@@ -164,9 +164,9 @@ export default class Trip {
           .then((response) => {
             this._pointsModel.add(updateType, response);
           })
-          .catch(() => {
-            this._pointNewPresenter.setAborting();
-          });
+          // .catch(() => {
+          //   this._pointNewPresenter.setAborting();
+          // });
         break;
       case UserAction.DELETE_POINT:
         this._pointPresenter[update.id].setViewState(State.DELETING);
@@ -174,9 +174,9 @@ export default class Trip {
           .then(() => {
             this._pointsModel.delete(updateType, update);
           })
-          .catch(() => {
-            this._pointPresenter[update.id].setViewState(State.ABORTING);
-          });
+          // .catch(() => {
+          //   this._pointPresenter[update.id].setViewState(State.ABORTING);
+          // });
         break;
     }
   }
