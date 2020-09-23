@@ -205,30 +205,35 @@ export default class EventEdit extends SmartView {
     this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
 
     this._setInnerHandlers();
-    this._setDatepicker();
+  }
+
+  _destroyStartDatePicker() {
+    if (this._startDatePicker !== null) {
+      this._startDatePicker.destroy();
+      this._startDatePicker = null;
+    }
+  }
+
+  _destroyEndDatePicker() {
+    if (this._endDatePicker !== null) {
+      this._endDatePicker.destroy();
+      this._endDatePicker = null;
+    }
+  }
+
+  _destroyPointDatePickers() {
+    this._destroyStartDatePicker();
+    this._destroyEndDatePicker();
   }
 
   removeElement() {
     super.removeElement();
-    if (this._startDatePicker !== null) {
-      this._startDatePicker.destroy();
-      this._startDatePicker = null;
-    }
-    if (this._endDatePicker !== null) {
-      this._endDatePicker.destroy();
-      this._endDatePicker = null;
-    }
+    this._destroyPointDatePickers();
   }
 
-  _setDatepicker() {
-    if (this._startDatePicker !== null) {
-      this._startDatePicker.destroy();
-      this._startDatePicker = null;
-    }
-    if (this._endDatePicker !== null) {
-      this._endDatePicker.destroy();
-      this._endDatePicker = null;
-    }
+  _setDatePicker() {
+    this._destroyStartDatePicker();
+    this._destroyEndDatePicker();
     this._startDatePicker = flatpickr(
         this.getElement().querySelector(`#event-start-time-1`),
         {
@@ -302,7 +307,6 @@ export default class EventEdit extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    console.log(this._data);
     this._callback.formSubmit(EventEdit.parseDataToPoint(this._data));
   }
 
@@ -396,11 +400,11 @@ export default class EventEdit extends SmartView {
     element.querySelector(`.event__input--destination`).addEventListener(`change`, this._destinationChangeHandler);
     element.querySelector(`.event__input--price`).addEventListener(`change`, this._priceChangeHandler);
     this._setOffersChangeHandlers();
+    this._setDatePicker();
   }
 
   restoreHandlers() {
     this._setInnerHandlers();
-    this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormDeleteHandler(this._callback.formReset);
 
