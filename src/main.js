@@ -7,7 +7,9 @@ import InfoPresenter from "./presenter/info.js";
 import StatisticsPresenter from "./presenter/statistics.js";
 import PointsModel from "./model/points.js";
 import FilterModel from "./model/filter.js";
-import Api from "./api/api.js";
+import Api from "./api/index.js";
+import Store from "./api/store";
+import Provider from "./api/provider";
 import {TabItem, UpdateType, FilterType} from "./constants";
 
 const ApiConfig = {
@@ -15,7 +17,13 @@ const ApiConfig = {
   END_POINT: `https://12.ecmascript.pages.academy/big-trip`
 };
 
+const STORE_PREFIX = `big-trip-localstorage`;
+const STORE_VER = `v2`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
+
 const api = new Api(ApiConfig.END_POINT, ApiConfig.AUTHORIZATION);
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
 const filterModel = new FilterModel();
 const pointsModel = new PointsModel();
 
@@ -35,7 +43,7 @@ const newPointFormOpenedHandler = () => {
   tripEventButtonComponent.setDisabled(true);
 };
 
-const tripComponent = new TripPresenter(siteMainBlock, pointsModel, filterModel, api, newPointFormCloseCallback);
+const tripComponent = new TripPresenter(siteMainBlock, pointsModel, filterModel, apiWithProvider, newPointFormCloseCallback);
 const filterComponent = new FilterPresenter(filterMenu, pointsModel, filterModel);
 const statisticsComponent = new StatisticsPresenter(siteMainBlock, pointsModel);
 const infoComponent = new InfoPresenter(tripMain, pointsModel, filterModel);
@@ -71,9 +79,9 @@ filterComponent.init();
 tripComponent.init();
 
 Promise.all([
-  api.getDestinations(),
-  api.getOffers(),
-  api.getPoints()
+  apiWithProvider.getDestinations(),
+  apiWithProvider.getOffers(),
+  apiWithProvider.getPoints()
 ])
   .then((values) => {
     const [destinations, offers, points] = values;
@@ -88,3 +96,17 @@ Promise.all([
   .catch(() => {
     pointsModel.set(UpdateType.INIT, []);
   });
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`);
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+  apiWithProvider.sync();
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+  apiWithProvider.syncRequired = true;
+});

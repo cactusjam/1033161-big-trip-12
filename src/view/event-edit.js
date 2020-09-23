@@ -116,12 +116,12 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
             <label class="visually-hidden" for="event-start-time-1">
               From
             </label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${convertDate(startDate)}" ${isDisabled ? `disabled` : ``}>
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${convertDate(startDate)}">
             —
             <label class="visually-hidden" for="event-end-time-1">
               To
             </label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${convertDate(endDate)}" ${isDisabled ? `disabled` : ``}>
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${convertDate(endDate)}">
           </div>
           <div class="event__field-group  event__field-group--price">
             <label class="event__label" for="event-price-1">
@@ -189,8 +189,9 @@ export default class EventEdit extends SmartView {
     this._destinations = destinations;
     this._offers = offers;
     this._isNewEvent = isNewEvent;
-    this._datepicker = null;
+    this._startDatePicker = null;
     this._endDatePicker = null;
+    this.isStartDateUpdate = false;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
@@ -209,9 +210,9 @@ export default class EventEdit extends SmartView {
 
   removeElement() {
     super.removeElement();
-    if (this._datepicker !== null) {
-      this._datepicker.destroy();
-      this._datepicker = null;
+    if (this._startDatePicker !== null) {
+      this._startDatePicker.destroy();
+      this._startDatePicker = null;
     }
     if (this._endDatePicker !== null) {
       this._endDatePicker.destroy();
@@ -220,9 +221,9 @@ export default class EventEdit extends SmartView {
   }
 
   _setDatepicker() {
-    if (this._datepicker !== null) {
-      this._datepicker.destroy();
-      this._datepicker = null;
+    if (this._startDatePicker !== null) {
+      this._startDatePicker.destroy();
+      this._startDatePicker = null;
     }
     if (this._endDatePicker !== null) {
       this._endDatePicker.destroy();
@@ -252,19 +253,19 @@ export default class EventEdit extends SmartView {
     );
   }
 
-  _startDateChangeHandler([userDate]) {
-    this.isStartDateUpdate = userDate !== this._data.startDate;
+  _startDateChangeHandler([startDate]) {
+    this.isStartDateUpdate = startDate !== this._data.startDate;
     this.updateData({
-      userDate
+      startDate
     }, true);
-    this._endDatePicker.set(`minDate`, userDate);
+    this._endDatePicker.set(`minDate`, startDate);
   }
 
-  _endDateChangeHandler([userDate]) {
+  _endDateChangeHandler([endDate]) {
     this.updateData({
-      userDate
+      endDate
     }, true);
-    this._startDatePicker.set(`maxDate`, userDate);
+    this._startDatePicker.set(`maxDate`, endDate);
   }
 
   reset(point) {
@@ -301,6 +302,7 @@ export default class EventEdit extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
+    console.log(this._data);
     this._callback.formSubmit(EventEdit.parseDataToPoint(this._data));
   }
 
