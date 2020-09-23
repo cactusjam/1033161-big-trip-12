@@ -51,13 +51,7 @@ const transportChartOptions = {
 const timeSpentChartOptions = {
   chartKey: `duration`,
   title: `TIME SPENT`,
-  // dataFormatter: (value) => `${formatDuration(0, value)}`,
-  dataFormatter: (value) => {
-    const result = `${formatDuration(0, value)}`;
-    console.log('result', result);
-
-    return result;
-  },
+  dataFormatter: (value) => `${formatDuration(0, value)}`,
 };
 
 const createChartData = (points) => {
@@ -90,14 +84,10 @@ const renderChart = (chartCtx, chartData, chartConfig) => {
 
   const {chartKey, dataFormatter, title} = chartConfig;
 
-  console.log('chartData', chartData);
-
   chartData.forEach((item) => {
     labels.push(item.label);
     data.push(item[chartKey]);
   });
-
-  console.log('data', data);
 
   return new Chart(chartCtx, {
     plugins: [ChartDataLabels],

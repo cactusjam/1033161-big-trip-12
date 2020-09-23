@@ -24,12 +24,12 @@ const formatDuration = (start, end) => {
   const momentDiff = moment(end).diff(moment(start));
   const momentDuration = moment.duration(momentDiff);
 
-  const duration = {
+  const timeDuration = {
     days: momentDuration.get(`days`) > 0 ? `${convertDateNumbers(momentDuration.get(`days`))}D` : ``,
     hours: momentDuration.get(`days`) > 0 || momentDuration.get(`hours`) > 0 ? `${convertDateNumbers(momentDuration.get(`hours`))}H` : ``,
     minutes: `${convertDateNumbers(momentDuration.get(`minutes`))}M`
   };
-  return `${duration.days} ${duration.hours} ${duration.minutes}`;
+  return `${timeDuration.days} ${timeDuration.hours} ${timeDuration.minutes}`;
 };
 
 const convertDateToDay = (date) => {
