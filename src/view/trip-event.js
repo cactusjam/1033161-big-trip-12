@@ -2,6 +2,8 @@ import {getTimeFormat, formatDuration, convertDateToISOString} from "../utils/da
 import AbstractView from "./abstract.js";
 import {getTypeParticle, getFirstUpperCase} from "../utils/utils.js";
 
+const SERVICES_COUNT = 3;
+
 const createTripEventTemplate = (point) => {
   const {type, destination, services, price, startDate, endDate} = point;
   const formattedDuration = formatDuration(startDate, endDate);
@@ -26,7 +28,7 @@ const createTripEventTemplate = (point) => {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${services.map((offer) =>`
+          ${services.slice(0, SERVICES_COUNT).map((offer) =>`
           <li class="event__offer">
           <span class="event__offer-title">${offer.title}</span>
           &plus;
