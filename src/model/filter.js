@@ -1,5 +1,5 @@
-import Observer from './../utils/observer';
-import {FilterType} from './../constants';
+import Observer from "./../utils/observer";
+import {FilterType} from "./../constants";
 
 export default class Filter extends Observer {
   constructor() {

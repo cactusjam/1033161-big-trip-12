@@ -1,4 +1,4 @@
-import FilterView from '../view/filters';
+import FilterView from "../view/filters";
 import {render, replace, remove, RenderPosition} from "../utils/dom.js";
 import {UpdateType, FilterType} from "../constants.js";
 import {filterTypeToPoints} from "../utils/filter.js";
