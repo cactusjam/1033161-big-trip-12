@@ -51,7 +51,13 @@ const transportChartOptions = {
 const timeSpentChartOptions = {
   chartKey: `duration`,
   title: `TIME SPENT`,
-  dataFormatter: (value) => `${formatDuration(0, value)}`,
+  // dataFormatter: (value) => `${formatDuration(0, value)}`,
+  dataFormatter: (value) => {
+    const result = `${formatDuration(0, value)}`;
+    console.log('result', result);
+
+    return result;
+  },
 };
 
 const createChartData = (points) => {
@@ -60,7 +66,7 @@ const createChartData = (points) => {
 
     if (pointType) {
       pointType.price += point.price;
-      pointType.duration += point.startDate - point.endDate;
+      pointType.duration += getHourDuration(point.startDate, point.endDate);
       pointType.count++;
     } else {
       chartData[point.type] = {
@@ -84,10 +90,14 @@ const renderChart = (chartCtx, chartData, chartConfig) => {
 
   const {chartKey, dataFormatter, title} = chartConfig;
 
+  console.log('chartData', chartData);
+
   chartData.forEach((item) => {
     labels.push(item.label);
     data.push(item[chartKey]);
   });
+
+  console.log('data', data);
 
   return new Chart(chartCtx, {
     plugins: [ChartDataLabels],

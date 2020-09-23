@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment, {duration} from "moment";
 
 const isDate = (date) => date instanceof Date;
 
@@ -27,7 +27,7 @@ const formatDuration = (start, end) => {
   const duration = {
     days: momentDuration.get(`days`) > 0 ? `${convertDateNumbers(momentDuration.get(`days`))}D` : ``,
     hours: momentDuration.get(`days`) > 0 || momentDuration.get(`hours`) > 0 ? `${convertDateNumbers(momentDuration.get(`hours`))}H` : ``,
-    minutes: momentDuration.get(`minutes`) > 0 ? `${convertDateNumbers(momentDuration.get(`minutes`))}M` : ``,
+    minutes: `${convertDateNumbers(momentDuration.get(`minutes`))}M`
   };
   return `${duration.days} ${duration.hours} ${duration.minutes}`;
 };
