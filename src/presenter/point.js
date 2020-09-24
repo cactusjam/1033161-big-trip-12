@@ -153,7 +153,6 @@ export default class Point {
             this._card,
             {
               isFavorite
-              // isFavorite: !this._card.isFavorite
             }
         )
     );
