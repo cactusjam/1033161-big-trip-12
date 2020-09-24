@@ -44,7 +44,7 @@ export default class PointNew {
 
     this._component = new EventEditView(this._attributes, this._destinations, this._offers, isNewEvent);
     this._component.setFormSubmitHandler(this._handleSubmitButtonClick);
-    this._component.setFormDeleteHandler(this._handleDeleteButtonClick);
+    this._component.setFormResetHandler(this._handleDeleteButtonClick);
 
     render(this._container, this._component, RenderPosition.AFTER_END);
 
