@@ -91,7 +91,7 @@ export default class Points extends Observer {
           services: point.offers,
           startDate: new Date(point.date_from),
           endDate: new Date(point.date_to),
-          isFavorite: Boolean(point.is_favorite),
+          isFavorite: point.is_favorite,
         }
     );
 
@@ -146,6 +146,7 @@ export default class Points extends Observer {
     delete adaptedPoint.startDate;
     delete adaptedPoint.endDate;
     delete adaptedPoint.destination.photos;
+    delete adaptedPoint.isFavorite;
 
     return adaptedPoint;
   }

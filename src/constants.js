@@ -90,4 +90,11 @@ const State = {
   ABORTING: `ABORTING`,
 };
 
-export {EventMessage, KeyboardKey, TypeParticle, TRANSFER_TYPES, ACTIVITY_TYPES, SortType, UserAction, UpdateType, FilterType, InitialDayCounter, TabItem, StatsType, pointTypeToIcon, State};
+const StoreSubKey = {
+  POINTS: `points`,
+  DESTINATIONS: `destinations`,
+  OFFERS: `offers`,
+  SYNC_REQUIRED: `syncRequired`
+};
+
+export {EventMessage, KeyboardKey, TypeParticle, TRANSFER_TYPES, ACTIVITY_TYPES, SortType, UserAction, UpdateType, FilterType, InitialDayCounter, TabItem, StatsType, pointTypeToIcon, State, StoreSubKey};

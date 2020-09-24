@@ -22,10 +22,6 @@ const SaveButtonName = {
   SAVING: `Saving...`,
 };
 
-const getDeleteCaption = (isDeleting) => `${
-  isDeleting ? ButtonName.DELETING : ButtonName.DELETE
-}`;
-
 const getDestination = (destinations, destinationName) => destinations.find((item) => (
   item.name === destinationName
 ));
@@ -41,6 +37,8 @@ const convertToRenderedServices = (offers, activeOffers) => offers.map((offer) =
     isActivated: activeOffers.length > 0 && isOfferInclude(activeOffers, offer),
   };
 });
+
+const getDeleteCaption = (isDeleting) => isDeleting ? ButtonName.DELETING : ButtonName.DELETE;
 
 const convertFromRenderedServices = (renderedServices) => renderedServices.reduce((offers, offer) => {
   if (offer.isActivated) {
@@ -64,14 +62,14 @@ const createRadioTemplate = (cardType, legendTypes, pointId) => {
   );
 };
 
-const createDestinationTemplate = (destinations, pointType, destination) => {
+const createDestinationTemplate = (destinations, pointType, destination, isDisabled) => {
   const typeName = getFirstUpperCase(pointType);
   return (
     `<div class="event__field-group  event__field-group--destination">
       <label class="event__label  event__type-output" for="event-destination-1">
         ${typeName} ${getTypeParticle(pointType)}
       </label>
-      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
+      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1" ${isDisabled ? `disabled` : ``}>
       <datalist id="destination-list-1">
       ${destinations.map(({name}) => `<option value="${name}"></option>`).join(``)}
       </datalist>
@@ -79,9 +77,9 @@ const createDestinationTemplate = (destinations, pointType, destination) => {
   );
 };
 
-const createResetButtonTemplate = (isNewEvent, isDeleting) => {
+const createResetButtonTemplate = (isNewEvent, isDeleting, isDisabled) => {
   return (
-    `<button class="event__reset-btn" type="reset">
+    `<button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>
       ${isNewEvent ? ButtonName.CANCEL : getDeleteCaption(isDeleting)}
     </button>`
   );
@@ -99,7 +97,7 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox" ${isDisabled ? `disabled` : ``}>
             <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Transfer</legend>
@@ -111,7 +109,7 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
               </fieldset>
             </div>
           </div>
-          ${createDestinationTemplate(destinations, type, destination)}
+          ${createDestinationTemplate(destinations, type, destination, isDisabled)}
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">
               From
@@ -128,13 +126,13 @@ const createEventEditTemplate = (pointData, destinations, isNewEvent) => {
               <span class="visually-hidden">Price</span>
               €
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}" min="0" required>
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}" min="0" required ${isDisabled ? `disabled` : ``}>
           </div>
           <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabledSaveButton ? `disabled` : ``}>
             ${isSaving ? SaveButtonName.SAVING : SaveButtonName.SAVE}
           </button>
-          ${createResetButtonTemplate(isNewEvent)}
-          ${!isNewEvent ? `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
+          ${createResetButtonTemplate(isNewEvent, isDisabled)}
+          ${!isNewEvent ? `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
           <label class="event__favorite-btn" for="event-favorite-1">
             <span class="visually-hidden">Add to favorite</span>
             <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -189,11 +187,12 @@ export default class EventEdit extends SmartView {
     this._destinations = destinations;
     this._offers = offers;
     this._isNewEvent = isNewEvent;
-    this._datepicker = null;
+    this._startDatePicker = null;
     this._endDatePicker = null;
+    this.isStartDateUpdate = false;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
+    this._formResetHandler = this._formResetHandler.bind(this);
     this._rollDownButtonClickHandler = this._rollDownButtonClickHandler.bind(this);
     this._favoriteCheckboxChangeHandler = this._favoriteCheckboxChangeHandler.bind(this);
     this._typeListChangeHandler = this._typeListChangeHandler.bind(this);
@@ -207,27 +206,42 @@ export default class EventEdit extends SmartView {
     this._setDatepicker();
   }
 
+  reset(point) {
+    this.updateData(
+        EventEdit.parsePointToData(point, this._destinations, this._offers)
+    );
+  }
+
+  getTemplate() {
+    return createEventEditTemplate(this._data, this._destinations, this._isNewEvent);
+  }
+
   removeElement() {
     super.removeElement();
-    if (this._datepicker !== null) {
-      this._datepicker.destroy();
-      this._datepicker = null;
+    this._destroyPointDatePickers();
+  }
+
+  _destroyStartDatePicker() {
+    if (this._startDatePicker !== null) {
+      this._startDatePicker.destroy();
+      this._startDatePicker = null;
     }
+  }
+
+  _destroyEndDatePicker() {
     if (this._endDatePicker !== null) {
       this._endDatePicker.destroy();
       this._endDatePicker = null;
     }
   }
 
+  _destroyPointDatePickers() {
+    this._destroyStartDatePicker();
+    this._destroyEndDatePicker();
+  }
+
   _setDatepicker() {
-    if (this._datepicker !== null) {
-      this._datepicker.destroy();
-      this._datepicker = null;
-    }
-    if (this._endDatePicker !== null) {
-      this._endDatePicker.destroy();
-      this._endDatePicker = null;
-    }
+    this._destroyStartDatePicker();
     this._startDatePicker = flatpickr(
         this.getElement().querySelector(`#event-start-time-1`),
         {
@@ -239,6 +253,7 @@ export default class EventEdit extends SmartView {
           'onChange': this._startDateChangeHandler
         }
     );
+    this._destroyEndDatePicker();
     this._endDatePicker = flatpickr(
         this.getElement().querySelector(`#event-end-time-1`),
         {
@@ -246,32 +261,25 @@ export default class EventEdit extends SmartView {
           'time_24hr': true,
           'dateFormat': `d/m/y H:i`,
           'defaultDate': this._data.endDate || new Date(),
-          'minDate': this._data.starDate,
+          'minDate': this._data.startDate,
           'onChange': this._endDateChangeHandler
         }
     );
   }
 
-  _startDateChangeHandler([userDate]) {
+  _startDateChangeHandler([startDate]) {
+    this.isStartDateUpdate = startDate !== this._data.startDate;
     this.updateData({
-      startDate: userDate
+      startDate
     }, true);
+    this._endDatePicker.set(`minDate`, startDate);
   }
 
-  _endDateChangeHandler([userDate]) {
+  _endDateChangeHandler([endDate]) {
     this.updateData({
-      endDate: userDate
+      endDate
     }, true);
-  }
-
-  reset(point) {
-    this.updateData(
-        EventEdit.parsePointToData(point, this._destinations, this._offers)
-    );
-  }
-
-  getTemplate() {
-    return createEventEditTemplate(this._data, this._destinations, this._isNewEvent);
+    this._startDatePicker.set(`maxDate`, endDate);
   }
 
   _offerChangeHandler(evt) {
@@ -301,7 +309,7 @@ export default class EventEdit extends SmartView {
     this._callback.formSubmit(EventEdit.parseDataToPoint(this._data));
   }
 
-  _formDeleteClickHandler(evt) {
+  _formResetHandler(evt) {
     evt.preventDefault();
     this._callback.formReset(EventEdit.parseDataToPoint(this._data));
   }
@@ -354,30 +362,11 @@ export default class EventEdit extends SmartView {
     }, true);
   }
 
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
-  }
-
-  setFormDeleteHandler(callback) {
-    this._callback.formReset = callback;
-    this.getElement().addEventListener(`reset`, this._formDeleteClickHandler);
-  }
-
-  setRollDownButtonClickHandler(callback) {
-    this._callback._rollDownButtonClick = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollDownButtonClickHandler);
-  }
-
   _setOffersChangeHandlers() {
     const offerCheckbox = this.getElement().querySelectorAll(`.event__offer-checkbox`);
     offerCheckbox.forEach((offer) => {
       offer.addEventListener(`change`, this._offerChangeHandler);
     });
-  }
-
-  setFavoriteChangeHandler(callback) {
-    this._callback.favoriteClick = callback;
   }
 
   _setInnerHandlers() {
@@ -391,13 +380,32 @@ export default class EventEdit extends SmartView {
     element.querySelector(`.event__input--destination`).addEventListener(`change`, this._destinationChangeHandler);
     element.querySelector(`.event__input--price`).addEventListener(`change`, this._priceChangeHandler);
     this._setOffersChangeHandlers();
+
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  setFormResetHandler(callback) {
+    this._callback.formReset = callback;
+    this.getElement().addEventListener(`reset`, this._formResetHandler);
+  }
+
+  setRollDownButtonClickHandler(callback) {
+    this._callback._rollDownButtonClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollDownButtonClickHandler);
+  }
+
+  setFavoriteChangeHandler(callback) {
+    this._callback.favoriteClick = callback;
   }
 
   restoreHandlers() {
     this._setInnerHandlers();
-    this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setFormDeleteHandler(this._callback.formReset);
+    this.setFormResetHandler(this._callback.formReset);
 
     if (!this._isNewEvent) {
       this.setRollDownButtonClickHandler(this._callback._rollDownButtonClick);

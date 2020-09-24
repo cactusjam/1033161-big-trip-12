@@ -60,7 +60,7 @@ const createChartData = (points) => {
 
     if (pointType) {
       pointType.price += point.price;
-      pointType.duration += point.startDate - point.endDate;
+      pointType.duration += getHourDuration(point.startDate, point.endDate);
       pointType.count++;
     } else {
       chartData[point.type] = {

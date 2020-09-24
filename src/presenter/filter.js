@@ -1,4 +1,4 @@
-import FilterView from '../view/filters';
+import FilterView from "../view/filters";
 import {render, replace, remove, RenderPosition} from "../utils/dom.js";
 import {UpdateType, FilterType} from "../constants.js";
 import {filterTypeToPoints} from "../utils/filter.js";
@@ -36,18 +36,6 @@ export default class Filter {
     remove(prevComponent);
   }
 
-  _handleModelEvent() {
-    this.init();
-  }
-
-  _handleTypeChange(type) {
-    if (this._current === type) {
-      return;
-    }
-
-    this._model.set(UpdateType.MINOR, type);
-  }
-
   _getFilters() {
     const points = this._tripModel.get();
     const currentDate = new Date();
@@ -61,5 +49,17 @@ export default class Filter {
       });
 
     return filters;
+  }
+
+  _handleModelEvent() {
+    this.init();
+  }
+
+  _handleTypeChange(type) {
+    if (this._current === type) {
+      return;
+    }
+
+    this._model.set(UpdateType.MINOR, type);
   }
 }
