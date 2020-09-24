@@ -7,10 +7,10 @@ const getSyncedPoints = (points) => {
 };
 
 const getStoreStructure = (items) => {
-  return items.reduce((points, current) => {
+  return items.reduce((point, current) => {
     return Object.assign(
         {},
-        points,
+        point,
         {
           [current.id]: current,
         });

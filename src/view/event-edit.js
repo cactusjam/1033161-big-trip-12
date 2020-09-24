@@ -38,9 +38,7 @@ const convertToRenderedServices = (offers, activeOffers) => offers.map((offer) =
   };
 });
 
-const getDeleteCaption = (isDeleting) => `${
-  isDeleting ? ButtonName.DELETING : ButtonName.DELETE
-}`;
+const getDeleteCaption = (isDeleting) => isDeleting ? ButtonName.DELETING : ButtonName.DELETE;
 
 const convertFromRenderedServices = (renderedServices) => renderedServices.reduce((offers, offer) => {
   if (offer.isActivated) {
@@ -194,7 +192,7 @@ export default class EventEdit extends SmartView {
     this.isStartDateUpdate = false;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._formResetClickHandler = this._formResetClickHandler.bind(this);
+    this._formResetHandler = this._formResetHandler.bind(this);
     this._rollDownButtonClickHandler = this._rollDownButtonClickHandler.bind(this);
     this._favoriteCheckboxChangeHandler = this._favoriteCheckboxChangeHandler.bind(this);
     this._typeListChangeHandler = this._typeListChangeHandler.bind(this);
@@ -311,7 +309,7 @@ export default class EventEdit extends SmartView {
     this._callback.formSubmit(EventEdit.parseDataToPoint(this._data));
   }
 
-  _formResetClickHandler(evt) {
+  _formResetHandler(evt) {
     evt.preventDefault();
     this._callback.formReset(EventEdit.parseDataToPoint(this._data));
   }
@@ -392,7 +390,7 @@ export default class EventEdit extends SmartView {
 
   setFormResetHandler(callback) {
     this._callback.formReset = callback;
-    this.getElement().addEventListener(`reset`, this._formResetClickHandler);
+    this.getElement().addEventListener(`reset`, this._formResetHandler);
   }
 
   setRollDownButtonClickHandler(callback) {

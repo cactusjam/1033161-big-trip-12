@@ -73,11 +73,11 @@ export default class Api {
     });
   }
 
-  sync(event) {
+  sync(records) {
     return this._load({
       url: Url.SYNC,
       method: Method.POST,
-      body: JSON.stringify(event),
+      body: JSON.stringify(records),
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then(Api.toJSON);
