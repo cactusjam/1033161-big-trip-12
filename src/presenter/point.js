@@ -144,7 +144,7 @@ export default class Point {
     );
   }
 
-  _handleFavoriteClick(isFavorite) {
+  _handleFavoriteClick() {
     this._changeData(
         UserAction.UPDATE_POINT,
         UpdateType.PATCH,
@@ -152,8 +152,7 @@ export default class Point {
             {},
             this._card,
             {
-              isFavorite
-              // isFavorite: !this._card.isFavorite
+              isFavorite: !this._card.isFavorite
             }
         )
     );

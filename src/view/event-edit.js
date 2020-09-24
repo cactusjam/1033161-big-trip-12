@@ -320,8 +320,6 @@ export default class EventEdit extends SmartView {
   }
 
   _favoriteCheckboxChangeHandler() {
-    this._callback._favoriteClick(!this._data.isFavorite);
-
     this.updateData({
       isFavorite: !this._data.isFavorite
     }, true);
@@ -401,7 +399,7 @@ export default class EventEdit extends SmartView {
   }
 
   setFavoriteChangeHandler(callback) {
-    this._callback._favoriteClick = callback;
+    this._callback.favoriteClick = callback;
   }
 
   restoreHandlers() {
