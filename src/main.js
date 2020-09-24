@@ -7,7 +7,7 @@ import InfoPresenter from "./presenter/info.js";
 import StatisticsPresenter from "./presenter/statistics.js";
 import PointsModel from "./model/points.js";
 import FilterModel from "./model/filter.js";
-import Api from "./api/index.js";
+import Api from "./api/api.js";
 import Store from "./api/store";
 import Provider from "./api/provider";
 import {TabItem, UpdateType, FilterType} from "./constants";
@@ -21,18 +21,17 @@ const STORE_PREFIX = `big-trip-localstorage`;
 const STORE_VER = `v2`;
 const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
-const api = new Api(ApiConfig.END_POINT, ApiConfig.AUTHORIZATION);
-const store = new Store(STORE_NAME, window.localStorage);
-const apiWithProvider = new Provider(api, store);
-const filterModel = new FilterModel();
-const pointsModel = new PointsModel();
-
 const tripMain = document.querySelector(`.trip-main`);
 const siteMainBlock = document.querySelector(`.trip-events`);
 const tripControls = tripMain.querySelector(`.trip-main__trip-controls`);
 const switchMenu = tripControls.querySelector(`.js-switch`);
 const filterMenu = tripControls.querySelector(`.js-filter`);
 
+const api = new Api(ApiConfig.END_POINT, ApiConfig.AUTHORIZATION);
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
+const filterModel = new FilterModel();
+const pointsModel = new PointsModel();
 const tripEventButtonComponent = new EventAddButtonView();
 
 const newPointFormCloseCallback = () => {
@@ -47,7 +46,6 @@ const tripComponent = new TripPresenter(siteMainBlock, pointsModel, filterModel,
 const filterComponent = new FilterPresenter(filterMenu, pointsModel, filterModel);
 const statisticsComponent = new StatisticsPresenter(siteMainBlock, pointsModel);
 const infoComponent = new InfoPresenter(tripMain, pointsModel, filterModel);
-
 const tripControlsComponent = new TripControlsView();
 
 render(tripMain, tripEventButtonComponent);

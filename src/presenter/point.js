@@ -40,7 +40,7 @@ export default class Point {
 
     this._component.setRollupButtonClickHandler(this._handleRollupPoint);
     this._editComponent.setFormSubmitHandler(this._handleSubmitPointEdit);
-    this._editComponent.setFormDeleteHandler(this._handleDeletePointEdit);
+    this._editComponent.setFormResetHandler(this._handleDeletePointEdit);
     this._editComponent.setRollDownButtonClickHandler(this._handleRollupPointEdit);
     this._editComponent.setFavoriteChangeHandler(this._handleFavoriteClick);
 
@@ -60,6 +60,34 @@ export default class Point {
 
     remove(prevComponent);
     remove(prevEditComponent);
+  }
+
+  setViewState(state) {
+    switch (state) {
+      case State.SAVING:
+        this._editComponent.updateData({
+          isDisabled: true,
+          isSaving: true
+        });
+        break;
+      case State.DELETING:
+        this._editComponent.updateData({
+          isDisabled: true,
+          isDeleting: true
+        });
+        break;
+      case State.ABORTING:
+        const resetFormState = () => {
+          this._editComponent.updateData({
+            isDisabled: false,
+            isSaving: false,
+            isDeleting: false
+          });
+        };
+        this._component.shake(resetFormState);
+        this._editComponent.shake(resetFormState);
+        break;
+    }
   }
 
   destroy() {
@@ -88,19 +116,12 @@ export default class Point {
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
-  _escKeyDownHandler(evt) {
-    if (isEscapeEvent(evt)) {
-      evt.preventDefault();
-      this._editComponent.reset(this._card);
-      this._replaceFormToEvent();
-    }
-  }
-
   _handleRollupPoint() {
     this._replaceEventToForm();
   }
 
   _handleRollupPointEdit() {
+    this._editComponent.reset(this._card);
     this._replaceFormToEvent();
   }
 
@@ -137,31 +158,11 @@ export default class Point {
     );
   }
 
-  setViewState(state) {
-    switch (state) {
-      case State.SAVING:
-        this._editComponent.updateData({
-          isDisabled: true,
-          isSaving: true
-        });
-        break;
-      case State.DELETING:
-        this._editComponent.updateData({
-          isDisabled: true,
-          isDeleting: true
-        });
-        break;
-      case State.ABORTING:
-        const resetFormState = () => {
-          this._editComponent.updateData({
-            isDisabled: false,
-            isSaving: false,
-            isDeleting: false
-          });
-        };
-        this._component.shake(resetFormState);
-        this._editComponent.shake(resetFormState);
-        break;
+  _escKeyDownHandler(evt) {
+    if (isEscapeEvent(evt)) {
+      evt.preventDefault();
+      this._editComponent.reset(this._card);
+      this._replaceFormToEvent();
     }
   }
 }

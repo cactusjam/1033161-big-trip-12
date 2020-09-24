@@ -41,15 +41,6 @@ export default class Trip {
     this._renderTrip();
   }
 
-  createPoint(callback) {
-    this._pointNewPresenter.init(
-        this._sortComponent,
-        this._getDestinations(),
-        this._getOffers()
-    );
-    callback();
-  }
-
   _getPoints() {
     const filterType = this._filterModel.get();
     const points = this._pointsModel.get();
@@ -71,6 +62,26 @@ export default class Trip {
 
   _getOffers() {
     return this._pointsModel.getOffers();
+  }
+
+  createPoint(callback) {
+    this._pointNewPresenter.init(
+        this._sortComponent,
+        this._getDestinations(),
+        this._getOffers()
+    );
+    callback();
+  }
+
+  destroy() {
+    this._clearEvents({resetSortType: true});
+
+    remove(this._daysComponent);
+    remove(this._sortComponent);
+    this._pointNewPresenter.destroy();
+
+    this._pointsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   _handleModeChange() {
@@ -133,17 +144,6 @@ export default class Trip {
 
   _renderLoading() {
     render(this._container, this._loadingComponent, RenderPosition.AFTER_BEGIN);
-  }
-
-  destroy() {
-    this._clearEvents({resetSortType: true});
-
-    remove(this._daysComponent);
-    remove(this._sortComponent);
-    this._pointNewPresenter.destroy();
-
-    this._pointsModel.removeObserver(this._handleModelEvent);
-    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   _handleViewAction(actionType, updateType, update) {

@@ -22,10 +22,6 @@ const SaveButtonName = {
   SAVING: `Saving...`,
 };
 
-const getDeleteCaption = (isDeleting) => `${
-  isDeleting ? ButtonName.DELETING : ButtonName.DELETE
-}`;
-
 const getDestination = (destinations, destinationName) => destinations.find((item) => (
   item.name === destinationName
 ));
@@ -41,6 +37,10 @@ const convertToRenderedServices = (offers, activeOffers) => offers.map((offer) =
     isActivated: activeOffers.length > 0 && isOfferInclude(activeOffers, offer),
   };
 });
+
+const getDeleteCaption = (isDeleting) => `${
+  isDeleting ? ButtonName.DELETING : ButtonName.DELETE
+}`;
 
 const convertFromRenderedServices = (renderedServices) => renderedServices.reduce((offers, offer) => {
   if (offer.isActivated) {
@@ -194,7 +194,7 @@ export default class EventEdit extends SmartView {
     this.isStartDateUpdate = false;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
+    this._formResetClickHandler = this._formResetClickHandler.bind(this);
     this._rollDownButtonClickHandler = this._rollDownButtonClickHandler.bind(this);
     this._favoriteCheckboxChangeHandler = this._favoriteCheckboxChangeHandler.bind(this);
     this._typeListChangeHandler = this._typeListChangeHandler.bind(this);
@@ -206,6 +206,21 @@ export default class EventEdit extends SmartView {
 
     this._setInnerHandlers();
     this._setDatepicker();
+  }
+
+  reset(point) {
+    this.updateData(
+        EventEdit.parsePointToData(point, this._destinations, this._offers)
+    );
+  }
+
+  getTemplate() {
+    return createEventEditTemplate(this._data, this._destinations, this._isNewEvent);
+  }
+
+  removeElement() {
+    super.removeElement();
+    this._destroyPointDatePickers();
   }
 
   _destroyStartDatePicker() {
@@ -225,11 +240,6 @@ export default class EventEdit extends SmartView {
   _destroyPointDatePickers() {
     this._destroyStartDatePicker();
     this._destroyEndDatePicker();
-  }
-
-  removeElement() {
-    super.removeElement();
-    this._destroyPointDatePickers();
   }
 
   _setDatepicker() {
@@ -274,16 +284,6 @@ export default class EventEdit extends SmartView {
     this._startDatePicker.set(`maxDate`, endDate);
   }
 
-  reset(point) {
-    this.updateData(
-        EventEdit.parsePointToData(point, this._destinations, this._offers)
-    );
-  }
-
-  getTemplate() {
-    return createEventEditTemplate(this._data, this._destinations, this._isNewEvent);
-  }
-
   _offerChangeHandler(evt) {
     evt.preventDefault();
     const title = evt.target.dataset.title;
@@ -311,7 +311,7 @@ export default class EventEdit extends SmartView {
     this._callback.formSubmit(EventEdit.parseDataToPoint(this._data));
   }
 
-  _formDeleteClickHandler(evt) {
+  _formResetClickHandler(evt) {
     evt.preventDefault();
     this._callback.formReset(EventEdit.parseDataToPoint(this._data));
   }
@@ -364,30 +364,11 @@ export default class EventEdit extends SmartView {
     }, true);
   }
 
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
-  }
-
-  setFormDeleteHandler(callback) {
-    this._callback.formReset = callback;
-    this.getElement().addEventListener(`reset`, this._formDeleteClickHandler);
-  }
-
-  setRollDownButtonClickHandler(callback) {
-    this._callback._rollDownButtonClick = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollDownButtonClickHandler);
-  }
-
   _setOffersChangeHandlers() {
     const offerCheckbox = this.getElement().querySelectorAll(`.event__offer-checkbox`);
     offerCheckbox.forEach((offer) => {
       offer.addEventListener(`change`, this._offerChangeHandler);
     });
-  }
-
-  setFavoriteChangeHandler(callback) {
-    this._callback.favoriteClick = callback;
   }
 
   _setInnerHandlers() {
@@ -404,10 +385,29 @@ export default class EventEdit extends SmartView {
 
   }
 
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  setFormResetHandler(callback) {
+    this._callback.formReset = callback;
+    this.getElement().addEventListener(`reset`, this._formResetClickHandler);
+  }
+
+  setRollDownButtonClickHandler(callback) {
+    this._callback._rollDownButtonClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollDownButtonClickHandler);
+  }
+
+  setFavoriteChangeHandler(callback) {
+    this._callback.favoriteClick = callback;
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setFormDeleteHandler(this._callback.formReset);
+    this.setFormResetHandler(this._callback.formReset);
 
     if (!this._isNewEvent) {
       this.setRollDownButtonClickHandler(this._callback._rollDownButtonClick);

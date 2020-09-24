@@ -18,6 +18,10 @@ export default class EventAddButton extends AbstractView {
     return createTripEventButtonTemplate();
   }
 
+  setDisabled(value) {
+    this.getElement().disabled = value;
+  }
+
   _menuItemClickHandler(evt) {
     evt.preventDefault();
     const currentActive = evt.target;
@@ -28,9 +32,5 @@ export default class EventAddButton extends AbstractView {
     this._callback.menuClick = callback;
 
     this.getElement().addEventListener(`click`, this._menuItemClickHandler);
-  }
-
-  setDisabled(value) {
-    this.getElement().disabled = value;
   }
 }
