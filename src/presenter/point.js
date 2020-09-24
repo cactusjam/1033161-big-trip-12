@@ -44,7 +44,6 @@ export default class Point {
     this._editComponent.setRollDownButtonClickHandler(this._handleRollupPointEdit);
     this._editComponent.setFavoriteChangeHandler(this._handleFavoriteClick);
 
-
     if (prevComponent === null || prevEditComponent === null) {
       render(this._container, this._component);
       return;
